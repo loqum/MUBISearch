@@ -1,0 +1,54 @@
+version: '3.5'
+services:
+  contentdb:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: content
+    restart: always
+    ports:
+      - 54320:3306
+    volumes:
+      - content_data:/var/lib/mysql
+      - "./content.sql:/docker-entrypoint-initdb.d/1.sql"
+  userdb:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: user
+    restart: always
+    ports:
+      - 54321:3306
+    volumes:
+      - user_data:/var/lib/mysql
+      - "./user.sql:/docker-entrypoint-initdb.d/1.sql"
+
+  notificationdb:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DATABASE: notification
+    restart: always
+    ports:
+      - 54322:3306
+    volumes:
+      - notification_data:/var/lib/mysql
+      - "./notification.sql:/docker-entrypoint-initdb.d/1.sql"
+
+  adminer:
+    image: adminer
+    platform: linux/amd64
+    restart: always
+    ports:
+      - 18080:8080
+
+volumes:
+  content_data:
+  user_data:
+  notification_data:
