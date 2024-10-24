@@ -7,7 +7,6 @@
     <artifactId>MUBISearch</artifactId>
     <version>1.0-SNAPSHOT</version>
   </parent>
-  <groupId>com.mubisearch.user</groupId>
   <artifactId>user-service</artifactId>
   <version>1.0-SNAPSHOT</version>
   <name>user-service</name>
