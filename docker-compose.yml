@@ -1,12 +1,11 @@
-version: '3.5'
 services:
   contentdb:
-    image: mysql
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: ruben_content
-      MYSQL_PASSWORD: 12345_content
-      MYSQL_DATABASE: content
+      MYSQL_DATABASE: contentservice
+      MYSQL_USER: ruben
+      MYSQL_ROOT_PASSWORD: ruben93
+      MYSQL_PASSWORD: ruben93
     restart: always
     ports:
       - 54350:3306
@@ -14,30 +13,31 @@ services:
       - content_data:/var/lib/mysql
 
   userdb:
-    image: mysql
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: ruben_user
-      MYSQL_PASSWORD: 12345_user
-      MYSQL_DATABASE: user
+      MYSQL_DATABASE: userservice
+      MYSQL_USER: ruben
+      MYSQL_ROOT_PASSWORD: ruben93
+      MYSQL_PASSWORD: ruben93
     restart: always
     ports:
       - 54351:3306
     volumes:
-      - ./db-init/db-init-user.sql.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./db-init/schema-user.sql:/docker-entrypoint-initdb.d/init.sql
       - user_data:/var/lib/mysql
 
   notificationdb:
-    image: mysql
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_USER: ruben_notification
-      MYSQL_PASSWORD: 12345_notification
-      MYSQL_DATABASE: notification
+      MYSQL_DATABASE: notificationservice
+      MYSQL_USER: ruben
+      MYSQL_ROOT_PASSWORD: ruben93
+      MYSQL_PASSWORD: ruben93
     restart: always
     ports:
       - 54352:3306
     volumes:
+      - ./db-init/schema-notification.sql:/docker-entrypoint-initdb.d/init.sql
       - notification_data:/var/lib/mysql
 
   adminer:
