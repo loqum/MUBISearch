@@ -16,11 +16,11 @@ import java.util.Date;
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     @Column(name = "id_user", nullable = false)
-    private Integer idUser;
+    private Long idUser;
     @Column(name = "id_content", nullable = false)
-    private Integer idContent;
+    private Long idContent;
     @Column(name = "date_favorite", nullable = false)
     private Date dateFavorite;
     @Column(name = "notification_alert")
