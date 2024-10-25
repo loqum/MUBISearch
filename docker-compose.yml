@@ -24,6 +24,7 @@ services:
     ports:
       - 54351:3306
     volumes:
+      - ./db-init/db-init-user.sql.sql:/docker-entrypoint-initdb.d/init.sql
       - user_data:/var/lib/mysql
 
   notificationdb:

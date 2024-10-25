@@ -1,0 +1,17 @@
+
+CREATE TABLE IF NOT EXISTS User (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    date_register DATETIME NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS Favorite (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id_user INTEGER NOT NULL,
+    id_content INTEGER NOT NULL,
+    date_favorite DATETIME NOT NULL,
+    notification_alert BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (id_user) REFERENCES User(id)
+);
