@@ -10,6 +10,7 @@ services:
     ports:
       - 54350:3306
     volumes:
+      - ./db-init/schema-content.sql:/docker-entrypoint-initdb.d/init.sql
       - content_data:/var/lib/mysql
 
   userdb:
