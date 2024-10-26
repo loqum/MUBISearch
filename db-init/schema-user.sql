@@ -1,6 +1,6 @@
 USE userservice;
 
-CREATE TABLE IF NOT EXISTS User (
+CREATE TABLE IF NOT EXISTS user (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS User (
     date_register DATETIME NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS Favorite (
+CREATE TABLE IF NOT EXISTS favorite (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_user BIGINT NOT NULL,
     id_content BIGINT NOT NULL,
     date_favorite DATETIME NOT NULL,
     notification_alert BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (id_user) REFERENCES User(id)
+    FOREIGN KEY (id_user) REFERENCES user(id)
 );
