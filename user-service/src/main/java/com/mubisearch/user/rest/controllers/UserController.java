@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -35,6 +36,11 @@ public class UserController {
     public ResponseEntity<UserResponse> getUserById(@PathVariable @NotNull Long idUser) {
         log.info("Init getUserById");
         return userService.findById(idUser).map(u -> ResponseEntity.ok().body(UserResponse.from(u))).orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<UserResponse> getOwnUser(@AuthenticationPrincipal User user) {
+        return ResponseEntity.ok().body(UserResponse.from(user));
     }
 
     @PostMapping

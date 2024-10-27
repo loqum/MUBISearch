@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -36,10 +37,13 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.GET, "/users", "/favorites").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users", "/favorites").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/**", "/favorites/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/users/**", "/favorites/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/users/**", "/favorites/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**", "/favorites/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
+                .httpBasic(Customizer.withDefaults())
                 .exceptionHandling( exceptionHandling ->
                         exceptionHandling
                                 .authenticationEntryPoint(customBasicAuthenticationEntryPoint)

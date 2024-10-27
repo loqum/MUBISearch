@@ -34,7 +34,9 @@ public class CustomBasicAuthenticationEntryPoint extends BasicAuthenticationEntr
         writer.println(strApiError);
     }
 
-    public void initRealmName() {
-        setRealmName("mubisearch.com");
+    @Override
+    public void afterPropertiesSet() {
+        setRealmName("MUBISearchRealm");
+        super.afterPropertiesSet();
     }
 }

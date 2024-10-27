@@ -1,5 +1,6 @@
 package com.mubisearch.user.rest.dto;
 
+import com.mubisearch.user.entities.User;
 import lombok.NonNull;
 
 import java.time.LocalDateTime;

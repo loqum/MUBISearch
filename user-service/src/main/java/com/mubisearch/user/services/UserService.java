@@ -29,13 +29,13 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public Optional<User> findByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+    public Optional<User> findByName(String name) {
+        return userRepository.findUserByName(name);
     }
 
     public User createUser(UserRequest user) {
         String encodedPassword = passwordEncoder.encode(user.password());
-        User newUser = User.builder().email(user.email()).password(encodedPassword).name(user.name()).createdAt(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
+        User newUser = User.builder().fullName(user.fullName()).password(encodedPassword).name(user.name()).createdAt(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
         return userRepository.save(newUser);
     }
 
