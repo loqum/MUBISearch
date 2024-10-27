@@ -11,4 +11,5 @@ public class RestConfig {
     public LocalValidatorFactoryBean validatorFactoryBean() {
         return new LocalValidatorFactoryBean();
     }
+
 }

@@ -1,27 +1,26 @@
 package com.mubisearch.user.services;
 
+import com.mubisearch.user.controllers.dto.UserRequest;
 import com.mubisearch.user.entities.User;
+import com.mubisearch.user.entities.UserRole;
 import com.mubisearch.user.repositories.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
-
-    @Autowired
-    public UserService(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
-    }
 
     public List<User> findAll() {
         return userRepository.findAll();
@@ -31,9 +30,14 @@ public class UserService {
         return userRepository.findById(id);
     }
 
-    public User createUser(String email, String password, String name) {
-        String encodedPassword = passwordEncoder.encode(password);
-        User user = User.builder().email(email).password(encodedPassword).name(name).dateRegister(new Date()).build();
-        return userRepository.save(user);
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
+
+    public User createUser(UserRequest user) {
+        String encodedPassword = passwordEncoder.encode(user.password());
+        User newUser = User.builder().email(user.email()).password(encodedPassword).name(user.name()).dateRegister(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
+        return userRepository.save(newUser);
+    }
+
 }
