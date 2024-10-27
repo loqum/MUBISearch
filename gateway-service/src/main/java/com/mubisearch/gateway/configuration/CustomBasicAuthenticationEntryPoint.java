@@ -1,7 +1,6 @@
-package com.mubisearch.user.configuration;
+package com.mubisearch.gateway.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mubisearch.user.rest.error.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

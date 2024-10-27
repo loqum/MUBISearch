@@ -31,15 +31,23 @@ public class UserController {
         return userService.findAll();
     }
 
-    @GetMapping("/{idUser}")
+    @GetMapping("/id/{idUser}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponse> getUserById(@PathVariable @NotNull Long idUser) {
         log.info("Init getUserById");
         return userService.findById(idUser).map(u -> ResponseEntity.ok().body(UserResponse.from(u))).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/name/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponse> getUserByName(@PathVariable @NotNull String name) {
+        log.info("Init getUserByName");
+        return userService.findByName(name).map(u -> ResponseEntity.ok().body(UserResponse.from(u))).orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/me")
     public ResponseEntity<UserResponse> getOwnUser(@AuthenticationPrincipal User user) {
+        log.info("Init getOwnUser");
         return ResponseEntity.ok().body(UserResponse.from(user));
     }
 
