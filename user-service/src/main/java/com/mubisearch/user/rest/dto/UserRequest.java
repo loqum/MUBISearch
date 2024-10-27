@@ -1,4 +1,4 @@
-package com.mubisearch.user.controllers.dto;
+package com.mubisearch.user.rest.dto;
 
 import lombok.NonNull;
 

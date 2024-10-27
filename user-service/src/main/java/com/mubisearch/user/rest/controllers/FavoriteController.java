@@ -1,11 +1,10 @@
-package com.mubisearch.user.controllers;
+package com.mubisearch.user.rest.controllers;
 
-import com.mubisearch.user.controllers.dto.FavoriteResponse;
+import com.mubisearch.user.rest.dto.FavoriteResponse;
 import com.mubisearch.user.entities.Favorite;
 import com.mubisearch.user.services.FavoriteService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,4 +1,4 @@
-package com.mubisearch.user.controllers.dto;
+package com.mubisearch.user.rest.dto;
 
 import com.mubisearch.user.entities.User;
 import lombok.Builder;

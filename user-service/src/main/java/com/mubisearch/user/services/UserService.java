@@ -1,10 +1,9 @@
 package com.mubisearch.user.services;
 
-import com.mubisearch.user.controllers.dto.UserRequest;
+import com.mubisearch.user.rest.dto.UserRequest;
 import com.mubisearch.user.entities.User;
 import com.mubisearch.user.entities.UserRole;
 import com.mubisearch.user.repositories.UserRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

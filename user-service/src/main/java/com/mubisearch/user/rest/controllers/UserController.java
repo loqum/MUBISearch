@@ -1,11 +1,10 @@
-package com.mubisearch.user.controllers;
+package com.mubisearch.user.rest.controllers;
 
-import com.mubisearch.user.controllers.dto.UserRequest;
-import com.mubisearch.user.controllers.dto.UserResponse;
+import com.mubisearch.user.rest.dto.UserRequest;
+import com.mubisearch.user.rest.dto.UserResponse;
 import com.mubisearch.user.entities.User;
 import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
