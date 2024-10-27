@@ -14,10 +14,10 @@ public class UserResponse {
     private String name;
     private String email;
     private String password;
-    private LocalDateTime dateRegister;
+    private LocalDateTime createdAt;
 
     public static UserResponse from(User user) {
-        return UserResponse.builder().id(user.getId()).name(user.getName()).email(user.getEmail()).password(user.getPassword()).dateRegister(user.getDateRegister()).build();
+        return UserResponse.builder().id(user.getId()).name(user.getName()).email(user.getEmail()).password(user.getPassword()).createdAt(user.getCreatedAt()).build();
     }
 
 }

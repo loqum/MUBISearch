@@ -36,7 +36,7 @@ public class UserService {
 
     public User createUser(UserRequest user) {
         String encodedPassword = passwordEncoder.encode(user.password());
-        User newUser = User.builder().email(user.email()).password(encodedPassword).name(user.name()).dateRegister(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
+        User newUser = User.builder().email(user.email()).password(encodedPassword).name(user.name()).createdAt(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
         return userRepository.save(newUser);
     }
 

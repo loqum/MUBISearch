@@ -1,9 +1,12 @@
 package com.mubisearch.user.entities;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @Builder
 @Data
@@ -19,8 +22,8 @@ public class Favorite {
     private Long idUser;
     @Column(name = "id_content", nullable = false)
     private Long idContent;
-    @Column(name = "date_favorite", nullable = false)
-    private Date dateFavorite;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
     @Column(name = "notification_alert")
     private boolean notificationAlert;
 }

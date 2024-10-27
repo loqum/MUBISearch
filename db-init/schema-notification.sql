@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS notification
     id_user              BIGINT   NOT NULL,
     id_content           BIGINT   NOT NULL,
     id_notification_type BIGINT   NOT NULL,
-    date_notification    DATETIME NOT NULL
+    created_at           DATETIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS notification_type

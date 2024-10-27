@@ -8,9 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 
 @Builder
@@ -30,8 +28,8 @@ public class User implements UserDetails {
     private String email;
     @Column(name = "password", nullable = false)
     private String password;
-    @Column(name = "date_register", nullable = false)
-    private LocalDateTime dateRegister;
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
     private UserRole role;
 

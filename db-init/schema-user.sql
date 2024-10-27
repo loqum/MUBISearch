@@ -2,12 +2,12 @@ USE userservice;
 
 CREATE TABLE IF NOT EXISTS user
 (
-    id            BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name          VARCHAR(255) NOT NULL,
-    email         VARCHAR(255) NOT NULL UNIQUE,
-    password      VARCHAR(255) NOT NULL,
-    date_register DATETIME     NOT NULL,
-    role          VARCHAR(50) NOT NULL
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name       VARCHAR(255) NOT NULL,
+    email      VARCHAR(255) NOT NULL UNIQUE,
+    password   VARCHAR(255) NOT NULL,
+    created_at DATETIME     NOT NULL,
+    role       VARCHAR(50)  NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS favorite

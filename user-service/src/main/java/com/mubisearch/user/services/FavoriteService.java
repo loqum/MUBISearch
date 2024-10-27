@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FavoriteService {
@@ -17,7 +18,19 @@ public class FavoriteService {
         return favoriteRepository.findAll();
     }
 
-    public List<Favorite> findByUserIdAndContentId(Long idUser, Long idContent) {
-        return favoriteRepository.findFavoritesByIdUserAndIdContent(idUser, idContent);
+    public Optional<Favorite> findByIdUserAndIdContent(Long idUser, Long idContent) {
+        return favoriteRepository.findFavoriteByIdUserAndIdContent(idUser, idContent);
+    }
+
+    public List<Favorite> findByIdUser(Long idUser) {
+        return favoriteRepository.findFavoritesByIdUser(idUser);
+    }
+
+    public List<Favorite> findByIdContent(Long idContent) {
+        return favoriteRepository.findFavoritesByIdContent(idContent);
+    }
+
+    public Optional<Favorite> findById(Long id) {
+        return favoriteRepository.findFavoriteById(id);
     }
 }
