@@ -7,11 +7,10 @@ import java.util.Date;
 
 
 @Builder
-@Getter @Setter
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "User")
+@Table(name = "user")
 @Entity
 public class User {
     @Id

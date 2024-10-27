@@ -6,12 +6,10 @@ import lombok.*;
 import java.util.Date;
 
 @Builder
-@Getter
-@Setter
-@EqualsAndHashCode
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "Favorite")
+@Table(name = "favorite")
 @Entity
 public class Favorite {
     @Id
