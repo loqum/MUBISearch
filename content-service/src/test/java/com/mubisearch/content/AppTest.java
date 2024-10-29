@@ -1,4 +1,4 @@
-package com.mubisearch;
+package com.mubisearch.content;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

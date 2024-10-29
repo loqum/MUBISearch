@@ -18,7 +18,7 @@ import java.util.List;
 
 @Log4j2
 @RestController
-@RequestMapping("/users")
+@RequestMapping("api/v1/users")
 public class UserController {
 
     @Autowired
