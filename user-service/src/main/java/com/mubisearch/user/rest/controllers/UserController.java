@@ -46,9 +46,9 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserResponse> getOwnUser(@AuthenticationPrincipal User user) {
+    public ResponseEntity<User> getOwnUser(@AuthenticationPrincipal User user) {
         log.info("Init getOwnUser");
-        return ResponseEntity.ok().body(UserResponse.from(user));
+        return ResponseEntity.ok().body(user);
     }
 
     @PostMapping

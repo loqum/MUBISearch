@@ -20,7 +20,13 @@ import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequ
 @Slf4j
 public class RoutingConfig {
 
-    @Value("${app.gateway.remote-servers.userservice:http://localhost:18082}")
+    @Value("${app.gateway.controller.url.users}")
+    private String userControllerUrl;
+
+    @Value("${app.gateway.controller.url.favorites}")
+    private String favoriteControllerUrl;
+
+    @Value("${app.gateway.remote-servers.userservice}")
     private String userServiceUrl;
 
     @Value("${app.gateway.remote-servers.notificationservice:http://localhost:18083}")
@@ -29,19 +35,15 @@ public class RoutingConfig {
     @Value("${app.gateway.remote-servers.contentservice:http://localhost:18084}")
     private String contentServiceUrl;
 
-    @Value("${app.gateway.strip-prefix:2}")
-    public int stripPrefixParts;
-
     @Bean
     public RouterFunction<ServerResponse> getHelloWorld() {
         return route("basic_route")
-                .before(stripPrefix(stripPrefixParts))
-                .route(path("/users/**").and(method(HttpMethod.GET)), http(userServiceUrl))
-                .route(path("/users/**").and(method(HttpMethod.PUT)), http(userServiceUrl))
-                .route(path("/users/**").and(method(HttpMethod.POST)), http(userServiceUrl))
-                .route(path("/favorites/**").and(method(HttpMethod.GET)), http(userServiceUrl))
-                .route(path("/favorites/**").and(method(HttpMethod.PUT)), http(userServiceUrl))
-                .route(path("/favorites/**").and(method(HttpMethod.POST)), http(userServiceUrl))
+                .route(path(userControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
+                .route(path(userControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
+                .route(path(userControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
+                .route(path(favoriteControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
+                .route(path(favoriteControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
+                .route(path(favoriteControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
                 .onError(Exception.class, this::handleException)
                 .build();
     }
