@@ -8,7 +8,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -37,27 +41,14 @@ public class SecurityConfig {
 //                        .requestMatchers(HttpMethod.DELETE, "/users/**", "/favorites/**").hasRole("ADMIN")
 //                        .anyRequest().authenticated()
                                 .anyRequest().permitAll()
-//                )
+                )
 //                .httpBasic(Customizer.withDefaults())
 //                .exceptionHandling( exceptionHandling ->
 //                        exceptionHandling
 //                                .authenticationEntryPoint(customBasicAuthenticationEntryPoint)
-                )
+//                )
                 .csrf(AbstractHttpConfigurer::disable);
         return http.build();
     }
-
-    public ResponseEntity<String> authenticateUser(String username, String password) {
-        String url = "http://localhost:8081/api/v1/auth"; // Ajusta la URL según sea necesario
-        RestTemplate restTemplate = new RestTemplate();
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Content-Type", "application/json");
-
-        String jsonRequest = String.format("{\"name\": \"%s\", \"password\": \"%s\"}", username, password);
-        HttpEntity<String> requestEntity = new HttpEntity<>(jsonRequest, headers);
-
-        return restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
-    }
-
 
 }

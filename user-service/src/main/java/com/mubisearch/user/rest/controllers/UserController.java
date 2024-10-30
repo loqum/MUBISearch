@@ -1,8 +1,8 @@
 package com.mubisearch.user.rest.controllers;
 
+import com.mubisearch.user.entities.User;
 import com.mubisearch.user.rest.dto.UserRequest;
 import com.mubisearch.user.rest.dto.UserResponse;
-import com.mubisearch.user.entities.User;
 import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
