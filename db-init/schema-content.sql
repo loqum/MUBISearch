@@ -1,12 +1,5 @@
 USE contentservice;
 
-CREATE TABLE IF NOT EXISTS external_entity
-(
-    id_external BIGINT PRIMARY KEY,
-    created_at  DATETIME NOT NULL,
-    updated_at  DATETIME NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS content
 (
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -14,7 +7,8 @@ CREATE TABLE IF NOT EXISTS content
     plot        VARCHAR(1000),
     poster_path VARCHAR(255),
     id_external BIGINT,
-    FOREIGN KEY (id_external) REFERENCES external_entity (id_external)
+    created_at  DATETIME,
+    updated_at  DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS movie
@@ -39,7 +33,8 @@ CREATE TABLE IF NOT EXISTS genre
     id          BIGINT PRIMARY KEY AUTO_INCREMENT,
     name        VARCHAR(100) NOT NULL,
     id_external BIGINT,
-    FOREIGN KEY (id_external) REFERENCES external_entity (id_external)
+    created_at  DATETIME,
+    updated_at  DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS content_genre
@@ -60,7 +55,8 @@ CREATE TABLE IF NOT EXISTS crew_member
     image       VARCHAR(255),
     biography   VARCHAR(1000),
     id_external BIGINT,
-    FOREIGN KEY (id_external) REFERENCES external_entity (id_external)
+    created_at  DATETIME,
+    updated_at  DATETIME
 );
 
 CREATE TABLE IF NOT EXISTS crew_assignment
@@ -78,7 +74,7 @@ CREATE TABLE IF NOT EXISTS vote
     id_user    BIGINT   NOT NULL,
     id_content BIGINT   NOT NULL,
     score      INTEGER  NOT NULL,
-    date_score DATETIME NOT NULL,
+    created_at DATETIME NOT NULL,
     PRIMARY KEY (id_user, id_content),
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE
 );
@@ -89,6 +85,6 @@ CREATE TABLE IF NOT EXISTS review
     id_user    BIGINT        NOT NULL,
     id_content BIGINT        NOT NULL,
     text       VARCHAR(1000) NOT NULL,
-    date_text  DATETIME      NOT NULL,
+    created_at  DATETIME      NOT NULL,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE
 );
