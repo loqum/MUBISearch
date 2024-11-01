@@ -5,6 +5,7 @@ import com.mubisearch.user.repositories.FavoriteRepository;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,9 +37,19 @@ public class FavoriteService {
         return favoriteRepository.findFavoriteById(id);
     }
 
-//    public Favorite createFavorite(FavoriteRequest favorite) {
-//        Favorite newFavorite = Favorite.builder().user(favorite.idUser()).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
-//        return favoriteRepository.save(newFavorite);
-//    }
+    public Favorite createFavorite(FavoriteRequest favorite) {
+        Favorite newFavorite = Favorite.builder().user(favorite.user()).notificationAlert(favorite.notificationAlert()).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
+        return favoriteRepository.save(newFavorite);
+    }
+
+    public Favorite setNotification(Long id, @RequestBody Boolean isNotificationActive) {
+        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Favorite with id: " + id + " not found"));
+        favorite.setNotificationAlert(isNotificationActive);
+        return favorite;
+    }
+
+    public Favorite updateFavorite(Favorite favorite) {
+        return favoriteRepository.save(favorite);
+    }
 
 }

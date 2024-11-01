@@ -5,4 +5,4 @@ import lombok.NonNull;
 
 import java.time.LocalDateTime;
 
-public record FavoriteRequest(@NonNull Long idUser, @NonNull Long idContent, @NonNull LocalDateTime createdAt) {}
+public record FavoriteRequest(@NonNull User user, @NonNull Long idContent, @NonNull LocalDateTime createdAt, @NonNull boolean notificationAlert) {}

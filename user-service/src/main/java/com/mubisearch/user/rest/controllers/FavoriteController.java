@@ -1,6 +1,7 @@
 package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.Favorite;
+import com.mubisearch.user.rest.dto.FavoriteRequest;
 import com.mubisearch.user.rest.dto.FavoriteResponse;
 import com.mubisearch.user.services.FavoriteService;
 import jakarta.validation.constraints.NotNull;
@@ -9,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 @Log4j2
@@ -65,11 +68,22 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
-//    @PostMapping
-//    public ResponseEntity<Long> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
-//        log.info("Init createFavorite: {}", favoriteRequest);
-//        Long idFavorite = favoriteService.createFavorite(favoriteRequest).getId();
-//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(idFavorite).toUri();
-//        return ResponseEntity.created(uri).body(idFavorite);
-//    }
+    @PostMapping
+    public ResponseEntity<Long> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
+        log.info("Init createFavorite: {}", favoriteRequest);
+        Long idFavorite = favoriteService.createFavorite(favoriteRequest).getId();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{idFavorite}")
+                .buildAndExpand(idFavorite)
+                .toUri();
+        return ResponseEntity.created(uri).body(idFavorite);
+    }
+
+    @PutMapping("/{id}/notification")
+    public ResponseEntity<Favorite> setNotification(@PathVariable @NotNull Long id, @RequestParam Boolean isNotificationActive) {
+        log.info("Init setNotification");
+        Favorite favorite = favoriteService.setNotification(id, isNotificationActive);
+        Favorite favoriteUpdated = favoriteService.updateFavorite(favorite);
+        return ResponseEntity.ok(favoriteUpdated);
+    }
 }
