@@ -37,13 +37,12 @@ CREATE TABLE IF NOT EXISTS genre
     updated_at  DATETIME
 );
 
-CREATE TABLE IF NOT EXISTS content_genre
-(
+CREATE TABLE IF NOT EXISTS content_genre (
+
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_content BIGINT,
-    id_genre   BIGINT,
-    PRIMARY KEY (id_content, id_genre),
+    genre      VARCHAR(50) NOT NULL,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE,
-    FOREIGN KEY (id_genre) REFERENCES genre (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS crew_member
@@ -61,21 +60,21 @@ CREATE TABLE IF NOT EXISTS crew_member
 
 CREATE TABLE IF NOT EXISTS crew_assignment
 (
+    id             BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_crew_member BIGINT,
     id_content     BIGINT,
     role           VARCHAR(100),
-    PRIMARY KEY (id_crew_member, id_content),
     FOREIGN KEY (id_crew_member) REFERENCES crew_member (id) ON DELETE CASCADE,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS vote
 (
+    id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_user    BIGINT   NOT NULL,
     id_content BIGINT   NOT NULL,
     score      INTEGER  NOT NULL,
     created_at DATETIME NOT NULL,
-    PRIMARY KEY (id_user, id_content),
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE
 );
 

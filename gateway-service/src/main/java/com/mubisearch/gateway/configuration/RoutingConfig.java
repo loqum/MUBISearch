@@ -26,14 +26,20 @@ public class RoutingConfig {
     @Value("${app.gateway.controller.url.favorites}")
     private String favoriteControllerUrl;
 
+    @Value("${app.gateway.controller.url.series}")
+    private String seriesControllerUrl;
+
+    @Value("${app.gateway.controller.url.movies}")
+    private String moviesControllerUrl;
+
     @Value("${app.gateway.remote-servers.userservice}")
     private String userServiceUrl;
 
+    @Value("${app.gateway.remote-servers.contentservice}")
+    private String contentServiceUrl;
+
     @Value("${app.gateway.remote-servers.notificationservice:http://localhost:18083}")
     private String notificationServiceUrl;
-
-    @Value("${app.gateway.remote-servers.contentservice:http://localhost:18084}")
-    private String contentServiceUrl;
 
     @Bean
     public RouterFunction<ServerResponse> getHelloWorld() {
@@ -44,6 +50,12 @@ public class RoutingConfig {
                 .route(path(favoriteControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
                 .route(path(favoriteControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
                 .route(path(favoriteControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
+                .route(path(seriesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
+                .route(path(seriesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
+                .route(path(seriesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
+                .route(path(moviesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
+                .route(path(moviesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
+                .route(path(moviesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
                 .onError(Exception.class, this::handleException)
                 .build();
     }

@@ -19,7 +19,7 @@ public class ContentGenre {
     @ManyToOne
     @JoinColumn(name = "id_content")
     private Content content;
-    @ManyToOne
-    @JoinColumn(name = "id_genre")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "genre")
     private Genre genre;
 }
