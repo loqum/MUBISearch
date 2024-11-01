@@ -32,6 +32,9 @@ public class RoutingConfig {
     @Value("${app.gateway.controller.url.movies}")
     private String moviesControllerUrl;
 
+    @Value("${app.gateway.controller.url.notifications}")
+    private String notificationsControllerUrl;
+
     @Value("${app.gateway.remote-servers.userservice}")
     private String userServiceUrl;
 
@@ -56,6 +59,9 @@ public class RoutingConfig {
                 .route(path(moviesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
                 .route(path(moviesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
                 .route(path(moviesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
+                .route(path(notificationsControllerUrl).and(method(HttpMethod.GET)), http(notificationServiceUrl))
+                .route(path(notificationsControllerUrl).and(method(HttpMethod.PUT)), http(notificationServiceUrl))
+                .route(path(notificationsControllerUrl).and(method(HttpMethod.POST)), http(notificationServiceUrl))
                 .onError(Exception.class, this::handleException)
                 .build();
     }
