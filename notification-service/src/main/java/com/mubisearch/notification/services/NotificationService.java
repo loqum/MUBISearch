@@ -1,5 +1,6 @@
 package com.mubisearch.notification.services;
 
+import com.mubisearch.notification.controllers.dto.NotificationRequest;
 import com.mubisearch.notification.entities.Notification;
 import com.mubisearch.notification.entities.NotificationType;
 import com.mubisearch.notification.repositories.NotificationRepository;
@@ -29,13 +30,18 @@ public class NotificationService {
         return notificationRepository.findAll();
     }
 
-    public Notification createNotification(Long idUser, Long idContent, NotificationType type, String description) {
-        Notification notification = Notification.builder().idUser(idUser).idContent(idContent).notificationType(type).description(description).build();
-        if (!userExists(idUser)) {
-            throw new IllegalArgumentException("User with id " + idUser + " does not exist");
+    public Notification createNotification(NotificationRequest notificationRequest) {
+        Notification notification = Notification.builder()
+                .idUser(notificationRequest.idUser())
+                .idContent(notificationRequest.idContent())
+                .notificationType(notificationRequest.type())
+                .description(notificationRequest.description())
+                .build();
+        if (!userExists(notification.getIdUser())) {
+            throw new IllegalArgumentException("User with id " + notification.getIdUser() + " does not exist");
         }
-        if (!contentExists(idContent)) {
-            throw new IllegalArgumentException("Content with id " + idContent + " does not exist");
+        if (!contentExists(notification.getIdContent())) {
+            throw new IllegalArgumentException("Content with id " + notification.getIdContent() + " does not exist");
         }
         return notificationRepository.save(notification);
     }

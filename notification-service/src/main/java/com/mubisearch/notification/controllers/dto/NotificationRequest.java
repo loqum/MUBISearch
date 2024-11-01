@@ -1,16 +1,6 @@
 package com.mubisearch.notification.controllers.dto;
 
 import com.mubisearch.notification.entities.NotificationType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.NonNull;
 
-@Getter
-@AllArgsConstructor
-public class NotificationRequest {
-
-    Long idUser;
-    Long idContent;
-    NotificationType type;
-    String description;
-
-}
+public record NotificationRequest(@NonNull Long idUser, @NonNull Long idContent, @NonNull NotificationType type, @NonNull String description) {}

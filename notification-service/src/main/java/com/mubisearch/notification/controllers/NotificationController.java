@@ -31,7 +31,7 @@ public class NotificationController {
     @PostMapping
     public ResponseEntity<String> createNotification(@RequestBody NotificationRequest notificationRequest) {
         log.info("Init createNotification");
-        String idNotification = notificationService.createNotification(notificationRequest.getIdUser(), notificationRequest.getIdContent(), notificationRequest.getType(), notificationRequest.getDescription()).getId().toString();
+        String idNotification = notificationService.createNotification(notificationRequest).getId().toString();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(idNotification)
