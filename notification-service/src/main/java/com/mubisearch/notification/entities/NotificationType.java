@@ -1,24 +1,12 @@
 package com.mubisearch.notification.entities;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name = "notification_type")
-@Builder
-@Data
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationType {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @Column(name = "name", nullable = false)
-    private String name;
-    @Column(name = "description")
-    private String description;
+public enum NotificationType {
+    NEW_VOTE, NEW_REVIEW;
 }

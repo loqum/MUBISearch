@@ -23,9 +23,12 @@ public class Notification {
     private Long idUser;
     @Column(name = "id_content", nullable = false)
     private Long idContent;
-    @Column(name = "id_notification_type", nullable = false)
-    private Long idNotificationType;
-    @Column(name = "date_notification", nullable = false)
-    private Date dateNotification;
+    @Column(name = "notification_type")
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
+    @Column(name = "created_at", nullable = false)
+    private Date createdAt;
+    @Column(name = "description", nullable = false)
+    private String description;
 
 }

@@ -7,12 +7,7 @@ CREATE TABLE IF NOT EXISTS notification
     id_content           BIGINT   NOT NULL,
     id_notification_type BIGINT   NOT NULL,
     created_at           DATETIME NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS notification_type
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(255) NOT NULL,
-    description VARCHAR(255)
+	notification_type	 VARCHAR(50) NOT NULL,
+	description			 VARCHAR(255) NOT NULL
 );
 
