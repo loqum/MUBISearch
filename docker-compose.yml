@@ -41,6 +41,20 @@ services:
       - ./db-init/schema-notification.sql:/docker-entrypoint-initdb.d/init.sql
       - notification_data:/var/lib/mysql
 
+  web:
+    image: node:22
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    ports:
+      - 3000:3000
+    stdin_open: true
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+
   adminer:
     image: adminer
     platform: linux/amd64
