@@ -41,7 +41,7 @@ services:
       - ./db-init/schema-notification.sql:/docker-entrypoint-initdb.d/init.sql
       - notification_data:/var/lib/mysql
 
-  adminer:
+  adminerdb:
     image: adminer
     platform: linux/amd64
     restart: always
