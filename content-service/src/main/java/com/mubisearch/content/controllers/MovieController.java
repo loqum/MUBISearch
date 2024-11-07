@@ -1,5 +1,6 @@
 package com.mubisearch.content.controllers;
 
+import com.mubisearch.content.controllers.dto.BaseDto;
 import com.mubisearch.content.controllers.dto.MovieDto;
 import com.mubisearch.content.services.MovieService;
 import jakarta.validation.constraints.NotNull;
@@ -20,17 +21,24 @@ public class MovieController {
 
     @GetMapping("/title/{title}")
     @ResponseStatus(HttpStatus.OK)
-    public List<MovieDto> getMoviesByTitle(@PathVariable @NotNull String title) {
+    public BaseDto<MovieDto> getMoviesByTitle(@PathVariable @NotNull String title) {
         log.info("Init getMoviesByTitle");
-        return movieService.getMovies(title);
+        if (movieService.getMovies(title).isEmpty()) {
+            return new BaseDto<>(false, List.of());
+        } else {
+            return new BaseDto<>(true, movieService.getMovies(title));
+        }
     }
 
     @GetMapping("/discover")
     @ResponseStatus(HttpStatus.OK)
-    public List<MovieDto> getMoviesDiscover() {
+    public BaseDto<MovieDto> getMoviesDiscover() {
         log.info("Init getMoviesDiscover");
-        return movieService.getMoviesDiscover();
+        if (movieService.getMoviesDiscover().isEmpty()) {
+            return new BaseDto<>(false, List.of());
+        } else {
+            return new BaseDto<>(true, movieService.getMoviesDiscover());
+        }
     }
-
 
 }

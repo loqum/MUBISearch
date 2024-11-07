@@ -1,5 +1,6 @@
 package com.mubisearch.content.controllers;
 
+import com.mubisearch.content.controllers.dto.BaseDto;
 import com.mubisearch.content.controllers.dto.SeriesDto;
 import com.mubisearch.content.services.SeriesService;
 import jakarta.validation.constraints.NotNull;
@@ -20,16 +21,24 @@ public class SeriesController {
 
     @GetMapping("/title/{title}")
     @ResponseStatus(HttpStatus.OK)
-    public List<SeriesDto> getSeriesByTitle(@PathVariable @NotNull String title) {
+    public BaseDto<SeriesDto> getSeriesByTitle(@PathVariable @NotNull String title) {
         log.info("Init getSeriesByTitle");
-        return seriesService.getSeries(title);
+        if (seriesService.getSeries(title).isEmpty()) {
+            return new BaseDto<>(false, List.of());
+        } else {
+            return new BaseDto<>(true, seriesService.getSeries(title));
+        }
     }
 
     @GetMapping("/discover")
     @ResponseStatus(HttpStatus.OK)
-    public List<SeriesDto> getSeriesDiscover() {
+    public BaseDto<SeriesDto> getSeriesDiscover() {
         log.info("Init getSeriesDiscover");
-        return seriesService.getSeriesDiscover();
+        if (seriesService.getSeriesDiscover().isEmpty()) {
+            return new BaseDto<>(false, List.of());
+        } else {
+            return new BaseDto<>(true, seriesService.getSeriesDiscover());
+        }
     }
 
 }

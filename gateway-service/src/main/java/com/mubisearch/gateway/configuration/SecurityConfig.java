@@ -34,6 +34,13 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
+                .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(request -> {
+                    var cors = new org.springframework.web.cors.CorsConfiguration();
+                    cors.setAllowedOrigins(java.util.List.of("http://localhost:5173"));
+                    cors.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
+                    cors.setAllowedHeaders(java.util.List.of("*"));
+                    return cors;
+                }))
                 .authorizeHttpRequests(auth -> auth
 //                        .requestMatchers(HttpMethod.GET, "/users/**", "/favorites/**").authenticated()
 //                        .requestMatchers(HttpMethod.POST, "/users/**", "/favorites/**").hasRole("ADMIN")
