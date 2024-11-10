@@ -34,6 +34,7 @@ public class MovieController {
     @ResponseStatus(HttpStatus.OK)
     public BaseDto<MovieDto> getMoviesDiscover() {
         log.info("Init getMoviesDiscover");
+//        log.info("Fetching movies from TMDB API: {}", movieService.getMoviesDiscover());
         if (movieService.getMoviesDiscover().isEmpty()) {
             return new BaseDto<>(false, List.of());
         } else {

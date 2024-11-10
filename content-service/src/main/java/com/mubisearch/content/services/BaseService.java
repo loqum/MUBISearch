@@ -23,7 +23,7 @@ public abstract class BaseService<T> {
 
     protected <T> T fetchData(String urlTemplate, Map<String, String> params, TypeReference<T> typeReference) {
         String url = getUrl(urlTemplate, params);
-
+        log.debug("URL: {}", url);
         try {
             ResponseEntity<String> response = getHeaders(url);
 
@@ -32,6 +32,7 @@ public abstract class BaseService<T> {
                 return null;
             } else {
                 ObjectMapper mapper = new ObjectMapper();
+                log.info("Response from TMDB: {}", response.getBody());
                 return mapper.readValue(response.getBody(), typeReference);
             }
         } catch (Exception e) {

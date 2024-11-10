@@ -61,6 +61,13 @@ services:
     stdin_open: true
     tty: true
 
+  redis:
+    container_name: redis-cache
+    hostname: redis
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
 volumes:
   content_data:
   user_data:
