@@ -1,8 +1,7 @@
 import {useState} from "react";
-import MovieDetails from "../components/MovieDetails.jsx";
-import MovieList from "../components/MovieList.jsx";
 import {Container, Image} from "react-bootstrap";
 import logo from "../assets/images/logo.png";
+import MoviesCards from "../components/MoviesCards.jsx";
 
 function HomePage() {
     const [selectedMovie, setSelectedMovie] = useState();
@@ -11,14 +10,8 @@ function HomePage() {
         <>
             <Container>
                 <Image src={logo} alt="Logo MUBISearch" fluid rounded className="mb-4 mt-4" />
-                {selectedMovie && (
-                    <div>
-                        <h2>Película seleccionada</h2>
-                        <MovieDetails movie={selectedMovie}/>
-                    </div>
-                )}
-
-                <MovieList selectMovie={setSelectedMovie}/>
+                <h1>Última películas</h1>
+                <MoviesCards selectMovie={setSelectedMovie}/>
             </Container>
         </>
     )

@@ -1,11 +1,28 @@
-import {Container, Nav, NavDropdown, Button, Col, Navbar, Row, Form} from "react-bootstrap";
-import {Link} from "react-router-dom";
+import {Button, Col, Container, Form, Nav, Navbar, Row} from "react-bootstrap";
+import {Link, useNavigate} from "react-router-dom";
+import {useState} from "react";
+import FetchMovies from "../services/FetchMovies.jsx";
 
 function NavigationBar() {
 
-    const handleSearchSubmit = (event) => {
+    const [movies, setMovies] = useState([]);
+    const navigateToList = useNavigate();
+
+    const handleSearchSubmit = async (event) => {
         event.preventDefault();
         const query = event.target[0].value;
+
+        try {
+            let response = await FetchMovies(query);
+            response = response.filter((movie) => movie.poster_path !== null);
+            console.log("Response:", response);
+            setMovies(response);
+            console.log("Movies:", movies);
+            navigateToList(`/movies`, {state: {response}});
+        } catch (e) {
+            console.error("Error fetching movies:", e);
+        }
+
         if (query) {
             console.log(query);
         }
@@ -19,18 +36,6 @@ function NavigationBar() {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/">Inicio</Nav.Link>
-                {/*        <Nav.Link href="#link">Link</Nav.Link>*/}
-                {/*        <NavDropdown title="Dropdown" id="basic-nav-dropdown">*/}
-                {/*            <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>*/}
-                {/*            <NavDropdown.Item href="#action/3.2">*/}
-                {/*                Another action*/}
-                {/*            </NavDropdown.Item>*/}
-                {/*            <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>*/}
-                {/*            <NavDropdown.Divider />*/}
-                {/*            <NavDropdown.Item href="#action/3.4">*/}
-                {/*                Separated link*/}
-                {/*            </NavDropdown.Item>*/}
-                {/*        </NavDropdown>*/}
                     </Nav>
                 </Navbar.Collapse>
             </Container>

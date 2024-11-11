@@ -7,7 +7,7 @@ function SearchPage() {
                 <Row className="mb-3">
                     <Form.Group as={Col} controlId="formGridEmail">
                         <Form.Label>Texto</Form.Label>
-                        <Form.Control type="email"/>
+                        <Form.Control type="text"/>
                     </Form.Group>
                 </Row>
 
