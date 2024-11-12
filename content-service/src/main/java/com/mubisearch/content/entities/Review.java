@@ -27,4 +27,10 @@ public class Review {
     private String text;
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    public Review(Long idUser, Content content, String text) {
+        this.idUser = idUser;
+        this.content = content;
+        this.text = text;
+    }
 }

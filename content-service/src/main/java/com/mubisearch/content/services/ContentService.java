@@ -28,8 +28,6 @@ public class ContentService {
     public Content createContent(ContentRequest contentRequest) {
         Content content = Content.builder()
                 .idExternal(contentRequest.idExternal())
-                .createdAt(contentRequest.createdAt())
-                .updatedAt(contentRequest.updatedAt())
                 .title(contentRequest.title())
                 .plot(contentRequest.plot())
                 .posterPath(contentRequest.posterPath()).build();

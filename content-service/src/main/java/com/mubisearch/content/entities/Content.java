@@ -29,8 +29,6 @@ public class Content extends ExternalEntity {
     @OneToMany(mappedBy = "content")
     private List<ContentGenre> genres = new ArrayList<>();
     @OneToMany(mappedBy = "content")
-    private List<CrewAssignment> crewAssignments = new ArrayList<>();
-    @OneToMany(mappedBy = "content")
     private List<Review> reviews = new ArrayList<>();
     @OneToMany(mappedBy = "content")
     private List<Vote> votes = new ArrayList<>();

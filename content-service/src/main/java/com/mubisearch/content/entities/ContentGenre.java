@@ -22,4 +22,9 @@ public class ContentGenre {
     @Enumerated(EnumType.STRING)
     @Column(name = "genre")
     private Genre genre;
+
+    public ContentGenre(Content content, Genre genre) {
+        this.content = content;
+        this.genre = genre;
+    }
 }

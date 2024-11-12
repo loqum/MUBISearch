@@ -2,6 +2,7 @@ package com.mubisearch.content.controllers;
 
 import com.mubisearch.content.controllers.dto.ContentRequest;
 import com.mubisearch.content.controllers.dto.ContentResponse;
+import com.mubisearch.content.controllers.dto.MovieDto;
 import com.mubisearch.content.entities.Content;
 import com.mubisearch.content.services.ContentService;
 import jakarta.validation.constraints.NotNull;

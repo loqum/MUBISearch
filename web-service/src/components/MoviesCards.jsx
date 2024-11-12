@@ -24,7 +24,7 @@ function MoviesCards(props) {
     }, [setMovies]);
 
     const movieCards = movies.map((movie) => {
-        return <MovieCard key={movie.id} movie={movie} selectMovie={props.selectMovie} imageSize="original" />
+        return <MovieCard key={movie.id} movie={movie} imageSize="original" />
     });
 
     return (

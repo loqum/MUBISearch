@@ -2,9 +2,13 @@ package com.mubisearch.content.services;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.mubisearch.content.controllers.dto.MovieDto;
+import com.mubisearch.content.controllers.dto.MovieRequest;
 import com.mubisearch.content.controllers.dto.SearchResponse;
-import com.mubisearch.content.entities.Movie;
+import com.mubisearch.content.entities.*;
+import com.mubisearch.content.repositories.ContentGenreRepository;
 import com.mubisearch.content.repositories.MovieRepository;
+import com.mubisearch.content.repositories.ReviewRepository;
+import com.mubisearch.content.repositories.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +29,15 @@ public class MovieService extends BaseService<MovieDto> {
 
     @Autowired
     private MovieRepository movieRepository;
+
+    @Autowired
+    private ContentGenreRepository contentGenreRepository;
+
+    @Autowired
+    private ReviewRepository reviewRepository;
+
+    @Autowired
+    private VoteRepository voteRepository;
 
     @Value("${tmdb.api.url.search.movie.title}")
     private String apiUrl;
@@ -54,24 +68,53 @@ public class MovieService extends BaseService<MovieDto> {
         return List.of();
     }
 
-    @Cacheable(value = "movie", key = "#id")
-    public Optional<Movie> findById(Long id) {
-        return movieRepository.findById(id);
+    @Cacheable(value = "movie", key = "#idExternal")
+    public Optional<Movie> findByIdExternal(Long idExternal) {
+        return movieRepository.findByIdExternal(idExternal);
     }
 
-    public Movie create(MovieDto movieDto) {
+    @Transactional
+    public Movie createMovie(Long idUser, MovieRequest movieRequest) {
         Movie movie = Movie.builder()
-                .idExternal(movieDto.getIdExternal())
-                .title(movieDto.getTitle())
-                .plot(movieDto.getPlot())
-                .posterPath(movieDto.getPosterPath())
+                .idExternal(movieRequest.idExternal())
+                .title(movieRequest.title())
+                .plot(movieRequest.plot())
+                .posterPath(movieRequest.posterPath())
+                .releaseDate(movieRequest.releaseDate())
+                .originalTitle(movieRequest.originalTitle())
                 .build();
-        return movieRepository.save(movie);
+        movie = movieRepository.save(movie);
+
+        Movie finalMovie = movie;
+
+        if (movieRequest.genres() != null && !movieRequest.genres().isEmpty()) {
+            List<ContentGenre> contentGenres = movieRequest.genres().stream()
+                    .map(genre -> new ContentGenre(finalMovie, genre.getGenre()))
+                    .toList();
+            contentGenreRepository.saveAll(contentGenres);
+        }
+
+        if (movieRequest.votes() != null && !movieRequest.votes().isEmpty()) {
+            List<Vote> votes = movieRequest.votes().stream()
+                    .map(vote -> new Vote(idUser, finalMovie, vote.getScore()))
+                    .toList();
+            voteRepository.saveAll(votes);
+        }
+
+        if (movieRequest.reviews() != null && !movieRequest.reviews().isEmpty()) {
+            List<Review> reviews = movieRequest.reviews().stream()
+                    .map(review -> new Review(idUser, finalMovie, review.getText()))
+                    .toList();
+            reviewRepository.saveAll(reviews);
+        }
+
+
+        return null;
     }
 
-    @CacheEvict(value = "movie", key = "#id")
-    public Movie update(Long id, Movie movie) {
-        Movie entity = this.findById(id).orElse(null);
+    @CacheEvict(value = "movie", key = "#idExternal")
+    public Movie updateMovie(Long idExternal, Movie movie) {
+        Movie entity = this.findByIdExternal(idExternal).orElse(null);
 //        entity.set
         if (entity == null) {
             return null;

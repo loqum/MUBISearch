@@ -28,4 +28,10 @@ public class Vote {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    public Vote(Long idUser, Content content, int score) {
+        this.idUser = idUser;
+        this.content = content;
+        this.score = score;
+    }
+
 }
