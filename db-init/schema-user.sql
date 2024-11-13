@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS favorite
     id                 BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_user            BIGINT   NOT NULL,
     id_content         BIGINT   NOT NULL,
-    date_favorite      DATETIME NOT NULL,
+    created_at         DATETIME NOT NULL,
     notification_alert BOOLEAN DEFAULT FALSE,
     FOREIGN KEY (id_user) REFERENCES user (id) ON DELETE CASCADE
 );

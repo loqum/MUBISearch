@@ -28,43 +28,11 @@ CREATE TABLE IF NOT EXISTS series
     FOREIGN KEY (id) REFERENCES content (id)
 );
 
-CREATE TABLE IF NOT EXISTS genre
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(100) NOT NULL,
-    id_external BIGINT,
-    created_at  DATETIME,
-    updated_at  DATETIME
-);
-
 CREATE TABLE IF NOT EXISTS content_genre (
 
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_content BIGINT,
     genre      VARCHAR(50) NOT NULL,
-    FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE,
-);
-
-CREATE TABLE IF NOT EXISTS crew_member
-(
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
-    name        VARCHAR(255) NOT NULL,
-    known_for   VARCHAR(100),
-    role        VARCHAR(100),
-    image       VARCHAR(255),
-    biography   VARCHAR(1000),
-    id_external BIGINT,
-    created_at  DATETIME,
-    updated_at  DATETIME
-);
-
-CREATE TABLE IF NOT EXISTS crew_assignment
-(
-    id             BIGINT PRIMARY KEY AUTO_INCREMENT,
-    id_crew_member BIGINT,
-    id_content     BIGINT,
-    role           VARCHAR(100),
-    FOREIGN KEY (id_crew_member) REFERENCES crew_member (id) ON DELETE CASCADE,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE
 );
 
