@@ -1,22 +1,23 @@
 import {Card} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
-import FetchMoviesByIdExternal from "../services/FetchMovieByIdExternal.jsx";
 import {useEffect, useState} from "react";
+import FetchMoviesByIdExternal from "../services/FetchMovieByIdExternal.jsx";
 
 function MovieDetails(props) {
 
-    const {id} = useParams();
-    const movieFromNavigate = useLocation().state.movie; // Recuperar película desde la otra pantalla mediante navegación
+    const { externalId } = useParams(); //Recuperar el id de la película de la URL
+    const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la otra pantalla mediante navegación
     const {urlImage, formatDate} = props;
+
     const [movie, setMovie] = useState(null);
 
     const getMovie = async () => {
-        console.log("Movie id:", id);
+        console.log("Movie id:", externalId);
         try {
-            const response = await FetchMoviesByIdExternal(id);
+            const response = await FetchMoviesByIdExternal(externalId);
             console.log("Response:", response);
-            if (response && response.id) {
+            if (response && response.externalId) {
                 setMovie(response);
             } else {
                 setMovie(movieFromNavigate);
@@ -28,11 +29,19 @@ function MovieDetails(props) {
     };
 
     useEffect(() => {
-
+        console.log("externalId:", externalId);
+        console.log("urlImage: ", urlImage);
+        console.log("formatDate: ", formatDate);
+        console.log("Movie before:", movie);
         if (!movie) {
             getMovie();
+            console.log("Movie after:", movie);
         }
-    }, [id]);
+    }, [externalId]);
+
+    if (!movie) {
+        return <div>Cargando película...</div>;
+    }
 
     return (
         <Card className="text-center">

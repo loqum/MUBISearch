@@ -47,7 +47,7 @@ public class MovieController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<MovieResponse> getMoviesByIdExternal(@PathVariable @NotNull Long idExternal) {
         log.info("Init getMoviesByIdExternal");
-        return movieService.findByIdExternal(idExternal).map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.notFound().build());
+        return movieService.findByIdExternal(idExternal).map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.noContent().build());
     }
 
     @PostMapping
