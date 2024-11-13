@@ -50,7 +50,7 @@ public class MovieController {
         return movieService.findByIdExternal(idExternal).map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.noContent().build());
     }
 
-    @PostMapping
+    @PostMapping("/user/{idUser}")
     public ResponseEntity<String> createMovie(@PathVariable("idUser") @NotNull Long idUser, @RequestBody MovieRequest movieRequest) {
         log.info("Init createContent");
         String idContent = movieService.createMovie(idUser, movieRequest).getId().toString();

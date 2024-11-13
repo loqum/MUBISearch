@@ -1,4 +1,4 @@
-import {Card} from "react-bootstrap";
+import {Button, Card, Container, Form, InputGroup} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
@@ -6,7 +6,7 @@ import FetchMoviesByIdExternal from "../services/FetchMovieByIdExternal.jsx";
 
 function MovieDetails(props) {
 
-    const { externalId } = useParams(); //Recuperar el id de la película de la URL
+    const {externalId} = useParams(); //Recuperar el id de la película de la URL
     const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la otra pantalla mediante navegación
     const {urlImage, formatDate} = props;
 
@@ -29,13 +29,8 @@ function MovieDetails(props) {
     };
 
     useEffect(() => {
-        console.log("externalId:", externalId);
-        console.log("urlImage: ", urlImage);
-        console.log("formatDate: ", formatDate);
-        console.log("Movie before:", movie);
         if (!movie) {
             getMovie();
-            console.log("Movie after:", movie);
         }
     }, [externalId]);
 
@@ -44,19 +39,39 @@ function MovieDetails(props) {
     }
 
     return (
-        <Card className="text-center">
-            <Card.Img variant="top" src={`${urlImage}${movie.poster_path}`} className="img-fluid"
-                      style={{maxHeight: '600px', objectFit: 'cover'}}/>
-            <Card.Header>Película</Card.Header>
-            <Card.Body>
-                <Card.Title>{movie.title}</Card.Title>
-                <Card.Text>{movie.overview}</Card.Text>
-                <Card.Text>
-                    <strong>Géneros: </strong>{Object.values(movie.genres).join(', ')}
-                </Card.Text>
-                <Card.Text><strong>Fecha de estreno: </strong>{formatDate(movie.release_date)}</Card.Text>
-            </Card.Body>
-        </Card>
+        <>
+            <Card>
+                <Card.Img variant="top" src={`${urlImage}${movie.poster_path}`} className="img-fluid"
+                          style={{maxHeight: '600px', objectFit: 'cover'}}/>
+                <Card.Header>Película</Card.Header>
+                <Card.Body>
+                    <Card.Title>{movie.title}</Card.Title>
+                    <Card.Text>{movie.overview}</Card.Text>
+                    <Card.Text>
+                        <strong>Géneros: </strong>{Object.values(movie.genres).join(', ')}
+                    </Card.Text>
+                    <Card.Text><strong>Fecha de estreno: </strong>{formatDate(movie.release_date)}</Card.Text>
+                </Card.Body>
+            </Card>
+
+            <h3 className="mt-4">Añadir tu reseña</h3>
+            <Form >
+                <InputGroup>
+                    <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
+                    <Form.Control
+                        as="textarea"
+                        // value={newReview}
+                        // onChange={(e) => setNewReview(e.target.value)}
+                        placeholder="Comparte tu opinión sobre esta película o serie"
+                        aria-label="Campo para escribir una nueva reseña"
+                    />
+                </InputGroup>
+                <Button type="submit" variant="primary" className="mt-2">
+                    Enviar reseña
+                </Button>
+            </Form>
+        </>
+
     );
 }
 

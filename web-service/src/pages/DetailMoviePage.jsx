@@ -1,11 +1,13 @@
 import MovieDetails from "../components/MovieDetails.jsx";
-import {useParams} from "react-router-dom";
+import {Container} from "react-bootstrap";
 
 function DetailMoviePage() {
 
 
     return (
-        <MovieDetails />
+        <Container className="mt-5 mb-5">
+            <MovieDetails/>
+        </Container>
     )
 }
 
