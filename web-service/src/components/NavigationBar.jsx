@@ -56,7 +56,7 @@ function NavigationBar() {
             </Form>
 
             <Button variant="outline-primary">Login</Button>
-            <Button variant="outline-primary">Registrarse</Button>
+            <Button variant="outline-primary" as={Link} to="/register">Registrarse</Button>
 
         </Navbar>
     );

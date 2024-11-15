@@ -1,6 +1,6 @@
 import MovieCard from "./MovieCard.jsx";
 import {useContext, useEffect} from "react";
-import './MovieList.css';
+import '../assets/css/MovieList.css';
 import {MoviesContext} from "../context/movies.context.jsx";
 import FetchDiscoverMovies from "../services/FetchDiscoverMovies.jsx";
 

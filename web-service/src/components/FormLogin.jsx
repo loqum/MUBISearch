@@ -1,4 +1,4 @@
-function Login(props) {
+function FormLogin(props) {
 
     const user = {
         username: "",
@@ -38,4 +38,4 @@ function Login(props) {
     );
 }
 
-export default Login;
+export default FormLogin;

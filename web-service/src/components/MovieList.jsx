@@ -1,5 +1,5 @@
 import MovieCard from "./MovieCard.jsx";
-import './MovieList.css';
+import '../assets/css/MovieList.css';
 import {useLocation} from "react-router-dom";
 import {Container} from "react-bootstrap";
 
