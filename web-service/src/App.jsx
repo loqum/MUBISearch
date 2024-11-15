@@ -19,7 +19,8 @@ function App() {
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
-                <Route path="*" element={<ErrorPage/>}/>
+                <Route path="/error" element={<ErrorPage />}/>
+                <Route path="*" element={<ErrorPage />}/>
             </Routes>
         </MainLayout>
     );

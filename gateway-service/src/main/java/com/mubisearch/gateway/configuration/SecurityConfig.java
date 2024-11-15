@@ -39,6 +39,7 @@ public class SecurityConfig {
                     cors.setAllowedOrigins(java.util.List.of("http://localhost:5173"));
                     cors.setAllowedMethods(java.util.List.of("GET", "POST", "PUT", "DELETE"));
                     cors.setAllowedHeaders(java.util.List.of("*"));
+                    cors.setAllowCredentials(true);
                     return cors;
                 }))
                 .authorizeHttpRequests(auth -> auth
@@ -49,7 +50,7 @@ public class SecurityConfig {
 //                        .anyRequest().authenticated()
                                 .anyRequest().permitAll()
                 )
-//                .httpBasic(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
 //                .exceptionHandling( exceptionHandling ->
 //                        exceptionHandling
 //                                .authenticationEntryPoint(customBasicAuthenticationEntryPoint)

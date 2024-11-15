@@ -1,12 +1,15 @@
 import {Button, Col, Container, Form, Nav, Navbar, Row} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import FetchMovies from "../services/FetchMovies.jsx";
+import {UserContext} from "../context/user.context.jsx";
 
 function NavigationBar() {
 
     const [movies, setMovies] = useState([]);
     const navigateToList = useNavigate();
+
+    const {user, setUser} = useContext(UserContext);
 
     const handleSearchSubmit = async (event) => {
         event.preventDefault();
@@ -32,7 +35,7 @@ function NavigationBar() {
         <Navbar className="bg-body-tertiary justify-content-between">
             <Container>
                 <Navbar.Brand href="/">MUBISearch</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
                         <Nav.Link href="/">Inicio</Nav.Link>
@@ -45,7 +48,7 @@ function NavigationBar() {
                     <Col xs="auto">
                         <Form.Control
                             type="text"
-                            placeholder="Buscar"
+                            placeholder="Buscar película..."
                             className=" mr-sm-2"
                         />
                     </Col>
@@ -55,9 +58,19 @@ function NavigationBar() {
                 </Row>
             </Form>
 
-            <Button variant="outline-primary">Login</Button>
-            <Button variant="outline-primary" as={Link} to="/register">Registrarse</Button>
-
+            {!user.isLoggedIn ? (
+                <>
+                    <Button className="me-auto" variant="outline-primary" as={Link} to="/login">Iniciar sesión</Button>
+                </>
+            ) : (
+                <>
+                    <Navbar.Collapse className="justify-content-end">
+                        <Navbar.Text>
+                            Ha iniciado sesión como: <a href="/me">{user.username}</a>
+                        </Navbar.Text>
+                    </Navbar.Collapse>
+                </>
+            )}
         </Navbar>
     );
 
