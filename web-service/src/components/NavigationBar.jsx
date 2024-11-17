@@ -9,7 +9,7 @@ function NavigationBar() {
     const [movies, setMovies] = useState([]);
     const navigateToList = useNavigate();
 
-    const {user, setUser} = useContext(UserContext);
+    const {user, setUser, logoutUser} = useContext(UserContext);
 
     const handleSearchSubmit = async (event) => {
         event.preventDefault();
@@ -32,45 +32,41 @@ function NavigationBar() {
 
     }
     return (
-        <Navbar className="bg-body-tertiary justify-content-between">
-            <Container>
-                <Navbar.Brand href="/">MUBISearch</Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav"/>
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="me-auto">
-                        <Nav.Link href="/">Inicio</Nav.Link>
-                    </Nav>
-                </Navbar.Collapse>
+        <Navbar bg="light" expand="lg" className="px-4">
+            <Container fluid>
+                <Navbar.Brand href="/" className="me-auto">
+                    MUBISearch
+                </Navbar.Brand>
+
+                <Form className="" onSubmit={handleSearchSubmit}>
+                    <Row>
+                        <Col xs={6}>
+                            <Form.Control
+                                type="text"
+                                placeholder="Buscar película..."
+                                className="me-2"
+                            />
+                        </Col>
+                        <Col>
+                            <Button variant="outline-secondary" as={Link} to="/search">
+                                Búsqueda avanzada
+                            </Button>
+                        </Col>
+                    </Row>
+                </Form>
+
+
+                {!user.isLoggedIn ? (
+                    <Button variant="outline-primary" as={Link} to="/login">
+                        Iniciar sesión
+                    </Button>
+                ) : (
+                    <Navbar.Text className="ms-auto">
+                        <a href="/me">{user.name}</a> /<Button variant="link" onClick={logoutUser}>Cerrar
+                        Sesión</Button>
+                    </Navbar.Text>
+                )}
             </Container>
-
-            <Form className="d-flex ms-auto me-3" onSubmit={handleSearchSubmit}>
-                <Row>
-                    <Col xs="auto">
-                        <Form.Control
-                            type="text"
-                            placeholder="Buscar película..."
-                            className=" mr-sm-2"
-                        />
-                    </Col>
-                    <Col xs="auto">
-                        <Button as={Link} to="/search">Búsqueda avanzada</Button>
-                    </Col>
-                </Row>
-            </Form>
-
-            {!user.isLoggedIn ? (
-                <>
-                    <Button className="me-auto" variant="outline-primary" as={Link} to="/login">Iniciar sesión</Button>
-                </>
-            ) : (
-                <>
-                    <Navbar.Collapse className="justify-content-end">
-                        <Navbar.Text>
-                            Ha iniciado sesión como: <a href="/me">{user.username}</a>
-                        </Navbar.Text>
-                    </Navbar.Collapse>
-                </>
-            )}
         </Navbar>
     );
 

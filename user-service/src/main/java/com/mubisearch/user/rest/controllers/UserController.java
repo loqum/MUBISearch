@@ -7,6 +7,7 @@ import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Log4j2
@@ -54,9 +56,15 @@ public class UserController {
     @PostMapping
     public ResponseEntity<Long> createUser(@RequestBody UserRequest userRequest) {
         log.info("Init createUser: {}", userRequest);
-        Long idUser = userService.createUser(userRequest).getId();
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(idUser).toUri();
-        return ResponseEntity.created(uri).body(idUser);
+        try {
+            Long idUser = userService.createUser(userRequest).getId();
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(idUser).toUri();
+            return ResponseEntity.created(uri).body(idUser);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Error creating user. User name is duplicated: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
+
     }
 
 }
