@@ -8,6 +8,7 @@ import SearchPage from "./pages/SearchPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import MovieDetailsPage from "./pages/DetailMoviePage.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
 
 function App() {
     return (
@@ -19,6 +20,7 @@ function App() {
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
+                <Route path="/profile" element={<ProfilePage />}/>
                 <Route path="/error" element={<ErrorPage />}/>
                 <Route path="*" element={<ErrorPage />}/>
             </Routes>

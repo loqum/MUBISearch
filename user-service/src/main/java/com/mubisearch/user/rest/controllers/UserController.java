@@ -10,12 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 
 @Log4j2
@@ -53,9 +54,9 @@ public class UserController {
         return ResponseEntity.ok().body(user);
     }
 
-    @PostMapping
-    public ResponseEntity<Long> createUser(@RequestBody UserRequest userRequest) {
-        log.info("Init createUser: {}", userRequest);
+    @PostMapping("/register")
+    public ResponseEntity<Long> register(@RequestBody UserRequest userRequest) {
+        log.info("Init registerUser: {}", userRequest);
         try {
             Long idUser = userService.createUser(userRequest).getId();
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(idUser).toUri();
@@ -64,7 +65,22 @@ public class UserController {
             log.error("Error creating user. User name is duplicated: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
+    }
 
+    @PostMapping("/login")
+    public ResponseEntity<UserResponse> login(@RequestBody UserRequest userRequest) {
+        log.info("Init loginUser: {}", userRequest);
+        try {
+            UserResponse userResponse = userService.validateUser(userRequest);
+            return ResponseEntity.ok(userResponse);
+        } catch (UsernameNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        } catch (BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        } catch (Exception e) {
+            log.error("Error validating user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 }

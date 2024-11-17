@@ -62,7 +62,7 @@ function NavigationBar() {
                     </Button>
                 ) : (
                     <Navbar.Text className="ms-auto">
-                        <a href="/me">{user.name}</a> /<Button variant="link" onClick={logoutUser}>Cerrar
+                        <a href="/profile">{user.name}</a> /<Button variant="link" onClick={logoutUser}>Cerrar
                         Sesión</Button>
                     </Navbar.Text>
                 )}

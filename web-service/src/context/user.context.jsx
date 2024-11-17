@@ -7,11 +7,19 @@ const UserContext = createContext();
 function UserProviderWrapper(props) {
 
     const navigate = useNavigate();
+    const [error, setError] = useState(null);
+
+    const formatDate = (date) => {
+        return new Intl.DateTimeFormat('es-ES').format(new Date(date));
+    }
 
     const initialUser = JSON.parse(sessionStorage.getItem("user")) || {
         name: "",
         fullName: "",
         password: "",
+        userRole: "",
+        favorites: [],
+        createdAt: "",
         isLoggedIn: false
     };
 
@@ -22,7 +30,7 @@ function UserProviderWrapper(props) {
             if (user) {
                 const response = await axios({
                     method: 'post',
-                    url: 'http://localhost:8080/api/v1/users',
+                    url: 'http://localhost:8080/api/v1/users/register',
                     data: user,
                     headers: {
                         "Content-Type": "application/json",
@@ -42,12 +50,19 @@ function UserProviderWrapper(props) {
         }
     };
 
-    const loginUser = async (user) => {
+    const login = async (user) => {
         try {
             if (user) {
-                const response = await axios.post(`http://localhost:8080/api/v1/users/login/`, user);
+                const response = await axios( {
+                    method: 'post',
+                    url: 'http://localhost:8080/api/v1/users/login',
+                    data: user,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
                 console.log("loginUser response:", response);
-                return response.data.data;
+                return response.data;
             }
         } catch (error) {
             console.error("Error login user:", error);
@@ -56,13 +71,21 @@ function UserProviderWrapper(props) {
     };
 
     const logoutUser = () => {
-        setUser({name: "", fullName: "", password: "", isLoggedIn: false});
+        setUser({
+            id: null,
+            name: "",
+            fullName: "",
+            password: "",
+            userRole: "",
+            favorites: [],
+            isLoggedIn: false,
+        });
         sessionStorage.removeItem("user");
         navigate("/");
     }
 
     return (
-        <UserContext.Provider value={{user, setUser, loginUser, createUser, logoutUser}}>
+        <UserContext.Provider value={{user, setUser, login, createUser, logoutUser, error, setError, formatDate}}>
             {props.children}
         </UserContext.Provider>
     );

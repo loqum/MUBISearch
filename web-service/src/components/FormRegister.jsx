@@ -6,8 +6,7 @@ import {useNavigate} from "react-router-dom";
 function FormRegister() {
 
     const [validated, setValidated] = useState(false);
-    const [error, setError] = useState(null);
-    const {user, setUser, createUser} = useContext(UserContext);
+    const {user, setUser, createUser, error, setError} = useContext(UserContext);
     const navigate = useNavigate();
 
     const setName = (e) => {
@@ -68,7 +67,7 @@ function FormRegister() {
                     <Form.Label className="fw-bold">Nombre de usuario</Form.Label>
                     <Form.Control required type="text" onChange={setName}/>
                 </Form.Group>
-                <Form.Group className="mb-3" controlId="validationFullname">
+                <Form.Group className="mb-3" controlId="validationFullName">
                     <Form.Label className="fw-bold">Nombre completo</Form.Label>
                     <Form.Control required type="text" onChange={setFullName}/>
                 </Form.Group>
