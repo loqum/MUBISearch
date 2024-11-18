@@ -22,7 +22,7 @@ function MoviesProviderWrapper(props) {
             if (favorite) {
                 const response = await axios({
                     method: 'post',
-                    url: 'http://localhost:8080/api/v1/favorites',
+                    url: 'http://localhost:8080/api/v1/favorites/create',
                     data: favorite,
                     headers: {
                         "Content-Type": "application/json",

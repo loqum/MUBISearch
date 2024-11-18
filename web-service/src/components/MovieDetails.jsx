@@ -54,18 +54,36 @@ function MovieDetails(props) {
         }
     }, [externalId]);
 
-    const handleFavoriteToggle = (isFavorite) => {
+    const handleFavoriteToggle = async (isFavorite) => {
         console.log(`El usuario marcó como favorito: ${isFavorite}`);
         if (isFavorite) {
             setShowSuccessAlert(true);
             setShowWarningAlert(false);
             setTimeout(() => setShowSuccessAlert(false), 3000);
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
 
+            try {
+                console.log("User:", user);
+                console.log("idContent:", movie.id);
+                await createFavorite({
+                    idUser: user.id,
+                    idContent: movie.id,
+                });
+            } catch (e) {
+                console.error("Error creating favorite:", e);
+            }
 
         } else {
             setShowWarningAlert(true);
             setShowSuccessAlert(false);
             setTimeout(() => setShowWarningAlert(false), 3000);
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth",
+            });
         }
     };
 

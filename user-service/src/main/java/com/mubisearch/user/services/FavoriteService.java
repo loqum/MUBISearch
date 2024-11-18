@@ -1,6 +1,7 @@
 package com.mubisearch.user.services;
 
 import com.mubisearch.user.entities.Favorite;
+import com.mubisearch.user.entities.User;
 import com.mubisearch.user.repositories.FavoriteRepository;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ public class FavoriteService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+    @Autowired
+    private UserService userService;
 
     public List<Favorite> findAll() {
         return favoriteRepository.findAll();
@@ -38,7 +41,8 @@ public class FavoriteService {
     }
 
     public Favorite createFavorite(FavoriteRequest favorite) {
-        Favorite newFavorite = Favorite.builder().user(favorite.user()).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
+        User user = userService.findById(favorite.idUser()).orElseThrow(() -> new IllegalArgumentException("User with id: " + favorite.idUser() + " not found"));
+        Favorite newFavorite = Favorite.builder().user(user).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
         return favoriteRepository.save(newFavorite);
     }
 
