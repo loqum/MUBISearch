@@ -23,7 +23,7 @@ public class MovieResponse  {
     private String title;
     private String plot;
     private String posterPath;
-    private List<ContentGenre> genres = new ArrayList<>();
+    private List<String> genres = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
     private List<Vote> votes = new ArrayList<>();
     private String originalTitle;
@@ -40,7 +40,7 @@ public class MovieResponse  {
                 .title(movie.getTitle())
                 .plot(movie.getPlot())
                 .posterPath(movie.getPosterPath())
-                .genres(movie.getGenres())
+                .genres(movie.getGenres().stream().map(x -> x.getGenre().getName()).toList())
                 .reviews(movie.getReviews())
                 .votes(movie.getVotes())
                 .build();

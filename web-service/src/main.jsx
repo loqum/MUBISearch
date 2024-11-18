@@ -8,13 +8,11 @@ import {BrowserRouter} from "react-router-dom";
 import {UserProviderWrapper} from "./context/user.context.jsx";
 
 createRoot(document.getElementById('root')).render(
-    <StrictMode>
-        <BrowserRouter>
-            <UserProviderWrapper>
-                <MoviesProviderWrapper>
-                    <App/>
-                </MoviesProviderWrapper>
-            </UserProviderWrapper>
-        </BrowserRouter>
-    </StrictMode>,
+    <BrowserRouter>
+        <UserProviderWrapper>
+            <MoviesProviderWrapper>
+                <App/>
+            </MoviesProviderWrapper>
+        </UserProviderWrapper>
+    </BrowserRouter>
 )

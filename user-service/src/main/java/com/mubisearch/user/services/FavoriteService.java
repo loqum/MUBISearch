@@ -38,7 +38,7 @@ public class FavoriteService {
     }
 
     public Favorite createFavorite(FavoriteRequest favorite) {
-        Favorite newFavorite = Favorite.builder().user(favorite.user()).notificationAlert(favorite.notificationAlert()).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
+        Favorite newFavorite = Favorite.builder().user(favorite.user()).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
         return favoriteRepository.save(newFavorite);
     }
 

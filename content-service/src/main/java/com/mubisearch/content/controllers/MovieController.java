@@ -1,6 +1,10 @@
 package com.mubisearch.content.controllers;
 
-import com.mubisearch.content.controllers.dto.*;
+import com.mubisearch.content.controllers.dto.BaseDto;
+import com.mubisearch.content.controllers.dto.MovieDto;
+import com.mubisearch.content.controllers.dto.MovieRequest;
+import com.mubisearch.content.controllers.dto.MovieResponse;
+import com.mubisearch.content.entities.Movie;
 import com.mubisearch.content.services.MovieService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
@@ -12,6 +16,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -47,18 +52,30 @@ public class MovieController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<MovieResponse> getMoviesByIdExternal(@PathVariable @NotNull Long idExternal) {
         log.info("Init getMoviesByIdExternal");
-        return movieService.findByIdExternal(idExternal).map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.noContent().build());
+        Optional<Movie> movie = movieService.findByIdExternal(idExternal);
+        return movie.map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.noContent().build());
     }
 
-    @PostMapping("/user/{idUser}")
-    public ResponseEntity<String> createMovie(@PathVariable("idUser") @NotNull Long idUser, @RequestBody MovieRequest movieRequest) {
+    @PostMapping("/create")
+    public ResponseEntity<String> createMovie(@RequestBody MovieRequest movieRequest) {
         log.info("Init createContent");
-        String idContent = movieService.createMovie(idUser, movieRequest).getId().toString();
+        String idContent = movieService.createMovie(movieRequest).getId().toString();
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{idContent}")
                 .buildAndExpand(idContent)
                 .toUri();
         return ResponseEntity.created(uri).body(idContent);
     }
+
+//    @PutMapping("/idUser/{idUser}/update/}")
+//    public ResponseEntity<String> updateMovie(@PathVariable @NotNull Long idUser, @RequestBody MovieRequest movieRequest) {
+//        log.info("Init createContent");
+//        String idContent = movieService.updateMovie(movieRequest, idUser).getId().toString();
+//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+//                .path("/{idContent}")
+//                .buildAndExpand(idContent)
+//                .toUri();
+//        return ResponseEntity.created(uri).body(idContent);
+//    }
 
 }

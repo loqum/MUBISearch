@@ -8,10 +8,11 @@ import lombok.NonNull;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 public record MovieRequest(@NonNull String originalTitle,
                            @NonNull LocalDate releaseDate,
                            @NonNull Long idExternal,
                            @NonNull String title, @NonNull String plot, @NonNull String posterPath, List<Vote> votes,
-                           List<ContentGenre> genres, List<Review> reviews) {
+                           Map<Integer, String> genres, List<Review> reviews) {
 }

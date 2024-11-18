@@ -11,26 +11,26 @@ function ProfileDetails() {
     const {formatDate} = useContext(UserContext);
 
     return (
-
-        <Container className={"mt-lg-5"}>
+        <>
             <h1>Perfil de usuario</h1>
-            <h4>Nombre de usuario: {user.name}</h4>
-            <h4>Nombre completo: {user.fullName}</h4>
-            <h4>Fecha de creación: {formatDate(user.createdAt)}</h4>
-            <h4>Contenidos favoritos:</h4>
-            {user.favorites && user.favorites.length > 0 ? (
-                user.favorites.map((favorite, index) => (
-                    <div key={index}>
-                        <p>{favorite}</p>
-                    </div>
-                ))
-            ) : (
-                <p>*No hay favoritos*</p>
-            )}
+            <Container className={"mt-lg-5 form-container"} >
+                <h4>Nombre de usuario: {user.name}</h4>
+                <h4>Nombre completo: {user.fullName}</h4>
+                <h4>Fecha de creación: {formatDate(user.createdAt)}</h4>
+                <h4>Contenidos favoritos:</h4>
+                {user.favorites && user.favorites.length > 0 ? (
+                    user.favorites.map((favorite, index) => (
+                        <div key={index}>
+                            <p>{favorite}</p>
+                        </div>
+                    ))
+                ) : (
+                    <p>*No hay favoritos*</p>
+                )}
 
 
-        </Container>
-
+            </Container>
+        </>
     );
 
 }

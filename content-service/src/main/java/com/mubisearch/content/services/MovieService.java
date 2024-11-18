@@ -68,13 +68,13 @@ public class MovieService extends BaseService<MovieDto> {
         return List.of();
     }
 
-    @Cacheable(value = "movie", key = "#idExternal")
+//    @Cacheable(value = "movie", key = "#idExternal")
     public Optional<Movie> findByIdExternal(Long idExternal) {
         return movieRepository.findByIdExternal(idExternal);
     }
 
     @Transactional
-    public Movie createMovie(Long idUser, MovieRequest movieRequest) {
+    public Movie createMovie(MovieRequest movieRequest) {
         Movie movie = Movie.builder()
                 .idExternal(movieRequest.idExternal())
                 .title(movieRequest.title())
@@ -88,38 +88,65 @@ public class MovieService extends BaseService<MovieDto> {
         Movie finalMovie = movie;
 
         if (movieRequest.genres() != null && !movieRequest.genres().isEmpty()) {
-            List<ContentGenre> contentGenres = movieRequest.genres().stream()
-                    .map(genre -> new ContentGenre(finalMovie, genre.getGenre()))
+            List<ContentGenre> contentGenres = movieRequest.genres().keySet().stream()
+                    .map(id -> {
+                        Genre genre = Genre.valueOfId(id);
+                        if (genre != null) {
+                            return new ContentGenre(finalMovie, genre);
+                        } else {
+                            throw new IllegalArgumentException("Genre not found for ID: " + id);
+                        }
+                    })
                     .toList();
             contentGenreRepository.saveAll(contentGenres);
         }
 
-        if (movieRequest.votes() != null && !movieRequest.votes().isEmpty()) {
-            List<Vote> votes = movieRequest.votes().stream()
-                    .map(vote -> new Vote(idUser, finalMovie, vote.getScore()))
-                    .toList();
-            voteRepository.saveAll(votes);
-        }
-
-        if (movieRequest.reviews() != null && !movieRequest.reviews().isEmpty()) {
-            List<Review> reviews = movieRequest.reviews().stream()
-                    .map(review -> new Review(idUser, finalMovie, review.getText()))
-                    .toList();
-            reviewRepository.saveAll(reviews);
-        }
-
-
-        return null;
+        return movie;
     }
 
-    @CacheEvict(value = "movie", key = "#idExternal")
-    public Movie updateMovie(Long idExternal, Movie movie) {
-        Movie entity = this.findByIdExternal(idExternal).orElse(null);
-//        entity.set
-        if (entity == null) {
-            return null;
-        }
-        return movieRepository.save(entity);
-    }
+//    @CacheEvict(value = "movie", key = "#idExternal")
+//    public Movie updateMovie(Long idExternal, MovieRequest movie) {
+//        Movie entity = this.findByIdExternal(idExternal).orElse(null);
+////        entity.set
+//        if (entity == null) {
+//            return null;
+//        }
+//
+//         entity = Movie.builder()
+//                .idExternal(movieRequest.idExternal())
+//                .title(movieRequest.title())
+//                .plot(movieRequest.plot())
+//                .posterPath(movieRequest.posterPath())
+//                .releaseDate(movieRequest.releaseDate())
+//                .originalTitle(movieRequest.originalTitle())
+//                .build();
+//        movie = movieRepository.save(movie);
+//
+//        Movie finalMovie = movie;
+//
+//        if (movieRequest.genres() != null && !movieRequest.genres().isEmpty()) {
+//            List<ContentGenre> contentGenres = movieRequest.genres().stream()
+//                    .map(genre -> new ContentGenre(finalMovie, genre))
+//                    .toList();
+//            contentGenreRepository.saveAll(contentGenres);
+//        }
+//
+////        if (movieRequest.votes() != null && !movieRequest.votes().isEmpty()) {
+////            List<Vote> votes = movieRequest.votes().stream()
+////                    .map(vote -> new Vote(idUser, finalMovie, vote.getScore()))
+////                    .toList();
+////            voteRepository.saveAll(votes);
+////        }
+////
+////        if (movieRequest.reviews() != null && !movieRequest.reviews().isEmpty()) {
+////            List<Review> reviews = movieRequest.reviews().stream()
+////                    .map(review -> new Review(idUser, finalMovie, review.getText()))
+////                    .toList();
+////            reviewRepository.saveAll(reviews);
+////        }
+//
+//        return movie;
+//        return movieRepository.save(entity);
+//    }
 
 }

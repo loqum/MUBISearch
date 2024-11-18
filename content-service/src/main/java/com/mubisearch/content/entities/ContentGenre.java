@@ -1,5 +1,6 @@
 package com.mubisearch.content.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +19,7 @@ public class ContentGenre {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "id_content")
+    @JsonIgnore
     private Content content;
     @Enumerated(EnumType.STRING)
     @Column(name = "genre")
