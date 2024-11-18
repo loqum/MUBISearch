@@ -6,9 +6,9 @@ CREATE TABLE IF NOT EXISTS content
     title       VARCHAR(255) NOT NULL,
     plot        VARCHAR(1000),
     poster_path VARCHAR(255),
-    id_external BIGINT UNIQUE,
-    created_at  DATETIME,
-    updated_at  DATETIME
+    id_external BIGINT UNIQUE NOT NULL,
+    created_at  DATETIME NOT NULL,
+    updated_at  DATETIME NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS movie

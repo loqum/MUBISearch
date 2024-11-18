@@ -22,13 +22,13 @@ function MovieDetails(props) {
     const getMovie = async () => {
         console.log("Movie id:", externalId);
         try {
-            const response = await FetchMoviesByIdExternal(externalId);
-            console.log("Response:", response);
-            if (response) {
-                setMovie(response);
+            const movieFromBBDD = await FetchMoviesByIdExternal(externalId);
+            console.log("movieFromBBDD:", movieFromBBDD);
+            if (movieFromBBDD) {
+                setMovie(movieFromBBDD);
             } else {
-                try {
-                    const res = await createMovie({
+                if (movieFromNavigate) {
+                    await createMovie({
                         originalTitle: movieFromNavigate.original_title,
                         releaseDate: formatDateISO8601(movieFromNavigate.release_date),
                         idExternal: movieFromNavigate.id,
@@ -37,14 +37,13 @@ function MovieDetails(props) {
                         posterPath: movieFromNavigate.poster_path,
                         genres: movieFromNavigate.genres,
                     });
-                } catch (e) {
-                    console.error("Error creating movie:", e);
+
+                    const savedMovie = await FetchMoviesByIdExternal(externalId);
+                    setMovie(savedMovie);
                 }
-                console.log("MovieFromNavigate:", movieFromNavigate);
-                setMovie(movieFromNavigate);
             }
         } catch (e) {
-            console.error("Error fetching movies:", e);
+            console.error("Error fetching or creating movie:", e);
             setMovie(movieFromNavigate);
         }
     };
@@ -91,14 +90,18 @@ function MovieDetails(props) {
             <Card>
                 <Card.Img variant="top" src={`${urlImage}${movie.posterPath}`} className="img-fluid"
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
-                <Card.Header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>Película {user && (<FavoriteHeart onToggle={handleFavoriteToggle}/>)} </Card.Header>
+                <Card.Header
+                    style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>Película {user && (
+                    <FavoriteHeart onToggle={handleFavoriteToggle}/>)} </Card.Header>
                 <Card.Body>
                     <Card.Title>{movie.title}</Card.Title>
                     <Card.Text>{movie.plot}</Card.Text>
                     <Card.Text>
                         <strong>Géneros: </strong>{Object.values(movie.genres).join(', ')}
                     </Card.Text>
-                    <Card.Text><strong>Fecha de estreno: </strong>{convertDateToDayMonthYear(movie.releaseDate)}</Card.Text>
+                    <Card.Text><strong>Fecha de
+                        estreno: </strong>{movie.releaseDate && (convertDateToDayMonthYear(movie.releaseDate))}
+                    </Card.Text>
                 </Card.Body>
             </Card>
 

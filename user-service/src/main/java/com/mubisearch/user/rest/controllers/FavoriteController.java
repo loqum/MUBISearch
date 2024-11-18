@@ -68,7 +68,7 @@ public class FavoriteController {
         return ResponseEntity.ok(favorites);
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Long> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
         log.info("Init createFavorite: {}", favoriteRequest);
         Long idFavorite = favoriteService.createFavorite(favoriteRequest).getId();
