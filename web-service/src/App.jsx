@@ -9,22 +9,38 @@ import MainLayout from "./layouts/MainLayout.jsx";
 import MovieDetailsPage from "./pages/DetailMoviePage.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
+import {Auth0Provider} from "@auth0/auth0-react";
+
+const domain = "uoc-mubisearch.us.auth0.com";
+const clientId = "WNaBebgkDqJiWoXHc5lZSRE6GkqDFiSF";
+const audience = "https://uoc-mubisearch.us.auth0.com/api/v2/";
 
 function App() {
     return (
-        <MainLayout>
-            <Routes>
-                <Route path="/" element={<HomePage/>}/>
-                <Route path="/movies" element={<MoviesPage/>}/>
-                <Route path="/register" element={<RegisterPage/>}/>
-                <Route path="/login" element={<LoginPage/>}/>
-                <Route path="/search" element={<SearchPage/>}/>
-                <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
-                <Route path="/profile" element={<ProfilePage />}/>
-                <Route path="/error" element={<ErrorPage />}/>
-                <Route path="*" element={<ErrorPage />}/>
-            </Routes>
-        </MainLayout>
+
+        <Auth0Provider
+            domain={domain}
+            clientId={clientId}
+            authorizationParams={{
+                redirect_uri: window.location.origin,
+                audience: audience,
+                scope: "openid profile email",
+            }}
+        >
+            <MainLayout>
+                <Routes>
+                    <Route path="/" element={<HomePage/>}/>
+                    <Route path="/movies" element={<MoviesPage/>}/>
+                    <Route path="/register" element={<RegisterPage/>}/>
+                    <Route path="/login" element={<LoginPage/>}/>
+                    <Route path="/search" element={<SearchPage/>}/>
+                    <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
+                    <Route path="/profile" element={<ProfilePage/>}/>
+                    <Route path="/error" element={<ErrorPage/>}/>
+                    <Route path="*" element={<ErrorPage/>}/>
+                </Routes>
+            </MainLayout>
+        </Auth0Provider>
     );
 
 }
