@@ -1,9 +1,10 @@
-import {Alert, Button, Card, Form, InputGroup, ProgressBar} from "react-bootstrap";
+import {Alert, Button, Card, Form, InputGroup, ProgressBar, Spinner} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
 import FavoriteHeart from "./FavoriteHeart.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
+import {UserContext} from "../context/user.context.jsx";
 
 function MovieDetails(props) {
 
@@ -16,23 +17,16 @@ function MovieDetails(props) {
         formatDateISO8601,
         convertDateToDayMonthYear
     } = useContext(MoviesContext);
+    const { user, setUser, triggerUserSync, fetchUpdatedUser } = useContext(UserContext);
     const {externalId} = useParams(); //Recuperar el id de la película de la URL
     const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la otra pantalla mediante navegación
     const {urlImage} = props;
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
     const [movie, setMovie] = useState(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showWarningAlert, setShowWarningAlert] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [favorite, setFavorite] = useState(null);
-
-    useEffect(() => {
-        const storedUser = sessionStorage.getItem("user");
-        if (storedUser) {
-            console.log("User:", (storedUser));
-            setUser(JSON.parse(storedUser));
-        }
-    }, []);
 
     useEffect(() => {
         if (!movie) {
@@ -120,6 +114,8 @@ function MovieDetails(props) {
         } else {
             setShowWarningAlert(true);
             setShowSuccessAlert(false);
+            triggerUserSync();
+            await fetchUpdatedUser();
             setTimeout(() => setShowWarningAlert(false), 3000);
             console.log("Favorite ID:", favorite.id);
             try {
@@ -137,7 +133,12 @@ function MovieDetails(props) {
     };
 
     if (!movie) {
-        return <ProgressBar className={"text-center"} animated now={45}/>;
+        return (
+            <Spinner animation="border" role="status">
+                <span className="visually-hidden">Loading...</span>
+            </Spinner>
+        );
+
     }
 
     return (

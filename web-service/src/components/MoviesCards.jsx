@@ -3,21 +3,17 @@ import {useContext, useEffect} from "react";
 import '../assets/css/MovieList.css';
 import {MoviesContext} from "../context/movies.context.jsx";
 import FetchDiscoverMovies from "../services/FetchDiscoverMovies.jsx";
+import {Spinner} from "react-bootstrap";
 
 function MoviesCards(props) {
 
-    const {movies, setMovies} = useContext(MoviesContext);
+    const {movies, setMovies, convertMovies} = useContext(MoviesContext);
 
     useEffect(() => {
         const fetchMovies = async () => {
             try {
                 const response = await FetchDiscoverMovies();
-                const transformedMovies = response.map((movie) => ({
-                    ...movie,
-                    posterPath: movie.poster_path,
-                    releaseDate: movie.release_date,
-                    plot: movie.overview,
-                }));
+                const transformedMovies = convertMovies(response);
                 setMovies(transformedMovies);
                 console.log("Movies:", transformedMovies);
                 console.log("Response Movies:", response);

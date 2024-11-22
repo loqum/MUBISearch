@@ -1,8 +1,9 @@
 import {Button, Col, Container, Form, Nav, Navbar, Row} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import FetchMovies from "../services/FetchMovies.jsx";
 import {UserContext} from "../context/user.context.jsx";
+import {MoviesContext} from "../context/movies.context.jsx";
 
 function NavigationBar() {
 
@@ -10,6 +11,7 @@ function NavigationBar() {
     const navigateToList = useNavigate();
 
     const {user, setUser, logoutUser} = useContext(UserContext);
+    const {convertMovies} = useContext(MoviesContext);
 
     const handleSearchSubmit = async (event) => {
         event.preventDefault();
@@ -19,9 +21,9 @@ function NavigationBar() {
             let response = await FetchMovies(query);
             response = response.filter((movie) => movie.poster_path !== null);
             console.log("Response:", response);
-            setMovies(response);
-            console.log("Movies:", movies);
-            navigateToList(`/movies`, {state: {response}});
+            const transformedMovies = convertMovies(response);
+            setMovies(transformedMovies);
+            navigateToList(`/movies`, {state: {transformedMovies}});
         } catch (e) {
             console.error("Error fetching movies:", e);
         }

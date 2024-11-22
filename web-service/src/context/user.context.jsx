@@ -8,6 +8,8 @@ function UserProviderWrapper(props) {
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
+    const [syncUser, setSyncUser] = useState(false);
+
 
     const initialUser = JSON.parse(sessionStorage.getItem("user")) || {
         name: "",
@@ -16,7 +18,8 @@ function UserProviderWrapper(props) {
         userRole: "",
         favorites: [],
         createdAt: "",
-        isLoggedIn: false
+        isLoggedIn: false,
+        syncUser: false
     };
 
 
@@ -25,13 +28,41 @@ function UserProviderWrapper(props) {
         return storedUser ? JSON.parse(storedUser) : initialUser;
     });
 
+    // useEffect(() => {
+    //     if (user) {
+    //         sessionStorage.setItem("user", JSON.stringify(user));
+    //     } else {
+    //         sessionStorage.removeItem("user");
+    //     }
+    // }, [user]);
+
     useEffect(() => {
-        if (user) {
-            sessionStorage.setItem("user", JSON.stringify(user));
-        } else {
-            sessionStorage.removeItem("user");
+        console.log("Sync user:", syncUser);
+        fetchUpdatedUser();
+    }, [syncUser, user.id]);
+
+    const fetchUpdatedUser = async () => {
+        try {
+            console.log("NOT Fetching updated user because syncuser {} and user.id {}...", user, user.id);
+            if (user.syncUser && user.id) {
+                console.log("Fetching updated user...");
+                const response = await axios.get(`http://localhost:8080/api/v1/users/id/${user.id}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+
+                const updatedUser = { ...response.data, isLoggedIn: true, syncUser: true};
+                console.log("Updated user:", updatedUser);
+
+                if (JSON.stringify(user) !== JSON.stringify(updatedUser)) {
+                    setUser(updatedUser);
+                }
+            }
+        } catch (error) {
+            console.error("Error fetching updated user:", error);
         }
-    }, [user]);
+    };
 
     const formatDate = (date) => {
         return new Intl.DateTimeFormat('es-ES').format(new Date(date));
@@ -62,20 +93,21 @@ function UserProviderWrapper(props) {
         }
     };
 
-    const login = async (user) => {
+    const login = async (u) => {
         try {
-            if (user) {
-                console.log("loginUser user:", user);
+            if (u) {
                 const response = await axios( {
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/users/login',
-                    data: user,
+                    data: u,
                     headers: {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log("loginUser response:", response);
-                return response.data;
+                const loggedInUser = { ...response.data, isLoggedIn: true, syncUser: true };
+                setUser(loggedInUser);
+                setSyncUser(true);
+                return loggedInUser;
             }
         } catch (error) {
             console.error("Error login user:", error);
@@ -94,11 +126,17 @@ function UserProviderWrapper(props) {
             isLoggedIn: false,
         });
         sessionStorage.removeItem("user");
+        setSyncUser(false);
         navigate("/");
     }
 
+    const triggerUserSync = () => {
+        setSyncUser(true);
+    };
+
+
     return (
-        <UserContext.Provider value={{user, setUser, login, createUser, logoutUser, error, setError, formatDate}}>
+        <UserContext.Provider value={{user, setUser, login, createUser, logoutUser, error, setError, formatDate, triggerUserSync, fetchUpdatedUser}}>
             {props.children}
         </UserContext.Provider>
     );

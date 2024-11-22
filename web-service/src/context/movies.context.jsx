@@ -117,6 +117,16 @@ function MoviesProviderWrapper(props) {
         }
     };
 
+    const convertMovies = (movies) => {
+        console.log("convertMovies movies:", movies);
+        return movies.map((movie) => ({
+            ...movie,
+            posterPath: movie.poster_path,
+            releaseDate: movie.release_date,
+            plot: movie.overview,
+        }));
+    };
+
     return (
         <MoviesContext.Provider value={{
             movies,
@@ -130,7 +140,8 @@ function MoviesProviderWrapper(props) {
             fetchMovieById,
             getFavoriteByIdUserAndIdContent,
             formatDateISO8601,
-            convertDateToDayMonthYear
+            convertDateToDayMonthYear,
+            convertMovies
         }}>
             {props.children}
         </MoviesContext.Provider>

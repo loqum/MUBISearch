@@ -21,10 +21,8 @@ function FormLogin(props) {
                     password: user.password
                 }
                 const loginUser = await login(data);
-                console.log("Validated User:", loginUser);
-                const updatedUser = {...user, ...loginUser, isLoggedIn: true};
-                setUser(updatedUser);
-                sessionStorage.setItem("user", JSON.stringify(updatedUser));
+                setUser(loginUser);
+                sessionStorage.setItem("user", JSON.stringify(loginUser));
                 navigate("/");
             } catch (e) {
                 console.error("Status error:", e.status);
@@ -38,7 +36,6 @@ function FormLogin(props) {
         }
 
         setValidated(true);
-        console.log("User: ", user);
     }
 
     const setName = (e) => {
