@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Form, InputGroup, ProgressBar, Spinner} from "react-bootstrap";
+import {Alert, Button, ButtonGroup, Card, Form, InputGroup, ProgressBar, Spinner} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
@@ -27,6 +27,7 @@ function MovieDetails(props) {
     const [showWarningAlert, setShowWarningAlert] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [favorite, setFavorite] = useState(null);
+    const [selectedVote, setSelectedVote] = useState(null);
 
     useEffect(() => {
         if (!movie) {
@@ -132,6 +133,11 @@ function MovieDetails(props) {
         setIsFavorite(favoriteState);
     };
 
+    const handleVote = (vote) => {
+        setSelectedVote(vote);
+        console.log(`Voted: ${vote}`);
+    };
+
     if (!movie) {
         return (
             <Spinner animation="border" role="status">
@@ -170,8 +176,23 @@ function MovieDetails(props) {
                     <Card.Text><strong>Fecha de
                         estreno: </strong>{movie.releaseDate && (convertDateToDayMonthYear(movie.releaseDate))}
                     </Card.Text>
+                    <Card.Text><strong>Valoración: </strong>{movie.voteAverage}</Card.Text>
                 </Card.Body>
             </Card>
+
+            <h3 className="mt-4">Vota la película:</h3>
+            <ButtonGroup>
+                {[...Array(10)].map((_, index) => (
+                    <Button
+                        key={index + 1}
+                        variant={selectedVote === index + 1 ? "primary" : "outline-primary"}
+                        onClick={() => handleVote(index + 1)}
+                    >
+                        {index + 1}
+                    </Button>
+                ))}
+            </ButtonGroup>
+            {selectedVote && <p>Has votado: {selectedVote}</p>}
 
             <h3 className="mt-4">Reseñas</h3>
             {user && (<Form>

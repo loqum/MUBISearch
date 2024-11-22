@@ -117,6 +117,25 @@ function MoviesProviderWrapper(props) {
         }
     };
 
+    const createVote = async (vote) => {
+        try {
+            if (vote) {
+                const response = await axios({
+                    method: 'POST',
+                    url: 'http://localhost:8080/api/v1/votes/create',
+                    data: vote,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("createVote response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const convertMovies = (movies) => {
         console.log("convertMovies movies:", movies);
         return movies.map((movie) => ({
