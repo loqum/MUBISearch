@@ -3,6 +3,7 @@ package com.mubisearch.user.services;
 import com.mubisearch.user.entities.Favorite;
 import com.mubisearch.user.entities.User;
 import com.mubisearch.user.repositories.FavoriteRepository;
+import com.mubisearch.user.repositories.UserRepository;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,8 +18,9 @@ public class FavoriteService {
 
     @Autowired
     private FavoriteRepository favoriteRepository;
+
     @Autowired
-    private UserService userService;
+    private UserRepository userRepository;
 
     public List<Favorite> findAll() {
         return favoriteRepository.findAll();
@@ -41,7 +43,7 @@ public class FavoriteService {
     }
 
     public Favorite createFavorite(FavoriteRequest favorite) {
-        User user = userService.findById(favorite.idUser()).orElseThrow(() -> new IllegalArgumentException("User with id: " + favorite.idUser() + " not found"));
+        User user = userRepository.findById(favorite.idUser()).orElseThrow(() -> new IllegalArgumentException("User with id: " + favorite.idUser() + " not found"));
         Favorite newFavorite = Favorite.builder().user(user).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
         return favoriteRepository.save(newFavorite);
     }
@@ -54,6 +56,14 @@ public class FavoriteService {
 
     public Favorite updateFavorite(Favorite favorite) {
         return favoriteRepository.save(favorite);
+    }
+
+    public boolean existsUserAndContent(Long userId, Long idContent) {
+        return favoriteRepository.existsByUser_IdAndIdContent(userId, idContent);
+    }
+
+    public void deleteFavorite(Long id) {
+        favoriteRepository.deleteById(id);
     }
 
 }

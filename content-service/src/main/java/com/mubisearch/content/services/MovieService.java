@@ -69,9 +69,12 @@ public class MovieService extends BaseService<MovieDto> {
         return List.of();
     }
 
-//    @Cacheable(value = "movie", key = "#idExternal")
     public Optional<Movie> findByIdExternal(Long idExternal) {
         return movieRepository.findByIdExternal(idExternal);
+    }
+
+    public Optional<Movie> findById(Long id) {
+        return movieRepository.findById(id);
     }
 
     @Transactional

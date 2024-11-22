@@ -1,14 +1,8 @@
-import {useState} from "react";
-
-function FavoriteHeart(props) {
-    const [isFavorite, setIsFavorite] = useState(false);
-
+function FavoriteHeart({onToggle, isFavorite}) {
     const handleClick = () => {
         const newFavoriteState = !isFavorite;
-        setIsFavorite(!isFavorite);
-
-        if (props.onToggle) {
-            props.onToggle(newFavoriteState);
+        if (onToggle) {
+            onToggle(newFavoriteState);
         }
     };
 

@@ -16,7 +16,11 @@ function FormLogin(props) {
             event.stopPropagation();
         } else {
             try {
-                const loginUser = await login(user);
+                const data = {
+                    name: user.name,
+                    password: user.password
+                }
+                const loginUser = await login(data);
                 console.log("Validated User:", loginUser);
                 const updatedUser = {...user, ...loginUser, isLoggedIn: true};
                 setUser(updatedUser);

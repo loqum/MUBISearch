@@ -7,9 +7,12 @@ import com.mubisearch.user.services.FavoriteService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -71,12 +74,28 @@ public class FavoriteController {
     @PostMapping("/create")
     public ResponseEntity<Long> createFavorite(@RequestBody FavoriteRequest favoriteRequest) {
         log.info("Init createFavorite: {}", favoriteRequest);
-        Long idFavorite = favoriteService.createFavorite(favoriteRequest).getId();
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{idFavorite}")
-                .buildAndExpand(idFavorite)
-                .toUri();
-        return ResponseEntity.created(uri).body(idFavorite);
+        try {
+            Long idFavorite = favoriteService.createFavorite(favoriteRequest).getId();
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                    .path("/{idFavorite}")
+                    .buildAndExpand(idFavorite)
+                    .toUri();
+            return ResponseEntity.created(uri).body(idFavorite);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Favorite already exists for user {} and content {}", favoriteRequest.idUser(), favoriteRequest.idContent());
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+    }
+
+    @DeleteMapping("/delete/{idFavorite}")
+    public ResponseEntity<Boolean> deleteFavorite(@PathVariable Long idFavorite) {
+        log.info("Init deleteFavorite: {}", idFavorite);
+        try {
+            favoriteService.deleteFavorite(idFavorite);
+            return ResponseEntity.status(HttpStatus.OK).body(true);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified favorite with ID " + idFavorite + " does not exist.", e);
+        }
     }
 
     @PutMapping("/{id}/notification")

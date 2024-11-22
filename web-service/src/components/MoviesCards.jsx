@@ -12,8 +12,15 @@ function MoviesCards(props) {
         const fetchMovies = async () => {
             try {
                 const response = await FetchDiscoverMovies();
-                setMovies(response);
-                console.log("Movies:", response);
+                const transformedMovies = response.map((movie) => ({
+                    ...movie,
+                    posterPath: movie.poster_path,
+                    releaseDate: movie.release_date,
+                    plot: movie.overview,
+                }));
+                setMovies(transformedMovies);
+                console.log("Movies:", transformedMovies);
+                console.log("Response Movies:", response);
             } catch (e) {
                 console.error("Error fetching movies:", e);
             }

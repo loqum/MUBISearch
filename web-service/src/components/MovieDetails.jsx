@@ -1,28 +1,78 @@
-import {Alert, Button, Card, Container, Form, InputGroup} from "react-bootstrap";
+import {Alert, Button, Card, Form, InputGroup, ProgressBar} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
-import FetchMoviesByIdExternal from "../services/FetchMovieByIdExternal.jsx";
 import FavoriteHeart from "./FavoriteHeart.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
 
 function MovieDetails(props) {
 
-    const {createFavorite, createMovie, formatDateISO8601, convertDateToDayMonthYear} = useContext(MoviesContext);
+    const {
+        createFavorite,
+        deleteFavorite,
+        createMovie,
+        fetchMoviesByIdExternal,
+        getFavoriteByIdUserAndIdContent,
+        formatDateISO8601,
+        convertDateToDayMonthYear
+    } = useContext(MoviesContext);
     const {externalId} = useParams(); //Recuperar el id de la película de la URL
     const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la otra pantalla mediante navegación
     const {urlImage} = props;
-    const [user, setUser] = useState(
-        JSON.parse(sessionStorage.getItem("user"))
-    );
+    const [user, setUser] = useState(null);
+    const [movie, setMovie] = useState(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showWarningAlert, setShowWarningAlert] = useState(false);
-    const [movie, setMovie] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [favorite, setFavorite] = useState(null);
+
+    useEffect(() => {
+        const storedUser = sessionStorage.getItem("user");
+        if (storedUser) {
+            console.log("User:", (storedUser));
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (!movie) {
+            getMovie();
+        }
+    }, [externalId]);
+
+    useEffect(() => {
+        if (user && movie) {
+            checkFavorite();
+        }
+
+    }, [user, movie]);
+
+    const checkFavorite = async () => {
+        console.log("User: ", user);
+        if (user && movie) {
+            try {
+                const favoriteData = await getFavoriteByIdUserAndIdContent(user, movie);
+                if (favoriteData) {
+                    setIsFavorite(true);
+                    setFavorite(favoriteData);
+                    console.log("Favorite data:", favoriteData);
+                } else {
+                    setIsFavorite(false);
+                    setFavorite(null);
+                }
+            } catch (e) {
+                console.error("Error checking favorite:", e);
+                setIsFavorite(false);
+                setFavorite(null);
+            }
+
+        }
+    }
 
     const getMovie = async () => {
         console.log("Movie id:", externalId);
         try {
-            const movieFromBBDD = await FetchMoviesByIdExternal(externalId);
+            const movieFromBBDD = await fetchMoviesByIdExternal(externalId);
             console.log("movieFromBBDD:", movieFromBBDD);
             if (movieFromBBDD) {
                 setMovie(movieFromBBDD);
@@ -38,7 +88,7 @@ function MovieDetails(props) {
                         genres: movieFromNavigate.genres,
                     });
 
-                    const savedMovie = await FetchMoviesByIdExternal(externalId);
+                    const savedMovie = await fetchMoviesByIdExternal(externalId);
                     setMovie(savedMovie);
                 }
             }
@@ -48,22 +98,13 @@ function MovieDetails(props) {
         }
     };
 
-    useEffect(() => {
-        if (!movie) {
-            getMovie();
-        }
-    }, [externalId]);
-
-    const handleFavoriteToggle = async (isFavorite) => {
-        console.log(`El usuario marcó como favorito: ${isFavorite}`);
-        if (isFavorite) {
+    const handleFavoriteToggle = async (favoriteState) => {
+        console.log(`El usuario marcó como favorito: ${favoriteState}`);
+        if (favoriteState) {
             setShowSuccessAlert(true);
             setShowWarningAlert(false);
             setTimeout(() => setShowSuccessAlert(false), 3000);
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-            });
+
 
             try {
                 console.log("User:", user);
@@ -80,15 +121,23 @@ function MovieDetails(props) {
             setShowWarningAlert(true);
             setShowSuccessAlert(false);
             setTimeout(() => setShowWarningAlert(false), 3000);
-            window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-            });
+            console.log("Favorite ID:", favorite.id);
+            try {
+                await deleteFavorite(favorite.id);
+            } catch (e) {
+                console.error("Error deleting favorite:", e);
+            }
         }
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+        setIsFavorite(favoriteState);
     };
 
     if (!movie) {
-        return <div>Cargando película...</div>;
+        return <ProgressBar className={"text-center"} animated now={45}/>;
     }
 
     return (
@@ -110,7 +159,7 @@ function MovieDetails(props) {
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
                 <Card.Header
                     style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>Película {user && (
-                    <FavoriteHeart onToggle={handleFavoriteToggle}/>)} </Card.Header>
+                    <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>)} </Card.Header>
                 <Card.Body>
                     <Card.Title>{movie.title}</Card.Title>
                     <Card.Text>{movie.plot}</Card.Text>

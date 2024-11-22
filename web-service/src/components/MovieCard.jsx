@@ -15,10 +15,10 @@ function MovieCard(props) {
 
     return (
         <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" src={`${urlImage}${movie.poster_path}`} className="img-fluid"/>
+            <Card.Img variant="top" src={`${urlImage}${movie.posterPath}`} className="img-fluid"/>
             <Card.Body>
                 <Card.Title>{movie.title}</Card.Title>
-                <Card.Text style={{ textAlign: 'justify' }}>{movie.overview}</Card.Text>
+                <Card.Text style={{ textAlign: 'justify' }}>{movie.plot}</Card.Text>
                 <Button variant="primary" onClick={handleClick}>Ver detalles</Button>
             </Card.Body>
         </Card>

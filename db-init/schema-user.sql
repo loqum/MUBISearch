@@ -17,5 +17,6 @@ CREATE TABLE IF NOT EXISTS favorite
     id_content         BIGINT   NOT NULL,
     created_at         DATETIME NOT NULL,
     notification_alert BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (id_user) REFERENCES user (id) ON DELETE CASCADE
+    FOREIGN KEY (id_user) REFERENCES user (id) ON DELETE CASCADE,
+    UNIQUE (id_user, id_content)
 );

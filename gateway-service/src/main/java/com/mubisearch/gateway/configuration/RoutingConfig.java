@@ -50,18 +50,28 @@ public class RoutingConfig {
                 .route(path(userControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
                 .route(path(userControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
                 .route(path(userControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
+                .route(path(userControllerUrl).and(method(HttpMethod.DELETE)), http(userServiceUrl))
+
                 .route(path(favoriteControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
                 .route(path(favoriteControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
                 .route(path(favoriteControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
+                .route(path(favoriteControllerUrl).and(method(HttpMethod.DELETE)), http(userServiceUrl))
+
                 .route(path(seriesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
                 .route(path(seriesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
                 .route(path(seriesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
+                .route(path(seriesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
+
                 .route(path(moviesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
                 .route(path(moviesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
                 .route(path(moviesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
+                .route(path(moviesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
+
                 .route(path(notificationsControllerUrl).and(method(HttpMethod.GET)), http(notificationServiceUrl))
                 .route(path(notificationsControllerUrl).and(method(HttpMethod.PUT)), http(notificationServiceUrl))
                 .route(path(notificationsControllerUrl).and(method(HttpMethod.POST)), http(notificationServiceUrl))
+                .route(path(notificationsControllerUrl).and(method(HttpMethod.DELETE)), http(notificationServiceUrl))
+
                 .onError(Exception.class, this::handleException)
                 .build();
     }

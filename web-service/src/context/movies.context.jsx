@@ -21,7 +21,7 @@ function MoviesProviderWrapper(props) {
         try {
             if (favorite) {
                 const response = await axios({
-                    method: 'post',
+                    method: 'POST',
                     url: 'http://localhost:8080/api/v1/favorites/create',
                     data: favorite,
                     headers: {
@@ -36,11 +36,29 @@ function MoviesProviderWrapper(props) {
         }
     };
 
+    const deleteFavorite = async (id) => {
+        try {
+            if (id) {
+                const response = await axios({
+                    method: 'DELETE',
+                    url: `http://localhost:8080/api/v1/favorites/delete/${id}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("deleteFavorite response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            throw error;
+        }
+    };
+
     const createMovie = async (movie) => {
         try {
             if (movie) {
                 const response = await axios({
-                    method: 'post',
+                    method: 'POST',
                     url: 'http://localhost:8080/api/v1/movies/create',
                     data: movie,
                     headers: {
@@ -55,8 +73,65 @@ function MoviesProviderWrapper(props) {
         }
     };
 
+    const getFavoriteByIdUserAndIdContent = async (user, movie) => {
+        try {
+            const response = await axios({
+                method: "GET",
+                url: `http://localhost:8080/api/v1/favorites/user/${user.id}/content/${movie.id}`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            console.log("getFavoriteByIdUserAndIdContent response:", response);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+
+    }
+
+    const fetchMoviesByIdExternal = async (idExternal) => {
+        try {
+            if (idExternal) {
+                const response = await axios.get(`http://localhost:8080/api/v1/movies/idExternal/${idExternal}`);
+                console.log("FetchMovieByIdExternal response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error fetching movie:", error);
+            throw error;
+        }
+    };
+
+    const fetchMovieById = async (id) => {
+        try {
+            if (id) {
+                console.log("fetchMovieById id:", id);
+                const response = await axios.get(`http://localhost:8080/api/v1/movies/id/${id}`);
+                console.log("fetchMovieById response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error fetching movie:", error);
+            throw error;
+        }
+    };
+
     return (
-        <MoviesContext.Provider value={{movies, setMovies, urlImage, setUrlImage, createFavorite, createMovie, formatDateISO8601, convertDateToDayMonthYear}}>
+        <MoviesContext.Provider value={{
+            movies,
+            setMovies,
+            urlImage,
+            setUrlImage,
+            createFavorite,
+            deleteFavorite,
+            createMovie,
+            fetchMoviesByIdExternal,
+            fetchMovieById,
+            getFavoriteByIdUserAndIdContent,
+            formatDateISO8601,
+            convertDateToDayMonthYear
+        }}>
             {props.children}
         </MoviesContext.Provider>
     )

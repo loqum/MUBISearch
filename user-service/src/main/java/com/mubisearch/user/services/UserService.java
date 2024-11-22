@@ -1,9 +1,10 @@
 package com.mubisearch.user.services;
 
-import com.mubisearch.user.rest.dto.UserRequest;
 import com.mubisearch.user.entities.User;
 import com.mubisearch.user.entities.UserRole;
 import com.mubisearch.user.repositories.UserRepository;
+import com.mubisearch.user.rest.dto.UserLoginRequest;
+import com.mubisearch.user.rest.dto.UserRegisterRequest;
 import com.mubisearch.user.rest.dto.UserResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -36,23 +37,23 @@ public class UserService {
         return userRepository.findUserByName(name);
     }
 
-    public User createUser(UserRequest user) {
+    public User createUser(UserRegisterRequest user) {
         String encodedPassword = passwordEncoder.encode(user.password());
         User newUser = User.builder().fullName(user.fullName()).password(encodedPassword).name(user.name()).createdAt(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
         return userRepository.save(newUser);
     }
 
-    public UserResponse validateUser(UserRequest userRequest) {
-        User user = findByName(userRequest.name()).orElseThrow(() -> new UsernameNotFoundException("User not found."));
-
-        if (!passwordEncoder.matches(userRequest.password(), user.getPassword())) {
-            throw new BadCredentialsException("Incorrect password.");
-        }
-
+    public UserResponse validateUser(UserLoginRequest userRequest) {
+        User user = userRepository.findUserByName(userRequest.name()).orElseThrow(() -> new UsernameNotFoundException("User not found."));
+        validatePassword(userRequest, user);
         return UserResponse.from(user);
     }
 
-
+    private void validatePassword(UserLoginRequest userRequest, User user) {
+        if (!passwordEncoder.matches(userRequest.password(), user.getPassword())) {
+            throw new BadCredentialsException("Incorrect password.");
+        }
+    }
 
 
 }

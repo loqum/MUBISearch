@@ -1,4 +1,4 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import axios from "axios";
 import {useNavigate} from "react-router-dom";
 
@@ -8,10 +8,6 @@ function UserProviderWrapper(props) {
 
     const navigate = useNavigate();
     const [error, setError] = useState(null);
-
-    const formatDate = (date) => {
-        return new Intl.DateTimeFormat('es-ES').format(new Date(date));
-    }
 
     const initialUser = JSON.parse(sessionStorage.getItem("user")) || {
         name: "",
@@ -23,13 +19,29 @@ function UserProviderWrapper(props) {
         isLoggedIn: false
     };
 
-    const [user, setUser] = useState(initialUser);
+
+    const [user, setUser] = useState(() => {
+        const storedUser = sessionStorage.getItem("user");
+        return storedUser ? JSON.parse(storedUser) : initialUser;
+    });
+
+    useEffect(() => {
+        if (user) {
+            sessionStorage.setItem("user", JSON.stringify(user));
+        } else {
+            sessionStorage.removeItem("user");
+        }
+    }, [user]);
+
+    const formatDate = (date) => {
+        return new Intl.DateTimeFormat('es-ES').format(new Date(date));
+    }
 
     const createUser = async (user) => {
         try {
             if (user) {
                 const response = await axios({
-                    method: 'post',
+                    method: 'POST',
                     url: 'http://localhost:8080/api/v1/users/register',
                     data: user,
                     headers: {
@@ -53,8 +65,9 @@ function UserProviderWrapper(props) {
     const login = async (user) => {
         try {
             if (user) {
+                console.log("loginUser user:", user);
                 const response = await axios( {
-                    method: 'post',
+                    method: 'POST',
                     url: 'http://localhost:8080/api/v1/users/login',
                     data: user,
                     headers: {

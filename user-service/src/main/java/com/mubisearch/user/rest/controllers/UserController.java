@@ -1,7 +1,8 @@
 package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.User;
-import com.mubisearch.user.rest.dto.UserRequest;
+import com.mubisearch.user.rest.dto.UserLoginRequest;
+import com.mubisearch.user.rest.dto.UserRegisterRequest;
 import com.mubisearch.user.rest.dto.UserResponse;
 import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
@@ -55,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<Long> register(@RequestBody UserRegisterRequest userRequest) {
         log.info("Init registerUser: {}", userRequest);
         try {
             Long idUser = userService.createUser(userRequest).getId();
@@ -68,7 +69,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@RequestBody UserRequest userRequest) {
+    public ResponseEntity<UserResponse> login(@RequestBody UserLoginRequest userRequest) {
         log.info("Init loginUser: {}", userRequest);
         try {
             UserResponse userResponse = userService.validateUser(userRequest);
