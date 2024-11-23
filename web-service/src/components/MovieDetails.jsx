@@ -1,4 +1,14 @@
-import {Alert, Button, ButtonGroup, Card, Form, InputGroup, ProgressBar, Spinner} from "react-bootstrap";
+import {
+    Alert,
+    Button,
+    ButtonGroup,
+    Card,
+    Form,
+    InputGroup,
+    OverlayTrigger,
+    ProgressBar,
+    Spinner, Tooltip
+} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import {useContext, useEffect, useState} from "react";
@@ -17,7 +27,7 @@ function MovieDetails(props) {
         formatDateISO8601,
         convertDateToDayMonthYear
     } = useContext(MoviesContext);
-    const { user, setUser, triggerUserSync, fetchUpdatedUser } = useContext(UserContext);
+    const {user, setUser, triggerUserSync, fetchUpdatedUser} = useContext(UserContext);
     const {externalId} = useParams(); //Recuperar el id de la película de la URL
     const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la pantalla anterior mediante navegación
     const {urlImage} = props;
@@ -165,8 +175,16 @@ function MovieDetails(props) {
                 <Card.Img variant="top" src={`${urlImage}${movie.posterPath}`} className="img-fluid"
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
                 <Card.Header
-                    style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>Película {user && (
-                    <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>)} </Card.Header>
+                    style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    Película {user && (
+                    <OverlayTrigger placement="top" overlay={<Tooltip
+                        id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
+                        <div>
+                            <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
+                        </div>
+                    </OverlayTrigger>
+                )}
+                </Card.Header>
                 <Card.Body>
                     <Card.Title>{movie.title}</Card.Title>
                     <Card.Text>{movie.plot}</Card.Text>
