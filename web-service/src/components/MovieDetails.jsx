@@ -19,7 +19,7 @@ function MovieDetails(props) {
     } = useContext(MoviesContext);
     const { user, setUser, triggerUserSync, fetchUpdatedUser } = useContext(UserContext);
     const {externalId} = useParams(); //Recuperar el id de la película de la URL
-    const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la otra pantalla mediante navegación
+    const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la pantalla anterior mediante navegación
     const {urlImage} = props;
     // const [user, setUser] = useState(null);
     const [movie, setMovie] = useState(null);
