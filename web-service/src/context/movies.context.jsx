@@ -120,6 +120,7 @@ function MoviesProviderWrapper(props) {
     const createVote = async (vote) => {
         try {
             if (vote) {
+                console.log("createVote vote:", vote);
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/votes/create',
@@ -131,6 +132,22 @@ function MoviesProviderWrapper(props) {
                 console.log("createVote response:", response);
                 return response.data;
             }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const getVoteByUserAndContent = async (user, movie) => {
+        try {
+            const response = await axios({
+                method: "GET",
+                url: `http://localhost:8080/api/v1/votes/user/${user.id}/content/${movie.id}`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            console.log("getVoteByUserAndContent response:", response);
+            return response.data;
         } catch (error) {
             throw error;
         }
@@ -160,7 +177,9 @@ function MoviesProviderWrapper(props) {
             getFavoriteByIdUserAndIdContent,
             formatDateISO8601,
             convertDateToDayMonthYear,
-            convertMovies
+            convertMovies,
+            getVoteByUserAndContent,
+            createVote
         }}>
             {props.children}
         </MoviesContext.Provider>

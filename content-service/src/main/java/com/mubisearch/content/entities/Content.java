@@ -7,6 +7,7 @@ import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ public class Content extends ExternalEntity {
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
+    @Column(name = "average_score", precision = 3, scale = 1, nullable = false)
+    private BigDecimal averageScore;
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;

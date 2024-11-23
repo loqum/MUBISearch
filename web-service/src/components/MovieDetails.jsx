@@ -25,7 +25,9 @@ function MovieDetails(props) {
         fetchMoviesByIdExternal,
         getFavoriteByIdUserAndIdContent,
         formatDateISO8601,
-        convertDateToDayMonthYear
+        convertDateToDayMonthYear,
+        getVoteByUserAndContent,
+        createVote
     } = useContext(MoviesContext);
     const {user, setUser, triggerUserSync, fetchUpdatedUser} = useContext(UserContext);
     const {externalId} = useParams(); //Recuperar el id de la película de la URL
@@ -37,7 +39,9 @@ function MovieDetails(props) {
     const [showWarningAlert, setShowWarningAlert] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [favorite, setFavorite] = useState(null);
-    const [selectedVote, setSelectedVote] = useState(null);
+    const [selectedVote, setSelectedVote] = useState(0);
+    const [vote, setVote] = useState(null);
+    const [showVoteMessage, setShowVoteMessage] = useState(false);
 
     useEffect(() => {
         if (!movie) {
@@ -48,6 +52,13 @@ function MovieDetails(props) {
     useEffect(() => {
         if (user && movie) {
             checkFavorite();
+        }
+
+    }, [user, movie]);
+
+    useEffect(() => {
+        if (user && movie) {
+            checkVote();
         }
 
     }, [user, movie]);
@@ -69,6 +80,28 @@ function MovieDetails(props) {
                 console.error("Error checking favorite:", e);
                 setIsFavorite(false);
                 setFavorite(null);
+            }
+
+        }
+    }
+
+    const checkVote = async () => {
+        console.log("User: ", user);
+        if (user && movie) {
+            try {
+                const voteData = await getVoteByUserAndContent(user, movie);
+                if (voteData) {
+                    setSelectedVote(voteData.score);
+                    setVote(voteData);
+                    console.log("Vote data:", voteData);
+                } else {
+                    setSelectedVote(0);
+                    setVote(null);
+                }
+            } catch (e) {
+                console.error("Error checking vote:", e);
+                setSelectedVote(0);
+                setVote(null);
             }
 
         }
@@ -143,9 +176,20 @@ function MovieDetails(props) {
         setIsFavorite(favoriteState);
     };
 
-    const handleVote = (vote) => {
+    const handleVote = async (vote) => {
+        try {
+            await createVote({
+                idContent: movie.id,
+                idUser: user.id,
+                score: vote
+            });
+        } catch (e) {
+            console.error("Error creating vote:", e);
+        }
         setSelectedVote(vote);
+        setShowVoteMessage(true);
         console.log(`Voted: ${vote}`);
+        setTimeout(() => setShowVoteMessage(false), 3000);
     };
 
     if (!movie) {
@@ -194,7 +238,7 @@ function MovieDetails(props) {
                     <Card.Text><strong>Fecha de
                         estreno: </strong>{movie.releaseDate && (convertDateToDayMonthYear(movie.releaseDate))}
                     </Card.Text>
-                    <Card.Text><strong>Valoración: </strong>{movie.voteAverage}</Card.Text>
+                    <Card.Text><strong>Valoración: </strong> {movie.averageScore === 0 ? "Todavía no se ha valorado" : movie.averageScore }</Card.Text>
                 </Card.Body>
             </Card>
 
@@ -210,7 +254,7 @@ function MovieDetails(props) {
                     </Button>
                 ))}
             </ButtonGroup>
-            {selectedVote && <p>Has votado: {selectedVote}</p>}
+            {showVoteMessage && <p>¡Tu voto ha sido registrado! {selectedVote}</p>}
 
             <h3 className="mt-4">Reseñas</h3>
             {user && (<Form>

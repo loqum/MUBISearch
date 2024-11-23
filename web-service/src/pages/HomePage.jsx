@@ -8,7 +8,7 @@ function HomePage() {
         <>
             <Container>
                 <Image src={logo} alt="Logo MUBISearch" fluid rounded className="mb-4 mt-4"/>
-                <h1>Últimas películas</h1>
+                <h1 className={"m-4"}>Últimas películas</h1>
                 <MoviesCards/>
             </Container>
         </>

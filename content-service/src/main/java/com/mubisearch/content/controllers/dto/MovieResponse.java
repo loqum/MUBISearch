@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.SuperBuilder;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,6 +24,7 @@ public class MovieResponse  {
     private String title;
     private String plot;
     private String posterPath;
+    private BigDecimal averageScore;
     private List<String> genres = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
     private List<Vote> votes = new ArrayList<>();
@@ -37,6 +39,7 @@ public class MovieResponse  {
                 .idExternal(movie.getIdExternal())
                 .createdAt(movie.getCreatedAt())
                 .updatedAt(movie.getUpdatedAt())
+                 .averageScore(movie.getAverageScore())
                 .title(movie.getTitle())
                 .plot(movie.getPlot())
                 .posterPath(movie.getPosterPath())

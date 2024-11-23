@@ -1,5 +1,6 @@
 package com.mubisearch.content.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Vote {
     private Long idUser;
     @ManyToOne
     @JoinColumn(name = "id_content")
+    @JsonIgnoreProperties({"votes"})
     private Content content;
     @Column(name = "score")
     private int score;
