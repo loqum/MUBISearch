@@ -1,6 +1,7 @@
 package com.mubisearch.content.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.mubisearch.content.services.VoteListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +15,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 @Entity
+@EntityListeners(VoteListener.class)
 public class Vote {
 
     @Id

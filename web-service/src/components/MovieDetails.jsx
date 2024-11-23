@@ -33,7 +33,6 @@ function MovieDetails(props) {
     const {externalId} = useParams(); //Recuperar el id de la película de la URL
     const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la pantalla anterior mediante navegación
     const {urlImage} = props;
-    // const [user, setUser] = useState(null);
     const [movie, setMovie] = useState(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showWarningAlert, setShowWarningAlert] = useState(false);
@@ -254,7 +253,7 @@ function MovieDetails(props) {
                     </Button>
                 ))}
             </ButtonGroup>
-            {showVoteMessage && <p>¡Tu voto ha sido registrado! {selectedVote}</p>}
+            {showVoteMessage && <p>¡Tu voto ha sido registrado!</p>}
 
             <h3 className="mt-4">Reseñas</h3>
             {user && (<Form>

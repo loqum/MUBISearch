@@ -8,7 +8,8 @@ import java.util.Optional;
 
 public interface VoteRepository extends JpaRepository<Vote, Long> {
 
-    public Optional<Vote> findByIdUserAndContentId(Long userId, Long contentId);
+    Optional<Vote> findByIdUserAndContentId(Long userId, Long contentId);
+    List<Vote> findByContentId(Long contentId);
     void deleteByIdUserAndContentId(Long userId, Long contentId);
 
 }

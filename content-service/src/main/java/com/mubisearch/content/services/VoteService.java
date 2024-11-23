@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,21 @@ public class VoteService {
                 .score(voteRequest.score()).build();
 
         return voteRepository.save(vote);
+    }
+
+    public void updateAverageScore(Vote vote) {
+        Long idContent = vote.getContent().getId();
+        List<Vote> votes = vote.getContent().getVotes();
+
+        Content content = contentRepository.findById(idContent).orElseThrow(() -> new RuntimeException("Content not found"));
+
+        BigDecimal averageScore = votes.isEmpty()
+                ? BigDecimal.ZERO
+                : BigDecimal.valueOf(votes.stream().mapToInt(Vote::getScore).average().orElse(0.0))
+                .setScale(1, RoundingMode.HALF_UP);
+        content.setAverageScore(averageScore);
+        contentRepository.save(content);
+
     }
 
 }
