@@ -22,19 +22,10 @@ function UserProviderWrapper(props) {
         syncUser: false
     };
 
-
     const [user, setUser] = useState(() => {
         const storedUser = sessionStorage.getItem("user");
         return storedUser ? JSON.parse(storedUser) : initialUser;
     });
-
-    // useEffect(() => {
-    //     if (user) {
-    //         sessionStorage.setItem("user", JSON.stringify(user));
-    //     } else {
-    //         sessionStorage.removeItem("user");
-    //     }
-    // }, [user]);
 
     useEffect(() => {
         console.log("Sync user:", syncUser);

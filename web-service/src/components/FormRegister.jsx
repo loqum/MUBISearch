@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 function FormRegister() {
 
     const [validated, setValidated] = useState(false);
-    const {user, setUser, createUser, error, setError} = useContext(UserContext);
+    const {user, setUser, createUser, error, setError, login} = useContext(UserContext);
     const navigate = useNavigate();
 
     const setName = (e) => {
@@ -33,7 +33,10 @@ function FormRegister() {
             try {
                 const newUser = await createUser(user);
                 console.log("Registered user:", newUser);
-                const updatedUser = {...user, ...newUser, isLoggedIn: true};
+                // Cuando nos registramos únicamente incluimos el nombre de usuario, el nombre completo y la contraseña, pero no el resto de campos.
+                // Para recuperar todos aquellos campos que se rellenan en backend, volvemos a hacer login con el usuario recién registrado.
+                const registeredUser = await login({name: user.name, password: user.password});
+                const updatedUser = {...user, ...registeredUser, isLoggedIn: true};
                 setUser(updatedUser);
                 sessionStorage.setItem("user", JSON.stringify(updatedUser));
                 navigate("/");
