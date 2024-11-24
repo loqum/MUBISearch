@@ -208,6 +208,39 @@ function MoviesProviderWrapper(props) {
         }
     }
 
+    const getReviewsByUser = async (idUser) => {
+        try {
+            const response = await axios({
+                method: "GET",
+                url: `http://localhost:8080/api/v1/reviews/idUser/${idUser}`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            console.log("getReviewsByUser response:", response);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const deleteReview = async (id) => {
+        try {
+            const response = await axios({
+                method: 'DELETE',
+                url: `http://localhost:8080/api/v1/reviews/delete/${id}`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            console.log("deleteReview response:", response);
+            return response.data;
+        } catch
+            (error) {
+            throw error;
+        }
+    }
+
     const convertMovies = (movies) => {
         console.log("convertMovies movies:", movies);
         return movies.map((movie) => ({
@@ -237,7 +270,9 @@ function MoviesProviderWrapper(props) {
             getVoteByUserAndContent,
             createVote,
             createReview,
-            getReviewsByContent
+            getReviewsByContent,
+            getReviewsByUser,
+            deleteReview
         }}>
             {props.children}
         </MoviesContext.Provider>

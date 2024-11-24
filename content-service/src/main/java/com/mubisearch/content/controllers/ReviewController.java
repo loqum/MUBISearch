@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -35,6 +36,17 @@ public class ReviewController {
         }
     }
 
+    @GetMapping("/idUser/{idUser}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<ReviewResponse>> getReviewsByIdUser(@PathVariable @NotNull Long idUser) {
+        log.info("Init getReviewsByIdUser");
+        try {
+            return ResponseEntity.ok(reviewService.findByIdUser(idUser).stream().map(ReviewResponse::from).collect(Collectors.toList()));
+        } catch (Exception e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @PostMapping("/create")
     public ResponseEntity<String> createReview(@RequestBody ReviewRequest reviewRequest) {
         log.info("Init createReview");
@@ -45,5 +57,16 @@ public class ReviewController {
                 .toUri();
 
         return ResponseEntity.created(uri).body(idReview);
+    }
+
+    @DeleteMapping("/delete/{idReview}")
+    public ResponseEntity<Boolean> deleteReview(@PathVariable @NotNull Long idReview) {
+        log.info("Init deleteReview");
+        try {
+            reviewService.deleteReview(idReview);
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified review id " + idReview + " does not exist.", e);
+        }
     }
 }

@@ -28,6 +28,14 @@ public class ReviewService {
         return reviewRepository.findByContent_Id(idContent);
     }
 
+    public List<Review> findByIdUser(Long idUser) {
+        return reviewRepository.findByIdUser(idUser);
+    }
+
+    public void deleteReview(Long idReview) {
+        reviewRepository.deleteById(idReview);
+    }
+
     public Review createReview(ReviewRequest request) {
         Content content = contentRepository.findById(request.idContent()).orElseThrow(() -> new RuntimeException("Content not found"));
         Review review = Review.builder()
