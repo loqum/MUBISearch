@@ -11,10 +11,11 @@ import {
 } from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import FavoriteHeart from "./FavoriteHeart.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
+import VotesButton from "./VotesButton.jsx";
 
 function MovieDetails(props) {
 
@@ -129,7 +130,7 @@ function MovieDetails(props) {
                     const reviewsWithUserData = await Promise.all(
                         reviewData.map(async (review) => {
                             const user = await fetchUser(review.idUser);
-                            return { ...review, userName: user.name || `Usuario ${review.idUser}` };
+                            return {...review, userName: user.name || `Usuario ${review.idUser}`};
                         })
                     );
 
@@ -306,22 +307,13 @@ function MovieDetails(props) {
                     <Card.Text><strong>Fecha de
                         estreno: </strong>{movie.releaseDate && (convertDateToDayMonthYear(movie.releaseDate))}
                     </Card.Text>
-                    <Card.Text><strong>Valoración: </strong> {movie.averageScore === 0 ? "Todavía no se ha valorado" : movie.averageScore }</Card.Text>
+                    <Card.Text><strong>Valoración: </strong> {movie.averageScore === 0 ? "Todavía no se ha valorado" : movie.averageScore}
+                    </Card.Text>
                 </Card.Body>
             </Card>
 
             <h3 className="mt-4">Vota la película:</h3>
-            <ButtonGroup>
-                {[...Array(10)].map((_, index) => (
-                    <Button
-                        key={index + 1}
-                        variant={selectedVote === index + 1 ? "primary" : "outline-primary"}
-                        onClick={() => handleVote(index + 1)}
-                    >
-                        {index + 1}
-                    </Button>
-                ))}
-            </ButtonGroup>
+            <VotesButton selectedVote={selectedVote} onVote={handleVote}/>
             {showVoteMessage && <p>¡Tu voto ha sido registrado!</p>}
 
             <h3 className="mt-4">Reseñas</h3>
@@ -343,21 +335,21 @@ function MovieDetails(props) {
             )}
             {user && !hasReviewed &&
                 (<Form onSubmit={handleSubmitReview}>
-                    <InputGroup>
-                        <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
-                        <Form.Control
-                            as="textarea"
-                            value={newReview || ""}
-                            onChange={(e) => setNewReview(e.target.value)}
-                            placeholder="Comparte tu opinión sobre esta película o serie"
-                            aria-label="Campo para escribir una nueva reseña"
-                        />
-                    </InputGroup>
-                    <Button type="submit" variant="primary" className="mt-2">
-                        Enviar reseña
-                    </Button>
-                </Form>
-            )}
+                        <InputGroup>
+                            <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
+                            <Form.Control
+                                as="textarea"
+                                value={newReview || ""}
+                                onChange={(e) => setNewReview(e.target.value)}
+                                placeholder="Comparte tu opinión sobre esta película o serie"
+                                aria-label="Campo para escribir una nueva reseña"
+                            />
+                        </InputGroup>
+                        <Button type="submit" variant="primary" className="mt-2">
+                            Enviar reseña
+                        </Button>
+                    </Form>
+                )}
             {hasReviewed && (
                 <Alert variant="info">
                     ¡Gracias por dar tu opinión!
@@ -369,4 +361,4 @@ function MovieDetails(props) {
     );
 }
 
-export default DetailsWrapper(MovieDetails);
+export default React.memo(DetailsWrapper(MovieDetails));

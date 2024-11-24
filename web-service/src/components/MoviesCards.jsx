@@ -1,11 +1,11 @@
 import MovieCard from "./MovieCard.jsx";
-import {useContext, useEffect} from "react";
+import React, {useContext, useEffect} from "react";
 import '../assets/css/MovieList.css';
 import {MoviesContext} from "../context/movies.context.jsx";
 import FetchDiscoverMovies from "../services/FetchDiscoverMovies.jsx";
 import {Spinner} from "react-bootstrap";
 
-function MoviesCards(props) {
+function MoviesCards() {
 
     const {movies, setMovies, convertMovies} = useContext(MoviesContext);
 
@@ -37,4 +37,4 @@ function MoviesCards(props) {
     )
 }
 
-export default MoviesCards;
+export default React.memo(MoviesCards);

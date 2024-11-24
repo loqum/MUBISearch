@@ -1,19 +1,22 @@
 import './App.css'
 import {Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
-import MoviesPage from "./pages/MoviesPage.jsx";
 import RegisterPage from "./pages/RegisterPage.jsx";
 import LoginPage from "./pages/LoginPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
-import MovieDetailsPage from "./pages/DetailMoviePage.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import {Auth0Provider} from "@auth0/auth0-react";
+import React, {lazy, Suspense} from "react";
+import {Spinner} from "react-bootstrap";
+import MoviesPage from "./pages/MoviesPage.jsx";
 
 const domain = "uoc-mubisearch.us.auth0.com";
 const clientId = "WNaBebgkDqJiWoXHc5lZSRE6GkqDFiSF";
 const audience = "https://uoc-mubisearch.us.auth0.com/api/v2/";
+
+const MovieDetailsPage = lazy(() => import("./pages/DetailMoviePage.jsx"));
 
 function App() {
     return (
@@ -27,19 +30,34 @@ function App() {
                 scope: "openid profile email",
             }}
         >
-            <MainLayout>
-                <Routes>
-                    <Route path="/" element={<HomePage/>}/>
-                    <Route path="/movies" element={<MoviesPage/>}/>
-                    <Route path="/register" element={<RegisterPage/>}/>
-                    <Route path="/login" element={<LoginPage/>}/>
-                    <Route path="/search" element={<SearchPage/>}/>
-                    <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
-                    <Route path="/profile" element={<ProfilePage/>}/>
-                    <Route path="/error" element={<ErrorPage/>}/>
-                    <Route path="*" element={<ErrorPage/>}/>
-                </Routes>
-            </MainLayout>
+            <Suspense
+                fallback={
+                    <div style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        height: "100vh"
+                    }}>
+                        <Spinner animation="border" role="status">
+                            <span className="visually-hidden">Loading...</span>
+                        </Spinner>
+                    </div>
+                }
+            >
+                <MainLayout>
+                    <Routes>
+                        <Route path="/" element={<HomePage/>}/>
+                        <Route path="/movies" element={<MoviesPage/>}/>
+                        <Route path="/register" element={<RegisterPage/>}/>
+                        <Route path="/login" element={<LoginPage/>}/>
+                        <Route path="/search" element={<SearchPage/>}/>
+                        <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
+                        <Route path="/profile" element={<ProfilePage/>}/>
+                        <Route path="/error" element={<ErrorPage/>}/>
+                        <Route path="*" element={<ErrorPage/>}/>
+                    </Routes>
+                </MainLayout>
+            </Suspense>
         </Auth0Provider>
     );
 

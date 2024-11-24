@@ -3,6 +3,7 @@ import {Button, Card, Col, Container, ListGroup, Modal, ProgressBar, Row, Spinne
 import {UserContext} from "../context/user.context.jsx";
 import MovieCard from "./MovieCard.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
+import {Link} from "react-router-dom";
 
 function ProfileDetails() {
 
@@ -124,7 +125,8 @@ function ProfileDetails() {
                         {reviews && reviews.length > 0 ? (
                             <ListGroup>
                                 {reviews.map((review, index) => (
-                                    <ListGroup.Item key={index} className={`mb-4 ${index !== 0 ? "border-top" : ""} position-relative`}>
+                                    <ListGroup.Item key={index}
+                                                    className={`mb-4 ${index !== 0 ? "border-top" : ""} position-relative`}>
                                         <i
                                             className="bi bi-trash-fill text-danger position-absolute"
                                             style={{
@@ -135,7 +137,11 @@ function ProfileDetails() {
                                             onClick={() => handleDeleteClick(review)}
 
                                         ></i>
-                                        <h5 className="mb-2">{review.movieTitle}</h5>
+                                        <h5 className="mb-2">
+                                            <Link to={`/details/${review?.idContent}`}>
+                                                {review.movieTitle}
+                                            </Link>
+                                        </h5>
                                         <p>{review.text}</p>
                                         <small className="text-muted">
                                             Publicado el {formatDate(review.createdAt)}
@@ -153,7 +159,11 @@ function ProfileDetails() {
                             </Modal.Header>
                             <Modal.Body>
                                 ¿Estás seguro de que quieres eliminar esta reseña de{" "}
-                                <strong>{selectedReview?.movieTitle}</strong>?
+                                <strong>
+                                    <Link to={`/details/${selectedReview?.idContent}`}>
+                                        {selectedReview?.movieTitle}
+                                    </Link>
+                                </strong>?
                             </Modal.Body>
                             <Modal.Footer>
                                 <Button variant="secondary" onClick={() => setShowModal(false)}>
