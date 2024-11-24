@@ -1,5 +1,5 @@
 import {useContext, useEffect, useState} from "react";
-import {Card, Col, Container, ListGroup, ProgressBar, Row, Spinner} from "react-bootstrap";
+import {Button, Card, Col, Container, ListGroup, Modal, ProgressBar, Row, Spinner} from "react-bootstrap";
 import {UserContext} from "../context/user.context.jsx";
 import MovieCard from "./MovieCard.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
@@ -10,6 +10,9 @@ function ProfileDetails() {
     const {fetchMovieById, getReviewsByUser, deleteReview} = useContext(MoviesContext);
     const [favoriteMovies, setFavoriteMovies] = useState([]);
     const [reviews, setReviews] = useState([]);
+    const [selectedReview, setSelectedReview] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
 
     useEffect(() => {
         const fetchFavoriteMovies = async () => {
@@ -56,12 +59,18 @@ function ProfileDetails() {
         fetchReviews();
     }, [user]);
 
-    const handleDeleteReview = async (id) => {
+    const handleDeleteClick = (review) => {
+        setSelectedReview(review);
+        setShowModal(true);
+    };
+
+    const confirmDelete = async () => {
         try {
-            await deleteReview(id);
+            await deleteReview(selectedReview.id);
             setReviews((prevReviews) =>
-                prevReviews.filter((review) => review.id !== id)
+                prevReviews.filter((review) => review.id !== selectedReview.id)
             );
+            setShowModal(false);
         } catch (error) {
             console.error("Error deleting review:", error);
         }
@@ -123,7 +132,7 @@ function ProfileDetails() {
                                                 right: "10px",
                                                 cursor: "pointer",
                                             }}
-                                            onClick={() => handleDeleteReview(review.id)}
+                                            onClick={() => handleDeleteClick(review)}
 
                                         ></i>
                                         <h5 className="mb-2">{review.movieTitle}</h5>
@@ -137,6 +146,24 @@ function ProfileDetails() {
                         ) : (
                             <p>*No has realizado ninguna reseña*</p>
                         )}
+
+                        <Modal show={showModal} onHide={() => setShowModal(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Confirmar eliminación</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                ¿Estás seguro de que quieres eliminar esta reseña de{" "}
+                                <strong>{selectedReview?.movieTitle}</strong>?
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={() => setShowModal(false)}>
+                                    Cancelar
+                                </Button>
+                                <Button variant="danger" onClick={confirmDelete}>
+                                    Eliminar
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </Col>
                 </Row>
 
