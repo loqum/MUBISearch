@@ -18,6 +18,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -86,6 +87,7 @@ public class MovieService extends BaseService<MovieDto> {
                 .posterPath(movieRequest.posterPath())
                 .releaseDate(movieRequest.releaseDate())
                 .originalTitle(movieRequest.originalTitle())
+                .averageScore(BigDecimal.ZERO)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();

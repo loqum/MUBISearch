@@ -38,6 +38,9 @@ public class RoutingConfig {
     @Value("${app.gateway.controller.url.notifications}")
     private String notificationsControllerUrl;
 
+    @Value("${app.gateway.controller.url.reviews}")
+    private String reviewsControllerUrl;
+
     @Value("${app.gateway.remote-servers.userservice}")
     private String userServiceUrl;
 
@@ -74,6 +77,11 @@ public class RoutingConfig {
                 .route(path(votesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
                 .route(path(votesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
                 .route(path(votesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
+
+                .route(path(reviewsControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
+                .route(path(reviewsControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
+                .route(path(reviewsControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
+                .route(path(reviewsControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
 
                 .route(path(notificationsControllerUrl).and(method(HttpMethod.GET)), http(notificationServiceUrl))
                 .route(path(notificationsControllerUrl).and(method(HttpMethod.PUT)), http(notificationServiceUrl))

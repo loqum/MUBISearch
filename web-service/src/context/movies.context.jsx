@@ -17,6 +17,25 @@ function MoviesProviderWrapper(props) {
         return `${day}-${month}-${year}`;
     };
 
+    const convertDateToDayMonthYearTime = (dateString) => {
+        if (!dateString) return "Fecha no disponible";
+
+        try {
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, "0");
+            const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses empiezan en 0
+            const year = date.getFullYear();
+            const hours = String(date.getHours()).padStart(2, "0");
+            const minutes = String(date.getMinutes()).padStart(2, "0");
+            const seconds = String(date.getSeconds()).padStart(2, "0");
+
+            return `${day}-${month}-${year} ${hours}:${minutes}:${seconds}`;
+        } catch (error) {
+            console.error("Error al convertir la fecha:", error);
+            return "Formato de fecha inválido";
+        }
+    };
+
     const createFavorite = async (favorite) => {
         try {
             if (favorite) {
@@ -137,6 +156,26 @@ function MoviesProviderWrapper(props) {
         }
     }
 
+    const createReview = async (review) => {
+        try {
+            if (review) {
+                console.log("createReview review:", review);
+                const response = await axios({
+                    method: 'POST',
+                    url: 'http://localhost:8080/api/v1/reviews/create',
+                    data: review,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("createReview response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
     const getVoteByUserAndContent = async (user, movie) => {
         try {
             const response = await axios({
@@ -147,6 +186,22 @@ function MoviesProviderWrapper(props) {
                 },
             })
             console.log("getVoteByUserAndContent response:", response);
+            return response.data;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    const getReviewsByContent = async (idContent) => {
+        try {
+            const response = await axios({
+                method: "GET",
+                url: `http://localhost:8080/api/v1/reviews/idContent/${idContent}`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            console.log("getReviewsByContent response:", response);
             return response.data;
         } catch (error) {
             throw error;
@@ -177,9 +232,12 @@ function MoviesProviderWrapper(props) {
             getFavoriteByIdUserAndIdContent,
             formatDateISO8601,
             convertDateToDayMonthYear,
+            convertDateToDayMonthYearTime,
             convertMovies,
             getVoteByUserAndContent,
-            createVote
+            createVote,
+            createReview,
+            getReviewsByContent
         }}>
             {props.children}
         </MoviesContext.Provider>

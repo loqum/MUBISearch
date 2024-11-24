@@ -1,5 +1,6 @@
 package com.mubisearch.content.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mubisearch.content.services.VoteListener;
 import jakarta.persistence.*;
@@ -25,7 +26,7 @@ public class Vote {
     private Long idUser;
     @ManyToOne
     @JoinColumn(name = "id_content")
-    @JsonIgnoreProperties({"votes"})
+    @JsonIgnore
     private Content content;
     @Column(name = "score")
     private int score;

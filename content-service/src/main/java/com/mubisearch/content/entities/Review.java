@@ -1,5 +1,7 @@
 package com.mubisearch.content.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +24,7 @@ public class Review {
     private Long idUser;
     @ManyToOne
     @JoinColumn(name = "id_content")
+    @JsonIgnore
     private Content content;
     @Column(name = "text")
     private String text;

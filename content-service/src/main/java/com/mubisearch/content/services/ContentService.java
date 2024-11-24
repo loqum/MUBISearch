@@ -20,7 +20,6 @@ public class ContentService {
         return contentRepository.findAll();
     }
 
-    @Cacheable(value = "content", key = "#id")
     public Optional<Content> findById(Long id) {
         return contentRepository.findById(id);
     }

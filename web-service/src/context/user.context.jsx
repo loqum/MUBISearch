@@ -43,7 +43,7 @@ function UserProviderWrapper(props) {
                     },
                 });
 
-                const updatedUser = { ...response.data, isLoggedIn: true, syncUser: true};
+                const updatedUser = {...response.data, isLoggedIn: true, syncUser: true};
                 console.log("Updated user:", updatedUser);
 
                 if (JSON.stringify(user) !== JSON.stringify(updatedUser)) {
@@ -87,7 +87,7 @@ function UserProviderWrapper(props) {
     const login = async (u) => {
         try {
             if (u) {
-                const response = await axios( {
+                const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/users/login',
                     data: u,
@@ -95,7 +95,7 @@ function UserProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 });
-                const loggedInUser = { ...response.data, isLoggedIn: true, syncUser: true };
+                const loggedInUser = {...response.data, isLoggedIn: true, syncUser: true};
                 setUser(loggedInUser);
                 setSyncUser(true);
                 return loggedInUser;
@@ -121,13 +121,41 @@ function UserProviderWrapper(props) {
         navigate("/");
     }
 
+    const fetchUser = async (id) => {
+        try {
+            if (id) {
+                const response = await axios.get(`http://localhost:8080/api/v1/users/id/${id}`, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error fetching user:", error);
+            throw error;
+        }
+    }
+
     const triggerUserSync = () => {
         setSyncUser(true);
     };
 
 
     return (
-        <UserContext.Provider value={{user, setUser, login, createUser, logoutUser, error, setError, formatDate, triggerUserSync, fetchUpdatedUser}}>
+        <UserContext.Provider value={{
+            user,
+            setUser,
+            login,
+            createUser,
+            logoutUser,
+            error,
+            setError,
+            formatDate,
+            triggerUserSync,
+            fetchUpdatedUser,
+            fetchUser
+        }}>
             {props.children}
         </UserContext.Provider>
     );

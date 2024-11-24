@@ -55,5 +55,6 @@ CREATE TABLE IF NOT EXISTS review
     id_content BIGINT        NOT NULL,
     text       VARCHAR(1000) NOT NULL,
     created_at  DATETIME      NOT NULL,
-    FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE
+    FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE,
+    UNIQUE (id_user, id_content)
 );
