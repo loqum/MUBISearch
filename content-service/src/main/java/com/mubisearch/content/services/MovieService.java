@@ -70,10 +70,6 @@ public class MovieService extends BaseService<MovieDto> {
         return List.of();
     }
 
-    public Optional<Movie> findByIdExternal(Long idExternal) {
-        return movieRepository.findByIdExternal(idExternal);
-    }
-
     public Optional<Movie> findById(Long id) {
         return movieRepository.findById(id);
     }
@@ -81,7 +77,7 @@ public class MovieService extends BaseService<MovieDto> {
     @Transactional
     public Movie createMovie(MovieRequest movieRequest) {
         Movie movie = Movie.builder()
-                .idExternal(movieRequest.idExternal())
+                .id(movieRequest.id())
                 .title(movieRequest.title())
                 .plot(movieRequest.plot())
                 .posterPath(movieRequest.posterPath())

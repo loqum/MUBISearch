@@ -22,7 +22,6 @@ import java.util.List;
 public class Content extends ExternalEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "title")
     private String title;
@@ -30,14 +29,8 @@ public class Content extends ExternalEntity {
     private String plot;
     @Column(name = "poster_path")
     private String posterPath;
-    @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
     @Column(name = "average_score", precision = 3, scale = 1, nullable = false)
     private BigDecimal averageScore;
-    @UpdateTimestamp
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
     @OneToMany(mappedBy = "content")
     private List<ContentGenre> genres = new ArrayList<>();
     @OneToMany(mappedBy = "content")

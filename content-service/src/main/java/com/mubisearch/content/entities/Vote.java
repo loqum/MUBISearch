@@ -1,23 +1,22 @@
 package com.mubisearch.content.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mubisearch.content.services.VoteListener;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
 @EntityListeners(VoteListener.class)
-public class Vote {
+public class Vote extends ExternalEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,8 +29,6 @@ public class Vote {
     private Content content;
     @Column(name = "score")
     private int score;
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     public Vote(Long idUser, Content content, int score) {
         this.idUser = idUser;

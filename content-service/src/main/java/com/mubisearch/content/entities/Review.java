@@ -3,19 +3,18 @@ package com.mubisearch.content.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @Entity
-public class Review {
+public class Review extends ExternalEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,8 +27,6 @@ public class Review {
     private Content content;
     @Column(name = "text")
     private String text;
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 
     public Review(Long idUser, Content content, String text) {
         this.idUser = idUser;

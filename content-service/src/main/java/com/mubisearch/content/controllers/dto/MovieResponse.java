@@ -1,11 +1,10 @@
 package com.mubisearch.content.controllers.dto;
 
-import com.mubisearch.content.entities.*;
-import jakarta.persistence.Column;
+import com.mubisearch.content.entities.Movie;
+import com.mubisearch.content.entities.Review;
+import com.mubisearch.content.entities.Vote;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.SuperBuilder;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -18,7 +17,6 @@ import java.util.List;
 public class MovieResponse  {
 
     private Long id;
-    private Long idExternal;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String title;
@@ -36,7 +34,6 @@ public class MovieResponse  {
                 .id(movie.getId())
                 .originalTitle(movie.getOriginalTitle())
                 .releaseDate(movie.getReleaseDate())
-                .idExternal(movie.getIdExternal())
                 .createdAt(movie.getCreatedAt())
                 .updatedAt(movie.getUpdatedAt())
                  .averageScore(movie.getAverageScore())

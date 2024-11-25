@@ -8,6 +8,6 @@ import lombok.NonNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record ContentRequest(@NonNull Long idExternal, @NonNull String title, @NonNull String plot,
+public record ContentRequest(@NonNull Long id, @NonNull String title, @NonNull String plot,
                              @NonNull String posterPath, List<Vote> votes, List<Genre> genres, List<Review> reviews) {
 }

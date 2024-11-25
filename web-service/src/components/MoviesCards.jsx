@@ -3,7 +3,6 @@ import React, {useContext, useEffect} from "react";
 import '../assets/css/MovieList.css';
 import {MoviesContext} from "../context/movies.context.jsx";
 import FetchDiscoverMovies from "../services/FetchDiscoverMovies.jsx";
-import {Spinner} from "react-bootstrap";
 
 function MoviesCards() {
 

@@ -1,14 +1,4 @@
-import {
-    Alert,
-    Button,
-    ButtonGroup,
-    Card,
-    Form,
-    InputGroup,
-    OverlayTrigger,
-    ProgressBar,
-    Spinner, Tooltip
-} from "react-bootstrap";
+import {Alert, Button, Card, Form, InputGroup, OverlayTrigger, Spinner, Tooltip} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import React, {useContext, useEffect, useState} from "react";
@@ -20,10 +10,10 @@ import VotesButton from "./VotesButton.jsx";
 function MovieDetails(props) {
 
     const {
+        urlImage,
         createFavorite,
         deleteFavorite,
         createMovie,
-        fetchMoviesByIdExternal,
         fetchMovieById,
         getFavoriteByIdUserAndIdContent,
         formatDateISO8601,
@@ -35,9 +25,9 @@ function MovieDetails(props) {
         getReviewsByContent
     } = useContext(MoviesContext);
     const {user, setUser, triggerUserSync, fetchUpdatedUser, fetchUser} = useContext(UserContext);
-    const {externalId} = useParams(); //Recuperar el id de la película de la URL
+    const {idMovie} = useParams(); //Recuperar el id de la película de la URL
     const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la pantalla anterior mediante navegación
-    const {urlImage} = props;
+    // const {urlImage} = props;
     const [movie, setMovie] = useState(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showWarningAlert, setShowWarningAlert] = useState(false);
@@ -54,7 +44,7 @@ function MovieDetails(props) {
         if (!movie) {
             getMovie();
         }
-    }, [externalId]);
+    }, [idMovie]);
 
     useEffect(() => {
         if (user && movie) {
@@ -153,26 +143,27 @@ function MovieDetails(props) {
     }
 
     const getMovie = async () => {
-        console.log("Movie id:", externalId);
+        console.log("Movie id:", idMovie);
         try {
-            const movieFromBBDD = await fetchMoviesByIdExternal(externalId);
+            const movieFromBBDD = await fetchMovieById(idMovie);
             console.log("movieFromBBDD:", movieFromBBDD);
             if (movieFromBBDD) {
                 setMovie(movieFromBBDD);
             } else {
                 if (movieFromNavigate) {
-                    await createMovie({
+                    const id = await createMovie({
                         originalTitle: movieFromNavigate.original_title,
                         releaseDate: formatDateISO8601(movieFromNavigate.release_date),
-                        idExternal: movieFromNavigate.id,
+                        id: movieFromNavigate.id,
                         title: movieFromNavigate.title,
                         plot: movieFromNavigate.overview,
                         posterPath: movieFromNavigate.poster_path,
                         genres: movieFromNavigate.genres,
                         averageScore: 0
                     });
+                    console.log("Movie created with id:", id);
 
-                    const savedMovie = await fetchMoviesByIdExternal(externalId);
+                    const savedMovie = await fetchMovieById(id);
                     setMovie(savedMovie);
                 }
             }
@@ -289,7 +280,7 @@ function MovieDetails(props) {
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
                 <Card.Header
                     style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                    Película {user && (
+                    Película {user.isLoggedIn && (
                     <OverlayTrigger placement="top" overlay={<Tooltip
                         id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
                         <div>
@@ -312,9 +303,17 @@ function MovieDetails(props) {
                 </Card.Body>
             </Card>
 
-            <h3 className="mt-4">Vota la película:</h3>
-            <VotesButton selectedVote={selectedVote} onVote={handleVote}/>
-            {showVoteMessage && <p>¡Tu voto ha sido registrado!</p>}
+            {user.isLoggedIn && (
+                <>
+                    <h3 className="mt-4">Vota la película:</h3>
+                    <VotesButton selectedVote={selectedVote} handleVote={handleVote}/>
+                    {showVoteMessage &&
+                        <Alert className="mt-3" variant="success" onClose={() => setShowVoteMessage(false)} dismissible>
+                            ¡Tu voto ha sido registrado!
+                        </Alert>
+                    }
+                </>
+            )}
 
             <h3 className="mt-4">Reseñas</h3>
 
@@ -331,9 +330,10 @@ function MovieDetails(props) {
                     </Card>
                 ))
             ) : (
-                <p>No hay reseñas disponibles para esta película. ¡Sé el primero en comentarla!</p>
+                <p>Todavía no hay ninguna reseña para esta película. {user.isLoggedIn && (<>¡Sé el primero en
+                    comentarla!</>)}</p>
             )}
-            {user && !hasReviewed &&
+            {user.isLoggedIn && !hasReviewed &&
                 (<Form onSubmit={handleSubmitReview}>
                         <InputGroup>
                             <InputGroup.Text>Escribe tu reseña</InputGroup.Text>

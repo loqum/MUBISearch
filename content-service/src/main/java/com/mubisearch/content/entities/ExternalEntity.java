@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -17,10 +19,10 @@ import java.time.LocalDateTime;
 @MappedSuperclass
 public class ExternalEntity {
 
-    @Column(name = "id_external")
-    private Long idExternal;
+    @CreationTimestamp
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

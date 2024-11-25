@@ -48,13 +48,13 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/idExternal/{idExternal}")
-    @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<MovieResponse> getMovieByIdExternal(@PathVariable @NotNull Long idExternal) {
-        log.info("Init getMovieByIdExternal");
-        Optional<Movie> movie = movieService.findByIdExternal(idExternal);
-        return movie.map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.noContent().build());
-    }
+//    @GetMapping("/idExternal/{idExternal}")
+//    @ResponseStatus(HttpStatus.OK)
+//    public ResponseEntity<MovieResponse> getMovieByIdExternal(@PathVariable @NotNull Long idExternal) {
+//        log.info("Init getMovieByIdExternal");
+//        Optional<Movie> movie = movieService.findByIdExternal(idExternal);
+//        return movie.map(u -> ResponseEntity.ok().body(MovieResponse.from(u))).orElse(ResponseEntity.noContent().build());
+//    }
 
     @GetMapping("/id/{id}")
     @ResponseStatus(HttpStatus.OK)

@@ -109,24 +109,17 @@ function MoviesProviderWrapper(props) {
 
     }
 
-    const fetchMoviesByIdExternal = async (idExternal) => {
-        try {
-            if (idExternal) {
-                const response = await axios.get(`http://localhost:8080/api/v1/movies/idExternal/${idExternal}`);
-                console.log("FetchMovieByIdExternal response:", response);
-                return response.data;
-            }
-        } catch (error) {
-            console.error("Error fetching movie:", error);
-            throw error;
-        }
-    };
-
     const fetchMovieById = async (id) => {
         try {
             if (id) {
                 console.log("fetchMovieById id:", id);
-                const response = await axios.get(`http://localhost:8080/api/v1/movies/id/${id}`);
+                const response = await axios({
+                    method: 'GET',
+                    url: `http://localhost:8080/api/v1/movies/id/${id}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
                 console.log("fetchMovieById response:", response);
                 return response.data;
             }
@@ -149,7 +142,7 @@ function MoviesProviderWrapper(props) {
                     },
                 })
                 console.log("createVote response:", response);
-                return response.data;
+                return response;
             }
         } catch (error) {
             throw error;
@@ -256,11 +249,9 @@ function MoviesProviderWrapper(props) {
             movies,
             setMovies,
             urlImage,
-            setUrlImage,
             createFavorite,
             deleteFavorite,
             createMovie,
-            fetchMoviesByIdExternal,
             fetchMovieById,
             getFavoriteByIdUserAndIdContent,
             formatDateISO8601,

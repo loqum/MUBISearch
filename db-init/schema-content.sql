@@ -2,11 +2,10 @@ USE contentservice;
 
 CREATE TABLE IF NOT EXISTS content
 (
-    id          BIGINT PRIMARY KEY AUTO_INCREMENT,
+    id          BIGINT PRIMARY KEY,
     title       VARCHAR(255) NOT NULL,
     plot        VARCHAR(1000),
     poster_path VARCHAR(255),
-    id_external BIGINT UNIQUE NOT NULL,
     average_score DECIMAL(3, 1) DEFAULT NOT NULL 0.0,
     created_at  DATETIME NOT NULL,
     updated_at  DATETIME NOT NULL
@@ -44,6 +43,7 @@ CREATE TABLE IF NOT EXISTS vote
     id_content BIGINT   NOT NULL,
     score      INTEGER  NOT NULL,
     created_at DATETIME NOT NULL,
+    updated_at  DATETIME NOT NULL,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE,
     UNIQUE (id_user, id_content)
 );
@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS review
     id_user    BIGINT        NOT NULL,
     id_content BIGINT        NOT NULL,
     text       VARCHAR(1000) NOT NULL,
-    created_at  DATETIME      NOT NULL,
+    created_at  DATETIME     NOT NULL,
+    updated_at  DATETIME     NOT NULL,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE,
     UNIQUE (id_user, id_content)
 );
