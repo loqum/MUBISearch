@@ -225,6 +225,9 @@ function MovieDetails(props) {
 
     const handleVote = async (vote) => {
         try {
+            console.log("User.id:", user.id);
+            console.log("Movie.id:", movie.id);
+            console.log("Vote:", vote);
             await createVote({
                 idContent: movie.id,
                 idUser: user.id,
@@ -232,6 +235,7 @@ function MovieDetails(props) {
             });
             // Actualiza la película con la nueva valoración emitida por el usuario
             const updatedMovie = await fetchMovieById(movie.id);
+            console.log("Updated movie:", updatedMovie);
             setMovie(updatedMovie);
         } catch (e) {
             console.error("Error creating vote:", e);
@@ -294,17 +298,13 @@ function MovieDetails(props) {
                         {user.isLoggedIn && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
-                                <div>
-                                    <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
-                                </div>
+                                <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
                             </OverlayTrigger>
                         )}
                         {user.isLoggedIn && isFavorite && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-notification"> {isNotified ? "Desactivar notificaciones" : "Activar notificaciones"} </Tooltip>}>
-                                <div>
-                                    <NotificationBell onToggle={handleNotificationToggle} isNotified={isNotified}/>
-                                </div>
+                                <NotificationBell onToggle={handleNotificationToggle} isNotified={isNotified}/>
                             </OverlayTrigger>
                         )}
                     </div>
@@ -326,8 +326,8 @@ function MovieDetails(props) {
 
             {user.isLoggedIn && (
                 <>
-                    <VotesButton selectedVote={selectedVote} handleVote={handleVote} showVoteMessage={showVoteMessage} setShowVoteMessage={setShowVoteMessage}/>
-
+                    <VotesButton selectedVote={selectedVote} handleVote={handleVote} showVoteMessage={showVoteMessage}
+                                 setShowVoteMessage={setShowVoteMessage}/>
                 </>
             )}
 

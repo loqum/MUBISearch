@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 public class SeriesDto {
 
     @JsonProperty("id")
-    private Long idExternal;
+    private Long id;
     @JsonProperty("overview")
     private String plot;
     @JsonProperty("poster_path")

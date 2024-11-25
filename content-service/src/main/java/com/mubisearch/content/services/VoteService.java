@@ -52,20 +52,21 @@ public class VoteService {
         return voteRepository.save(vote);
     }
 
-
-    public void updateAverageScore(Vote vote) {
+    @Transactional
+    public Content updateAverageScore(Vote vote) {
         Long idContent = vote.getContent().getId();
-        List<Vote> votes = vote.getContent().getVotes();
-
         Content content = contentRepository.findById(idContent).orElseThrow(() -> new RuntimeException("Content not found"));
+
+        List<Vote> votes = vote.getContent().getVotes();
+        log.info("Content: {}", content);
+        log.info("Votes: {}", votes);
 
         BigDecimal averageScore = votes.isEmpty()
                 ? BigDecimal.ZERO
                 : BigDecimal.valueOf(votes.stream().mapToInt(Vote::getScore).average().orElse(0.0))
                 .setScale(1, RoundingMode.HALF_UP);
         content.setAverageScore(averageScore);
-        contentRepository.save(content);
-
+        return contentRepository.save(content);
     }
 
 }

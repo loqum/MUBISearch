@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class MovieDto implements Serializable {
 
     @JsonProperty("id")
-    private Long idExternal;
+    private Long id;
     private String title;
     @JsonProperty("overview")
     private String plot;

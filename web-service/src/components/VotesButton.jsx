@@ -16,11 +16,7 @@ function VotesButton({selectedVote, handleVote, showVoteMessage, setShowVoteMess
                     </Button>
                 ))}
             </ButtonGroup>
-            {showVoteMessage &&
-                <Alert className="mt-3" variant="success" onClose={() => setShowVoteMessage(false)} dismissible>
-                    ¡Tu voto ha sido registrado!
-                </Alert>
-            }
+
         </>
     );
 }
