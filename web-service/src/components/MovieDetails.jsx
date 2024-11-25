@@ -326,13 +326,8 @@ function MovieDetails(props) {
 
             {user.isLoggedIn && (
                 <>
-                    <h3 className="mt-4">Vota la película:</h3>
-                    <VotesButton selectedVote={selectedVote} handleVote={handleVote}/>
-                    {showVoteMessage &&
-                        <Alert className="mt-3" variant="success" onClose={() => setShowVoteMessage(false)} dismissible>
-                            ¡Tu voto ha sido registrado!
-                        </Alert>
-                    }
+                    <VotesButton selectedVote={selectedVote} handleVote={handleVote} showVoteMessage={showVoteMessage} setShowVoteMessage={setShowVoteMessage}/>
+
                 </>
             )}
 
