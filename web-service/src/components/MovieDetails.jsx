@@ -6,6 +6,7 @@ import FavoriteHeart from "./FavoriteHeart.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
 import VotesButton from "./VotesButton.jsx";
+import NotificationBell from "./NotificationBell.jsx";
 
 function MovieDetails(props) {
 
@@ -39,6 +40,7 @@ function MovieDetails(props) {
     const [newReview, setNewReview] = useState(null);
     const [reviews, setReviews] = useState([]);
     const [hasReviewed, setHasReviewed] = useState(false);
+    const [isNotified, setIsNotified] = useState(false);
 
     useEffect(() => {
         if (!movie) {
@@ -175,43 +177,51 @@ function MovieDetails(props) {
 
     const handleFavoriteToggle = async (favoriteState) => {
         console.log(`El usuario marcó como favorito: ${favoriteState}`);
-        if (favoriteState) {
-            setShowSuccessAlert(true);
-            setShowWarningAlert(false);
-            setTimeout(() => setShowSuccessAlert(false), 3000);
 
+        // Actualiza el estado local inmediatamente
+        setIsFavorite(favoriteState);
 
-            try {
+        try {
+            if (favoriteState) {
+                setShowSuccessAlert(true);
+                setShowWarningAlert(false);
+                setTimeout(() => setShowSuccessAlert(false), 3000);
+
                 console.log("User:", user);
                 console.log("idContent:", movie.id);
+
                 await createFavorite({
                     idUser: user.id,
                     idContent: movie.id,
                 });
-            } catch (e) {
-                console.error("Error creating favorite:", e);
-            }
+            } else {
+                setShowWarningAlert(true);
+                setShowSuccessAlert(false);
+                setTimeout(() => setShowWarningAlert(false), 3000);
 
-        } else {
-            setShowWarningAlert(true);
-            setShowSuccessAlert(false);
-            triggerUserSync();
-            await fetchUpdatedUser();
-            setTimeout(() => setShowWarningAlert(false), 3000);
-            console.log("Favorite ID:", favorite.id);
-            try {
+                console.log("Favorite ID:", favorite.id);
+
                 await deleteFavorite(favorite.id);
-            } catch (e) {
-                console.error("Error deleting favorite:", e);
+
             }
+        } catch (e) {
+            console.error(favoriteState ? "Error creating favorite:" : "Error deleting favorite:", e);
+
+            setIsFavorite(!favoriteState);
         }
+
+        await fetchUpdatedUser();
 
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
-        setIsFavorite(favoriteState);
     };
+
+    const handleNotificationToggle = async (notificationState) => {
+
+    }
+
 
     const handleVote = async (vote) => {
         try {
@@ -278,17 +288,28 @@ function MovieDetails(props) {
             <Card>
                 <Card.Img variant="top" src={`${urlImage}${movie.posterPath}`} className="img-fluid"
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
-                <Card.Header
-                    style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                    Película {user.isLoggedIn && (
-                    <OverlayTrigger placement="top" overlay={<Tooltip
-                        id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
-                        <div>
-                            <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
-                        </div>
-                    </OverlayTrigger>
-                )}
+                <Card.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+                    <span>Película</span>
+                    <div style={{display: "inline-flex", gap: "5px", alignItems: "center"}}>
+                        {user.isLoggedIn && (
+                            <OverlayTrigger placement="top" overlay={<Tooltip
+                                id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
+                                <div>
+                                    <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
+                                </div>
+                            </OverlayTrigger>
+                        )}
+                        {user.isLoggedIn && isFavorite && (
+                            <OverlayTrigger placement="top" overlay={<Tooltip
+                                id="tooltip-notification"> {isNotified ? "Desactivar notificaciones" : "Activar notificaciones"} </Tooltip>}>
+                                <div>
+                                    <NotificationBell onToggle={handleNotificationToggle} isNotified={isNotified}/>
+                                </div>
+                            </OverlayTrigger>
+                        )}
+                    </div>
                 </Card.Header>
+
                 <Card.Body>
                     <Card.Title>{movie.title}</Card.Title>
                     <Card.Text>{movie.plot}</Card.Text>

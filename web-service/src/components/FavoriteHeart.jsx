@@ -1,3 +1,5 @@
+import {Heart, HeartFill} from "react-bootstrap-icons";
+
 function FavoriteHeart({onToggle, isFavorite}) {
     const handleClick = () => {
         const newFavoriteState = !isFavorite;
@@ -7,20 +9,18 @@ function FavoriteHeart({onToggle, isFavorite}) {
     };
 
     return (
-        <svg
+        <span
             onClick={handleClick}
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill={isFavorite ? "red" : "none"}
-            stroke={isFavorite ? "red" : "gray"}
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{width: "24px", height: "24px", cursor: "pointer"}}
+            role="button"
+            style={{cursor: "pointer"}}
+            aria-label={isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
         >
-            <path
-                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 1 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-        </svg>
+            {isFavorite ? (
+                <HeartFill size={24} color="red"/>
+            ) : (
+                <Heart size={24} color="gray"/>
+            )}
+        </span>
 
     );
 }
