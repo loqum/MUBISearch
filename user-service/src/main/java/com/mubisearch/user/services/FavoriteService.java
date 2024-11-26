@@ -5,7 +5,10 @@ import com.mubisearch.user.entities.User;
 import com.mubisearch.user.repositories.FavoriteRepository;
 import com.mubisearch.user.repositories.UserRepository;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
+import com.mubisearch.user.rest.dto.NotificationMessage;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,6 +24,16 @@ public class FavoriteService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
+    @Value("${rabbitmq.exchange.name}") // Configurado en application.yml
+    private String exchange;
+
+    @Value("${rabbitmq.routing.key}") // Configurado en application.yml
+    private String routingKey;
+
 
     public List<Favorite> findAll() {
         return favoriteRepository.findAll();
@@ -47,7 +60,9 @@ public class FavoriteService {
         Favorite newFavorite = Favorite.builder().user(user).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
 
         Favorite savedFavorite = favoriteRepository.save(newFavorite);
-        user.getFavorites().add(savedFavorite);
+
+        NotificationMessage notificationMessage = NotificationMessage.builder().idUser(user.getId()).idContent(savedFavorite.getIdContent()).notification(savedFavorite.getNotificationAlert()).build();
+        rabbitTemplate.convertAndSend(exchange, routingKey, notificationMessage);
 
         return savedFavorite;
     }
