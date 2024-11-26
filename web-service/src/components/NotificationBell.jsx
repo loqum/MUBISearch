@@ -16,7 +16,7 @@ function NotificationBell({onToggle, isNotified}) {
             aria-label={isNotified ? "Eliminar de notificaciones" : "Añadir a notificaciones"}
         >
             {isNotified ? (
-                <BellFill size={24} color="blue"/>
+                <BellFill size={24} color="#99d5ff" style={{ stroke: "black", strokeWidth: "0.25" }} />
             ) : (
                 <Bell size={24} color="gray"/>
             )}

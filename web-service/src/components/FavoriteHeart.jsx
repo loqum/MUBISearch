@@ -16,7 +16,7 @@ function FavoriteHeart({onToggle, isFavorite}) {
             aria-label={isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
         >
             {isFavorite ? (
-                <HeartFill size={24} color="red"/>
+                <HeartFill size={24} color="red" style={{ stroke: "black", strokeWidth: "0.25" }}/>
             ) : (
                 <Heart size={24} color="gray"/>
             )}
