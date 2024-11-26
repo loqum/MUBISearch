@@ -12,6 +12,7 @@ function MovieCard(props) {
     const [expanded, setExpanded] = useState(false);
 
     const handleClick = () => {
+        console.log("MovieCard handleClick movie id:", movie.id);
         navigate(`/details/${movie.id}`, {state: {movie}});
     }
 

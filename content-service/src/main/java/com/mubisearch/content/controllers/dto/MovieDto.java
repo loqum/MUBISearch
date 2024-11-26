@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mubisearch.content.entities.Genre;
 import lombok.*;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,7 +18,10 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MovieDto implements Serializable {
+public class MovieDto implements Serializable{
+
+    @Serial
+    private static final long serialVersionUID = -4648592258060207936L;
 
     @JsonProperty("id")
     private Long id;

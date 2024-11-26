@@ -47,7 +47,6 @@ public class MovieService extends BaseService<MovieDto> {
     @Value("${tmdb.api.url.search.movie.discover}")
     private String discoverUrl;
 
-    @Cacheable(value = "movies")
     public List<MovieDto> getMovies(String title) {
         Map<String, String> params = Map.of("title", title);
         TypeReference<SearchResponse<MovieDto>> movieType = new TypeReference<>() {};
@@ -87,11 +86,14 @@ public class MovieService extends BaseService<MovieDto> {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
-        movie = movieRepository.save(movie);
-
-        Movie finalMovie = movie;
+        try {
+            movie = movieRepository.save(movie);
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving movie: " + e.getMessage(), e);
+        }
 
         if (movieRequest.genres() != null && !movieRequest.genres().isEmpty()) {
+            Movie finalMovie = movie;
             List<ContentGenre> contentGenres = movieRequest.genres().keySet().stream()
                     .map(id -> {
                         Genre genre = Genre.valueOfId(id);
@@ -102,7 +104,11 @@ public class MovieService extends BaseService<MovieDto> {
                         }
                     })
                     .toList();
-            contentGenreRepository.saveAll(contentGenres);
+            try {
+                contentGenreRepository.saveAll(contentGenres);
+            } catch (Exception e) {
+                throw new RuntimeException("Error saving content genres: " + e.getMessage(), e);
+            }
         }
 
         return movie;

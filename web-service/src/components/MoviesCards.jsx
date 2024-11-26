@@ -36,4 +36,4 @@ function MoviesCards() {
     )
 }
 
-export default React.memo(MoviesCards);
+export default MoviesCards;

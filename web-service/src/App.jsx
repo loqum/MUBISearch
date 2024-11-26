@@ -8,15 +8,14 @@ import MainLayout from "./layouts/MainLayout.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import {Auth0Provider} from "@auth0/auth0-react";
-import React, {lazy, Suspense} from "react";
+import React, {Suspense} from "react";
 import {Spinner} from "react-bootstrap";
 import MoviesPage from "./pages/MoviesPage.jsx";
+import DetailMoviePage from "./pages/DetailMoviePage.jsx";
 
 const domain = "uoc-mubisearch.us.auth0.com";
 const clientId = "WNaBebgkDqJiWoXHc5lZSRE6GkqDFiSF";
 const audience = "https://uoc-mubisearch.us.auth0.com/api/v2/";
-
-const MovieDetailsPage = lazy(() => import("./pages/DetailMoviePage.jsx"));
 
 function App() {
     return (
@@ -51,7 +50,7 @@ function App() {
                         <Route path="/register" element={<RegisterPage/>}/>
                         <Route path="/login" element={<LoginPage/>}/>
                         <Route path="/search" element={<SearchPage/>}/>
-                        <Route path="/details/:externalId" element={<MovieDetailsPage/>}/>
+                        <Route path="/details/:idMovie" element={<DetailMoviePage/>}/>
                         <Route path="/profile" element={<ProfilePage/>}/>
                         <Route path="/error" element={<ErrorPage/>}/>
                         <Route path="*" element={<ErrorPage/>}/>

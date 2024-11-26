@@ -62,7 +62,6 @@ function MovieDetails(props) {
 
     }, [user, movie]);
 
-
     useEffect(() => {
         if (movie) {
             checkReviews();
@@ -377,4 +376,4 @@ function MovieDetails(props) {
     );
 }
 
-export default React.memo(DetailsWrapper(MovieDetails));
+export default DetailsWrapper(MovieDetails);
