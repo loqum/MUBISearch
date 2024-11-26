@@ -18,7 +18,7 @@ public class FavoriteResponse {
     private boolean notificationAlert;
 
     public static FavoriteResponse from(Favorite favorite) {
-        return FavoriteResponse.builder().id(favorite.getId()).user(favorite.getUser()).idContent(favorite.getIdContent()).createdAt(LocalDateTime.now()).notificationAlert(true).build();
+        return FavoriteResponse.builder().id(favorite.getId()).user(favorite.getUser()).idContent(favorite.getIdContent()).createdAt(LocalDateTime.now()).notificationAlert(favorite.getNotificationAlert()).build();
     }
 
 

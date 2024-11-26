@@ -1,9 +1,11 @@
 package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.Favorite;
+import com.mubisearch.user.entities.User;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
 import com.mubisearch.user.rest.dto.FavoriteResponse;
 import com.mubisearch.user.services.FavoriteService;
+import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -25,6 +26,8 @@ public class FavoriteController {
 
     @Autowired
     private FavoriteService favoriteService;
+    @Autowired
+    private UserService userService;
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
@@ -98,11 +101,14 @@ public class FavoriteController {
         }
     }
 
-    @PutMapping("/{id}/notification")
-    public ResponseEntity<Favorite> setNotification(@PathVariable @NotNull Long id, @RequestParam Boolean isNotificationActive) {
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<Favorite> setNotification(@PathVariable @NotNull Long id, @RequestBody @NotNull Boolean notification) {
         log.info("Init setNotification");
-        Favorite favorite = favoriteService.setNotification(id, isNotificationActive);
-        Favorite favoriteUpdated = favoriteService.updateFavorite(favorite);
-        return ResponseEntity.ok(favoriteUpdated);
+        try {
+            return ResponseEntity.ok().body(favoriteService.setNotification(id, notification));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified favorite with ID " + id + " does not exist.", e);
+        }
+
     }
 }

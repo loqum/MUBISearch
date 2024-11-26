@@ -23,7 +23,8 @@ function MovieDetails(props) {
         getVoteByUserAndContent,
         createVote,
         createReview,
-        getReviewsByContent
+        getReviewsByContent,
+        updateFavoriteAlert
     } = useContext(MoviesContext);
     const {user, setUser, triggerUserSync, fetchUpdatedUser, fetchUser} = useContext(UserContext);
     const {idMovie} = useParams(); //Recuperar el id de la película de la URL
@@ -75,10 +76,12 @@ function MovieDetails(props) {
                 const favoriteData = await getFavoriteByIdUserAndIdContent(user, movie);
                 if (favoriteData) {
                     setIsFavorite(true);
+                    setIsNotified(favoriteData.notificationAlert);
                     setFavorite(favoriteData);
                     console.log("Favorite data:", favoriteData);
                 } else {
                     setIsFavorite(false);
+                    setIsNotified(false);
                     setFavorite(null);
                 }
             } catch (e) {
@@ -218,7 +221,24 @@ function MovieDetails(props) {
     };
 
     const handleNotificationToggle = async (notificationState) => {
+        console.log(`El usuario marcó como notificado: ${notificationState}`);
 
+        setIsNotified(notificationState);
+
+        try {
+            console.log("Favorite:", favorite);
+            const updatedFavorite = await updateFavoriteAlert(favorite.id, notificationState);
+            console.log("Updated Favorite:", updatedFavorite);
+        } catch (e) {
+            console.error("Error creating notification: ", e);
+        }
+
+        // await fetchUpdatedUser();
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
     }
 
 
@@ -297,13 +317,17 @@ function MovieDetails(props) {
                         {user.isLoggedIn && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
-                                <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
+                                <div>
+                                    <FavoriteHeart onToggle={handleFavoriteToggle} isFavorite={isFavorite}/>
+                                </div>
                             </OverlayTrigger>
                         )}
                         {user.isLoggedIn && isFavorite && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-notification"> {isNotified ? "Desactivar notificaciones" : "Activar notificaciones"} </Tooltip>}>
-                                <NotificationBell onToggle={handleNotificationToggle} isNotified={isNotified}/>
+                                <div>
+                                    <NotificationBell onToggle={handleNotificationToggle} isNotified={isNotified}/>
+                                </div>
                             </OverlayTrigger>
                         )}
                     </div>

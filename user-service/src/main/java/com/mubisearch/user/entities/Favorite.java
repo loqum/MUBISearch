@@ -25,7 +25,7 @@ public class Favorite {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     @Column(name = "notification_alert")
-    private boolean notificationAlert;
+    private Boolean notificationAlert;
     @ManyToOne
     @JoinColumn(name = "id_user")
     @JsonIgnore

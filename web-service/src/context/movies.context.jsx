@@ -39,6 +39,7 @@ function MoviesProviderWrapper(props) {
     const createFavorite = async (favorite) => {
         try {
             if (favorite) {
+                console.log("createFavorite favorite:", favorite);
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/favorites/create',
@@ -51,6 +52,7 @@ function MoviesProviderWrapper(props) {
                 return response.data;
             }
         } catch (error) {
+            console.error("Error creating favorite:", error);
             throw error;
         }
     };
@@ -69,6 +71,7 @@ function MoviesProviderWrapper(props) {
                 return response.data;
             }
         } catch (error) {
+            console.error("Error deleting favorite:", error);
             throw error;
         }
     };
@@ -88,6 +91,7 @@ function MoviesProviderWrapper(props) {
                 return response.data;
             }
         } catch (error) {
+            console.error("Error creating movie:", error);
             throw error;
         }
     };
@@ -104,6 +108,7 @@ function MoviesProviderWrapper(props) {
             console.log("getFavoriteByIdUserAndIdContent response:", response);
             return response.data;
         } catch (error) {
+            console.error("Error fetching favorite by user and content:", error);
             throw error;
         }
 
@@ -145,6 +150,7 @@ function MoviesProviderWrapper(props) {
                 return response;
             }
         } catch (error) {
+            console.error("Error creating vote:", error);
             throw error;
         }
     }
@@ -165,6 +171,7 @@ function MoviesProviderWrapper(props) {
                 return response.data;
             }
         } catch (error) {
+            console.error("Error creating review:", error);
             throw error;
         }
     }
@@ -181,6 +188,7 @@ function MoviesProviderWrapper(props) {
             console.log("getVoteByUserAndContent response:", response);
             return response.data;
         } catch (error) {
+            console.error("Error fetching vote by user and content:", error);
             throw error;
         }
     }
@@ -197,6 +205,7 @@ function MoviesProviderWrapper(props) {
             console.log("getReviewsByContent response:", response);
             return response.data;
         } catch (error) {
+            console.error("Error fetching reviews by content:", error);
             throw error;
         }
     }
@@ -213,6 +222,7 @@ function MoviesProviderWrapper(props) {
             console.log("getReviewsByUser response:", response);
             return response.data;
         } catch (error) {
+            console.error("Error fetching reviews by user:", error);
             throw error;
         }
     }
@@ -228,8 +238,8 @@ function MoviesProviderWrapper(props) {
             })
             console.log("deleteReview response:", response);
             return response.data;
-        } catch
-            (error) {
+        } catch (error) {
+            console.error("Error deleting review:", error);
             throw error;
         }
     }
@@ -243,6 +253,29 @@ function MoviesProviderWrapper(props) {
             plot: movie.overview,
         }));
     };
+
+    const updateFavoriteAlert = async (idFavorite, notificationState) => {
+        try {
+            if (idFavorite) {
+                console.log("updateFavoriteAlert idFavorite:", idFavorite);
+                console.log("updateFavoriteAlert notificationState:", notificationState);
+                const response = await axios({
+                    method: 'PATCH',
+                    url: `http://localhost:8080/api/v1/favorites/update/${idFavorite}`,
+                    data: notificationState,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("updateFavoriteAlert response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error updating favorite alert:", error);
+            throw error;
+        }
+
+    }
 
     return (
         <MoviesContext.Provider value={{
@@ -263,7 +296,8 @@ function MoviesProviderWrapper(props) {
             createReview,
             getReviewsByContent,
             getReviewsByUser,
-            deleteReview
+            deleteReview,
+            updateFavoriteAlert
         }}>
             {props.children}
         </MoviesContext.Provider>

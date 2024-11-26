@@ -45,16 +45,16 @@ public class FavoriteService {
     public Favorite createFavorite(FavoriteRequest favorite) {
         User user = userRepository.findById(favorite.idUser()).orElseThrow(() -> new IllegalArgumentException("User with id: " + favorite.idUser() + " not found"));
         Favorite newFavorite = Favorite.builder().user(user).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
-        return favoriteRepository.save(newFavorite);
+
+        Favorite savedFavorite = favoriteRepository.save(newFavorite);
+        user.getFavorites().add(savedFavorite);
+
+        return savedFavorite;
     }
 
-    public Favorite setNotification(Long id, @RequestBody Boolean isNotificationActive) {
+    public Favorite setNotification(Long id, boolean notification) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Favorite with id: " + id + " not found"));
-        favorite.setNotificationAlert(isNotificationActive);
-        return favorite;
-    }
-
-    public Favorite updateFavorite(Favorite favorite) {
+        favorite.setNotificationAlert(notification);
         return favoriteRepository.save(favorite);
     }
 
