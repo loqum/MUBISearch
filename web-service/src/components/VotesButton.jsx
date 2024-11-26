@@ -17,6 +17,11 @@ function VotesButton({selectedVote, handleVote, showVoteMessage, setShowVoteMess
                 ))}
             </ButtonGroup>
 
+            {showVoteMessage && (
+                <Alert className="mt-4" variant="success" onClose={() => setShowVoteMessage(false)} dismissible>
+                    ¡Gracias por tu voto!
+                </Alert>
+            )}
         </>
     );
 }
