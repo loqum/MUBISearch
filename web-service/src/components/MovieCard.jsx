@@ -39,7 +39,7 @@ function MovieCard(props) {
                 </Card.Text>
                 <div className="d-flex justify-content-between">
                     <Button variant="primary" onClick={handleClick}>Ver detalles</Button>
-                    {movie.plot.length > 150 && (
+                    {movie.plot?.length > 150 && (
                         <Button variant="link" onClick={toggleExpand} className="p-0"
                                 style={{ fontSize: '1.5rem' }}
                                 aria-label={expanded ? "Ver más contenido" : "Ver menos contenido"}
