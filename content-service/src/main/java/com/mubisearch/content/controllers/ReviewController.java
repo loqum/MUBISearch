@@ -2,6 +2,8 @@ package com.mubisearch.content.controllers;
 
 import com.mubisearch.content.controllers.dto.ReviewRequest;
 import com.mubisearch.content.controllers.dto.ReviewResponse;
+import com.mubisearch.content.entities.NotificationType;
+import com.mubisearch.content.services.ContentUpdatePublisher;
 import com.mubisearch.content.services.ReviewService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
@@ -23,6 +25,9 @@ public class ReviewController {
 
     @Autowired
     private ReviewService reviewService;
+
+    @Autowired
+    private ContentUpdatePublisher contentUpdatePublisher;
 
 
     @GetMapping("/idContent/{idContent}")
@@ -55,6 +60,8 @@ public class ReviewController {
                 .path("/{idReview}")
                 .buildAndExpand(idReview)
                 .toUri();
+
+        contentUpdatePublisher.publishContentUpdate(reviewRequest.idUser(), reviewRequest.idContent(), NotificationType.NEW_REVIEW);
 
         return ResponseEntity.created(uri).body(idReview);
     }

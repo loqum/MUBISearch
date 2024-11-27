@@ -2,7 +2,9 @@ package com.mubisearch.content.controllers;
 
 import com.mubisearch.content.controllers.dto.VoteRequest;
 import com.mubisearch.content.controllers.dto.VoteResponse;
+import com.mubisearch.content.entities.NotificationType;
 import com.mubisearch.content.entities.Vote;
+import com.mubisearch.content.services.ContentUpdatePublisher;
 import com.mubisearch.content.services.VoteService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class VoteController {
 
     @Autowired
     private VoteService voteService;
+
+    @Autowired
+    private ContentUpdatePublisher contentUpdatePublisher;
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
@@ -46,6 +51,8 @@ public class VoteController {
                 .path("/{idVote}")
                 .buildAndExpand(idVote)
                 .toUri();
+
+        contentUpdatePublisher.publishContentUpdate(voteRequest.idUser(), voteRequest.idContent(), NotificationType.NEW_VOTE);
         return ResponseEntity.created(uri).body(idVote);
     }
 }

@@ -2,7 +2,6 @@ package com.mubisearch.notification.services;
 
 import com.mubisearch.notification.controllers.dto.NotificationRequest;
 import com.mubisearch.notification.entities.Notification;
-import com.mubisearch.notification.entities.NotificationType;
 import com.mubisearch.notification.repositories.NotificationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,6 +43,10 @@ public class NotificationService {
             throw new IllegalArgumentException("Content with id " + notification.getIdContent() + " does not exist");
         }
         return notificationRepository.save(notification);
+    }
+
+    public void save(Notification notification) {
+        notificationRepository.save(notification);
     }
 
     private boolean userExists(Long idUser) {

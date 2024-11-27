@@ -10,6 +10,7 @@ public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
     List<Favorite> findFavoritesByUserId(Long idUser);
     List<Favorite> findFavoritesByIdContent(Long idContent);
+    List<Favorite> findFavoritesByUserIdAndNotificationAlert(Long idUser, boolean notification);
     Optional<Favorite> findFavoriteByUserIdAndIdContent(Long idUser, Long idContent);
     Optional<Favorite> findFavoriteById(Long id);
     boolean existsByUser_IdAndIdContent(Long userId, Long idContent);

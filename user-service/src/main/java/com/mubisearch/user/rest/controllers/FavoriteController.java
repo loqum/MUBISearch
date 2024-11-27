@@ -1,11 +1,9 @@
 package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.Favorite;
-import com.mubisearch.user.entities.User;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
 import com.mubisearch.user.rest.dto.FavoriteResponse;
 import com.mubisearch.user.services.FavoriteService;
-import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +24,9 @@ public class FavoriteController {
 
     @Autowired
     private FavoriteService favoriteService;
-    @Autowired
-    private UserService userService;
+
+//    @Autowired
+//    private NotificationAlertPublisher notificationAlertPublisher;
 
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
@@ -57,6 +56,18 @@ public class FavoriteController {
         List<FavoriteResponse> favorites = favoriteService.findByIdUser(idUser).stream().map(FavoriteResponse::from).toList();
         if (favorites.isEmpty()) {
             log.error("Favorites from user {} not found", idUser);
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(favorites);
+    }
+
+    @GetMapping("/user/{idUser}/notification/{isNotified}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<FavoriteResponse>> getNotificationByIdUser(@PathVariable @NotNull Long idUser, @PathVariable @NotNull Boolean isNotified) {
+        log.info("Init getNotificationByIdUser");
+        List<FavoriteResponse> favorites = favoriteService.findByIdUserAndNotification(idUser, isNotified).stream().map(FavoriteResponse::from).toList();
+        if (favorites.isEmpty()) {
+            log.error("Favorites with notification from user {} not found", idUser);
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(favorites);
@@ -105,10 +116,12 @@ public class FavoriteController {
     public ResponseEntity<Favorite> setNotification(@PathVariable @NotNull Long id, @RequestBody @NotNull Boolean notification) {
         log.info("Init setNotification");
         try {
-            return ResponseEntity.ok().body(favoriteService.setNotification(id, notification));
+            ResponseEntity<Favorite> body = ResponseEntity.ok().body(favoriteService.setNotification(id, notification));
+
+            log.info("Notification updated for favorite with ID {}: {}", id, notification);
+            return body;
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The specified favorite with ID " + id + " does not exist.", e);
         }
-
     }
 }

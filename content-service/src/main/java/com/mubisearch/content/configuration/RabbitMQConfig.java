@@ -1,4 +1,4 @@
-package com.mubisearch.user.configuration;
+package com.mubisearch.content.configuration;
 
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -9,8 +9,9 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitMQConfig {
+
     public static final String EXCHANGE_NAME = "content_updates";
-    public static final String ROUTING_KEY = "alert.update";
+    public static final String ROUTING_KEY = "content.update.#";
 
     @Bean
     public TopicExchange exchange() {

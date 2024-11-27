@@ -5,15 +5,12 @@ import com.mubisearch.user.entities.User;
 import com.mubisearch.user.repositories.FavoriteRepository;
 import com.mubisearch.user.repositories.UserRepository;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
-import com.mubisearch.user.rest.dto.NotificationMessage;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -26,14 +23,7 @@ public class FavoriteService {
     private UserRepository userRepository;
 
     @Autowired
-    private RabbitTemplate rabbitTemplate;
-
-    @Value("${rabbitmq.exchange.name}") // Configurado en application.yml
-    private String exchange;
-
-    @Value("${rabbitmq.routing.key}") // Configurado en application.yml
-    private String routingKey;
-
+    private NotificationAlertPublisher notificationAlertPublisher;
 
     public List<Favorite> findAll() {
         return favoriteRepository.findAll();
@@ -51,6 +41,10 @@ public class FavoriteService {
         return favoriteRepository.findFavoritesByIdContent(idContent);
     }
 
+    public List<Favorite> findByIdUserAndNotification(Long idUser, boolean notification) {
+        return favoriteRepository.findFavoritesByUserIdAndNotificationAlert(idUser, notification);
+    }
+
     public Optional<Favorite> findById(Long id) {
         return favoriteRepository.findFavoriteById(id);
     }
@@ -59,17 +53,13 @@ public class FavoriteService {
         User user = userRepository.findById(favorite.idUser()).orElseThrow(() -> new IllegalArgumentException("User with id: " + favorite.idUser() + " not found"));
         Favorite newFavorite = Favorite.builder().user(user).notificationAlert(false).createdAt(LocalDateTime.now()).idContent(favorite.idContent()).build();
 
-        Favorite savedFavorite = favoriteRepository.save(newFavorite);
-
-        NotificationMessage notificationMessage = NotificationMessage.builder().idUser(user.getId()).idContent(savedFavorite.getIdContent()).notification(savedFavorite.getNotificationAlert()).build();
-        rabbitTemplate.convertAndSend(exchange, routingKey, notificationMessage);
-
-        return savedFavorite;
+        return favoriteRepository.save(newFavorite);
     }
 
     public Favorite setNotification(Long id, boolean notification) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Favorite with id: " + id + " not found"));
         favorite.setNotificationAlert(notification);
+        notificationAlertPublisher.publishContentUpdate(Objects.requireNonNull(favorite.getUser().getId()), favorite.getIdContent(), notification);
         return favoriteRepository.save(favorite);
     }
 
