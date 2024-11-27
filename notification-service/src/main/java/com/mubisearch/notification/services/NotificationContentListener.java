@@ -21,9 +21,6 @@ public class NotificationContentListener {
     @Autowired
     private NotificationService notificationService;
 
-//    @Value("${user.service.notification.url}")
-//    private String urlUserNotification;
-
     @RabbitListener(queues = RabbitMQConfig.CONTENT_UPDATE_QUEUE)
     public void handleContentUpdate(Map<String, Object> message) {
         System.out.println("Mensaje recibido: " + message);
@@ -34,9 +31,9 @@ public class NotificationContentListener {
 
         log.info("Notificando al usuario " + idUser + " sobre el contenido " + idContent + " con notificación " + notificationType);
 
-        // Obtener usuarios interesados en este contenido
-        Map<Long, Boolean> userAlerts = notificationAlertListener.getUserAlerts(idContent);
 
+        // Excluimos al propio usuario para que no reciba una notificación de sí mismo
+        Map<Long, Boolean> userAlerts = notificationAlertListener.getUserAlerts(idContent, idUser);
         log.info("Usuarios interesados en el contenido " + idContent + ": " + userAlerts);
 
         userAlerts.forEach((id, isAlerted) -> {

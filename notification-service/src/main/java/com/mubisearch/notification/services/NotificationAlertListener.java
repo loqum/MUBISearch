@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class NotificationAlertListener {
@@ -22,8 +23,12 @@ public class NotificationAlertListener {
         System.out.println("Actualizado alert para user " + idUser + " y content " + idContent + ": " + notificationAlert);
     }
 
-    public Map<Long, Boolean> getUserAlerts(Long idContent) {
-        return userAlerts.getOrDefault(idContent, new HashMap<>());
+    public Map<Long, Boolean> getUserAlerts(Long idContent, Long excludedIdUser) {
+        return userAlerts.getOrDefault(idContent, new HashMap<>())
+                .entrySet()
+                .stream()
+                .filter(entry -> !entry.getKey().equals(excludedIdUser))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
 }
