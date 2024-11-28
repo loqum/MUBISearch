@@ -77,6 +77,12 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - 8025:8025
+      - 1025:1025
+
 volumes:
   content_data:
   user_data:

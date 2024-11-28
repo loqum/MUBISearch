@@ -5,6 +5,7 @@ import com.mubisearch.notification.entities.Notification;
 import com.mubisearch.notification.entities.NotificationType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +21,10 @@ public class NotificationContentListener {
 
     @Autowired
     private NotificationService notificationService;
+
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
+
 
     @RabbitListener(queues = RabbitMQConfig.CONTENT_UPDATE_QUEUE)
     public void handleContentUpdate(Map<String, Object> message) {
@@ -47,14 +52,23 @@ public class NotificationContentListener {
                         .createdAt(LocalDateTime.now())
                         .build();
                 notificationService.save(notification);
-                sendNotification();
+                publishEmailToQueue(id, getDescription(notificationType));
             }
         });
 
     }
 
-    private void sendNotification() {
-        // TODO: Implementar aquí la lógica de notificación con correo (emailhog)
+    private void publishEmailToQueue(Long idUser, String text) {
+        rabbitTemplate.convertAndSend(
+                RabbitMQConfig.EMAIL_QUEUE,
+                Map.of(
+                        "idUser", idUser,
+                        "subject", "Tienes nuevas notificaciones",
+                        "text", text
+                )
+        );
+        log.info("Mensaje de correo enviado a la cola para el usuario " + idUser);
+
     }
 
     private String getDescription(NotificationType notificationType) {

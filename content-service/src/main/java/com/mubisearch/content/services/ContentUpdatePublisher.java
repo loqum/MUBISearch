@@ -4,6 +4,7 @@ import com.mubisearch.content.configuration.RabbitMQConfig;
 import com.mubisearch.content.entities.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.MessageDeliveryMode;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,10 @@ public class ContentUpdatePublisher {
                 "notificationType", notificationType.name()
         );
 
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY.replace("#", idContent.toString()), message);
+        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, RabbitMQConfig.ROUTING_KEY.replace("#", idContent.toString()), message, m -> {
+            m.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);
+            return m;
+        });
         log.info("Published content update for user {} and content {}: {}", idUser, idContent, notificationType);
     }
 }

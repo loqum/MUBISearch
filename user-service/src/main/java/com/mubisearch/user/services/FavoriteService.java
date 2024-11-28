@@ -59,7 +59,7 @@ public class FavoriteService {
     public Favorite setNotification(Long id, boolean notification) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Favorite with id: " + id + " not found"));
         favorite.setNotificationAlert(notification);
-        notificationAlertPublisher.publishContentUpdate(Objects.requireNonNull(favorite.getUser().getId()), favorite.getIdContent(), notification);
+        notificationAlertPublisher.publishAlertUpdate(Objects.requireNonNull(favorite.getUser().getId()), favorite.getIdContent(), notification);
         return favoriteRepository.save(favorite);
     }
 

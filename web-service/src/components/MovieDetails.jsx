@@ -233,14 +233,11 @@ function MovieDetails(props) {
             console.error("Error creating notification: ", e);
         }
 
-        // await fetchUpdatedUser();
-
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
     }
-
 
     const handleVote = async (vote) => {
         try {
