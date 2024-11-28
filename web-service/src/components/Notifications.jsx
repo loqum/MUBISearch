@@ -5,23 +5,24 @@ import {Link} from "react-router-dom";
 import {ListGroup} from "react-bootstrap";
 import {UserContext} from "../context/user.context.jsx";
 
-export const Notifications = ({idUser}) => {
+export const Notifications = () => {
 
     const [notifications, setNotifications] = useState([]);
     const [notificationsWithTitles, setNotificationsWithTitles] = useState([]);
     const [error, setError] = useState(null);
     const pollingInterval = 30000;
     const {fetchMovieById} = useContext(MoviesContext);
+    const {user} = useContext(UserContext);
 
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                if (!idUser) {
+                if (!user.id) {
                     return;
                 }
                 const response = await axios({
                     method: 'GET',
-                    url: `http://localhost:8080/api/v1/notifications/idUser/${idUser}`,
+                    url: `http://localhost:8080/api/v1/notifications/idUser/${user.id}`,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -50,7 +51,7 @@ export const Notifications = ({idUser}) => {
         return () => {
             clearInterval(interval);
         };
-    }, [idUser, pollingInterval, fetchMovieById]);
+    }, [user, pollingInterval, fetchMovieById]);
 
     const handleDeleteClick = async (notification) => {
         try {
