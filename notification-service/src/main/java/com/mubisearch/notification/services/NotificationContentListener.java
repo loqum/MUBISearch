@@ -54,7 +54,7 @@ public class NotificationContentListener {
     }
 
     private void sendNotification() {
-        // Implementar aquí la lógica de notificación con correo (emailhog)
+        // TODO: Implementar aquí la lógica de notificación con correo (emailhog)
     }
 
     private String getDescription(NotificationType notificationType) {
