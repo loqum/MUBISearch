@@ -50,7 +50,7 @@ function App() {
                         <Route path="/register" element={<RegisterPage/>}/>
                         <Route path="/login" element={<LoginPage/>}/>
                         <Route path="/search" element={<SearchPage/>}/>
-                        <Route path="/details/:idMovie" element={<DetailMoviePage/>}/>
+                        <Route path="/details/:idContent" element={<DetailMoviePage/>}/>
                         <Route path="/profile" element={<ProfilePage/>}/>
                         <Route path="/error" element={<ErrorPage/>}/>
                         <Route path="*" element={<ErrorPage/>}/>

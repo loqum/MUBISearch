@@ -1,16 +1,21 @@
 package com.mubisearch.content.controllers;
 
-import com.mubisearch.content.controllers.dto.BaseDto;
-import com.mubisearch.content.controllers.dto.SeriesDto;
+import com.mubisearch.content.controllers.dto.*;
+import com.mubisearch.content.entities.Movie;
+import com.mubisearch.content.entities.Series;
 import com.mubisearch.content.services.SeriesService;
 import com.mubisearch.content.services.TMDBService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -32,6 +37,25 @@ public class SeriesController {
         } else {
             return new BaseDto<>(true, tmdbService.getSeries(title));
         }
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<String> createSeries(@RequestBody SeriesRequest seriesRequest) {
+        log.info("Init createSeries");
+        String idContent = seriesService.createSeries(seriesRequest).getId().toString();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{idContent}")
+                .buildAndExpand(idContent)
+                .toUri();
+        return ResponseEntity.created(uri).body(idContent);
+    }
+
+    @GetMapping("/id/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<SeriesResponse> getSeriesById(@PathVariable @NotNull Long id) {
+        log.info("Init getSeriesById");
+        Optional<Series> series = seriesService.findById(id);
+        return series.map(u -> ResponseEntity.ok().body(SeriesResponse.from(u))).orElse(ResponseEntity.noContent().build());
     }
 
 }

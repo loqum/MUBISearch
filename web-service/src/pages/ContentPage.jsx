@@ -1,8 +1,8 @@
-import MovieList from "../components/MovieList.jsx";
+import ContentList from "../components/ContentList.jsx";
 
 function ContentPage() {
     return (
-        <MovieList />
+        <ContentList />
     )
 }
 

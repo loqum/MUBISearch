@@ -1,5 +1,5 @@
 import {Col, Row, Spinner} from "react-bootstrap";
-import MovieCard from "./MovieCard.jsx";
+import ContentCard from "./ContentCard.jsx";
 import {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
@@ -47,7 +47,7 @@ export const Favorites = () => {
                 <Row xs={1} md={3} className="g-4">
                     {favoriteMovies.map((favorite, id) => (
                         <Col key={id}>
-                            <MovieCard movie={favorite}/>
+                            <ContentCard movie={favorite}/>
                         </Col>
                     ))}
                 </Row>

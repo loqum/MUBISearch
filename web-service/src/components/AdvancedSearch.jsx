@@ -17,26 +17,34 @@ export const AdvancedSearch = () => {
         event.preventDefault();
 
         try {
+            let isContentTypeMovie = isMovie;
+            let isContentTypeSeries = isSeries;
+            let transformedContents = [];
+
             if (isMovie) {
                 let response = await fetchMovies(text);
                 response = response.filter((movie) => movie.poster_path !== null);
                 console.log("Response:", response);
-                const transformedContents = convertMovies(response);
-                setMovies(transformedContents);
+                transformedContents = convertMovies(response);
                 setText(null);
-                navigateToList(`/contents`, {state: {transformedContents}});
-            }
 
+            }
 
             if (isSeries) {
                 let response = await fetchSeries(text);
                 response = response.filter((series) => series.poster_path !== null);
                 console.log("Response:", response);
-                const transformedContents = convertMovies(response);
-                setSeries(transformedContents);
+                transformedContents = convertMovies(response);
                 setText(null);
-                navigateToList(`/contents`, {state: {transformedContents}});
             }
+
+            navigateToList(`/contents`, {
+                state: {
+                    transformedContents,
+                    isMovie: isContentTypeMovie,
+                    isSeries: isContentTypeSeries
+                }
+            });
 
 
         } catch (e) {
@@ -72,11 +80,13 @@ export const AdvancedSearch = () => {
                     </Row>
 
                     <Form.Group className="mb-3" id="formGridCheckbox">
-                        <Form.Check type="checkbox" label="Película" onChange={(event) => handleMovieChange(event.target.checked)}/>
+                        <Form.Check type="checkbox" label="Película"
+                                    onChange={(event) => handleMovieChange(event.target.checked)}/>
                     </Form.Group>
 
                     <Form.Group className="mb-3" id="formGridCheckbox">
-                        <Form.Check type="checkbox" label="Serie" onChange={(event) => handleSeriesChange(event.target.checked)}/>
+                        <Form.Check type="checkbox" label="Serie"
+                                    onChange={(event) => handleSeriesChange(event.target.checked)}/>
                     </Form.Group>
 
                     <Button variant="primary" type="submit">

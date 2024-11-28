@@ -10,12 +10,15 @@ import NotificationBell from "./NotificationBell.jsx";
 
 function MovieDetails(props) {
 
+    const location = useLocation();
     const {
         urlImage,
         createFavorite,
         deleteFavorite,
         createMovie,
+        createSeries,
         fetchMovieById,
+        fetchSeriesById,
         getFavoriteByIdUserAndIdContent,
         formatDateISO8601,
         convertDateToDayMonthYear,
@@ -27,10 +30,11 @@ function MovieDetails(props) {
         updateFavoriteAlert
     } = useContext(MoviesContext);
     const {user, setUser, triggerUserSync, fetchUpdatedUser, fetchUser} = useContext(UserContext);
-    const {idMovie} = useParams(); //Recuperar el id de la película de la URL
-    const movieFromNavigate = useLocation()?.state?.movie; // Recuperar película desde la pantalla anterior mediante navegación
-    // const {urlImage} = props;
-    const [movie, setMovie] = useState(null);
+    const {idContent} = useParams(); //Recuperar el id de la película de la URL
+    const contentFromNavigate = location?.state?.content; // Recuperar película desde la pantalla anterior mediante navegación
+    const isMovie = location?.state?.isMovie || false;
+    const isSeries = location?.state?.isSeries || false;
+    const [content, setContent] = useState(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showWarningAlert, setShowWarningAlert] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
@@ -44,36 +48,36 @@ function MovieDetails(props) {
     const [isNotified, setIsNotified] = useState(false);
 
     useEffect(() => {
-        if (!movie) {
-            getMovie();
+        if (!content) {
+            getContent();
         }
-    }, [idMovie]);
+    }, [idContent]);
 
     useEffect(() => {
-        if (user && movie) {
+        if (user && content) {
             checkFavorite();
         }
 
-    }, [user, movie]);
+    }, [user, content]);
 
     useEffect(() => {
-        if (user && movie) {
+        if (user && content) {
             checkVote();
         }
 
-    }, [user, movie]);
+    }, [user, content]);
 
     useEffect(() => {
-        if (movie) {
+        if (content) {
             checkReviews();
         }
-    }, [movie]);
+    }, [content]);
 
     const checkFavorite = async () => {
         console.log("User: ", user);
-        if (user && movie) {
+        if (user && content) {
             try {
-                const favoriteData = await getFavoriteByIdUserAndIdContent(user, movie);
+                const favoriteData = await getFavoriteByIdUserAndIdContent(user, content);
                 if (favoriteData) {
                     setIsFavorite(true);
                     setIsNotified(favoriteData.notificationAlert);
@@ -95,9 +99,9 @@ function MovieDetails(props) {
 
     const checkVote = async () => {
         console.log("User: ", user);
-        if (user && movie) {
+        if (user && content) {
             try {
-                const voteData = await getVoteByUserAndContent(user, movie);
+                const voteData = await getVoteByUserAndContent(user, content);
                 if (voteData) {
                     setSelectedVote(voteData.score);
                     setVote(voteData);
@@ -116,10 +120,10 @@ function MovieDetails(props) {
     }
 
     const checkReviews = async () => {
-        console.log("Movie: ", movie);
-        if (movie) {
+        console.log("Movie: ", content);
+        if (content) {
             try {
-                const reviewData = await getReviewsByContent(movie.id);
+                const reviewData = await getReviewsByContent(content.id);
                 if (reviewData) {
                     const reviewsWithUserData = await Promise.all(
                         reviewData.map(async (review) => {
@@ -146,34 +150,61 @@ function MovieDetails(props) {
         }
     }
 
-    const getMovie = async () => {
-        console.log("Movie id:", idMovie);
+    const getContent = async () => {
+        console.log("Movie id:", idContent);
         try {
-            const movieFromBBDD = await fetchMovieById(idMovie);
+            let movieFromBBDD;
+
+            if (isMovie) {
+                movieFromBBDD = await fetchMovieById(idContent);
+            }
+
+            if (isSeries) {
+                movieFromBBDD = await fetchSeriesById(idContent);
+            }
+
             console.log("movieFromBBDD:", movieFromBBDD);
             if (movieFromBBDD) {
-                setMovie(movieFromBBDD);
+                setContent(movieFromBBDD);
             } else {
-                if (movieFromNavigate) {
+                if (contentFromNavigate && isMovie) {
+                    console.log("Entra en el if");
                     const id = await createMovie({
-                        originalTitle: movieFromNavigate.original_title,
-                        releaseDate: formatDateISO8601(movieFromNavigate.release_date),
-                        id: movieFromNavigate.id,
-                        title: movieFromNavigate.title,
-                        plot: movieFromNavigate.overview,
-                        posterPath: movieFromNavigate.poster_path,
-                        genres: movieFromNavigate.genres,
+                        originalTitle: contentFromNavigate.original_title,
+                        releaseDate: formatDateISO8601(contentFromNavigate.release_date),
+                        id: contentFromNavigate.id,
+                        title: contentFromNavigate.title,
+                        plot: contentFromNavigate.overview,
+                        posterPath: contentFromNavigate.poster_path,
+                        genres: contentFromNavigate.genres,
                         averageScore: 0
                     });
                     console.log("Movie created with id:", id);
 
-                    const savedMovie = await fetchMovieById(id);
-                    setMovie(savedMovie);
+                    const savedContent = await fetchMovieById(id);
+                    setContent(savedContent);
+                }
+
+                if (contentFromNavigate && isSeries) {
+                    const id = await createSeries({
+                        firstAir: formatDateISO8601(contentFromNavigate.first_air_date),
+                        id: contentFromNavigate.id,
+                        plot: contentFromNavigate.overview,
+                        posterPath: contentFromNavigate.poster_path,
+                        genres: contentFromNavigate.genres,
+                        averageScore: 0,
+                        originCountry: contentFromNavigate.origin_country[0] || "Desconocido",
+                        originalName: contentFromNavigate.original_name,
+                    });
+                    console.log("Series created with id:", id);
+
+                    const savedContent = await fetchSeriesById(id);
+                    setContent(savedContent);
                 }
             }
         } catch (e) {
-            console.error("Error fetching or creating movie:", e);
-            setMovie(movieFromNavigate);
+            console.error("Error fetching or creating content:", e);
+            setContent(contentFromNavigate);
         }
     };
 
@@ -190,11 +221,11 @@ function MovieDetails(props) {
                 setTimeout(() => setShowSuccessAlert(false), 3000);
 
                 console.log("User:", user);
-                console.log("idContent:", movie.id);
+                console.log("idContent:", content.id);
 
                 await createFavorite({
                     idUser: user.id,
-                    idContent: movie.id,
+                    idContent: content.id,
                 });
             } else {
                 setShowWarningAlert(true);
@@ -242,17 +273,17 @@ function MovieDetails(props) {
     const handleVote = async (vote) => {
         try {
             console.log("User.id:", user.id);
-            console.log("Movie.id:", movie.id);
+            console.log("Movie.id:", content.id);
             console.log("Vote:", vote);
             await createVote({
-                idContent: movie.id,
+                idContent: content.id,
                 idUser: user.id,
                 score: vote
             });
             // Actualiza la película con la nueva valoración emitida por el usuario
-            const updatedMovie = await fetchMovieById(movie.id);
+            const updatedMovie = await fetchMovieById(content.id);
             console.log("Updated movie:", updatedMovie);
-            setMovie(updatedMovie);
+            setContent(updatedMovie);
         } catch (e) {
             console.error("Error creating vote:", e);
         }
@@ -269,7 +300,7 @@ function MovieDetails(props) {
         if (newReview && newReview.trim() !== "") {
             try {
                 await createReview({
-                    idContent: movie.id,
+                    idContent: content.id,
                     idUser: user.id,
                     text: newReview.trim(),
                 });
@@ -282,7 +313,7 @@ function MovieDetails(props) {
         }
     }
 
-    if (!movie) {
+    if (!content) {
         return (
             <Spinner animation="border" role="status">
                 <span className="visually-hidden">Loading...</span>
@@ -306,7 +337,7 @@ function MovieDetails(props) {
             )}
 
             <Card>
-                <Card.Img variant="top" src={`${urlImage}${movie.posterPath}`} className="img-fluid"
+                <Card.Img variant="top" src={`${urlImage}${content.posterPath}`} className="img-fluid"
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
                 <Card.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                     <span>Película</span>
@@ -331,15 +362,15 @@ function MovieDetails(props) {
                 </Card.Header>
 
                 <Card.Body>
-                    <Card.Title>{movie.title}</Card.Title>
-                    <Card.Text>{movie.plot}</Card.Text>
+                    <Card.Title>{content.title}</Card.Title>
+                    <Card.Text>{content.plot}</Card.Text>
                     <Card.Text>
-                        <strong>Géneros: </strong>{Object.values(movie.genres).join(', ')}
+                        <strong>Géneros: </strong>{Object.values(content.genres).join(', ')}
                     </Card.Text>
                     <Card.Text><strong>Fecha de
-                        estreno: </strong>{movie.releaseDate && (convertDateToDayMonthYear(movie.releaseDate))}
+                        estreno: </strong>{content.releaseDate && (convertDateToDayMonthYear(content.releaseDate))}
                     </Card.Text>
-                    <Card.Text><strong>Valoración: </strong> {movie.averageScore === 0 ? "Todavía no se ha valorado" : movie.averageScore}
+                    <Card.Text><strong>Valoración: </strong> {content.averageScore === 0 ? "Todavía no se ha valorado" : content.averageScore}
                     </Card.Text>
                 </Card.Body>
             </Card>

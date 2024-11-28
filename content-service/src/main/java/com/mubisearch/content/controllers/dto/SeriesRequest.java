@@ -13,7 +13,6 @@ public record SeriesRequest(@NonNull String originCountry,
                             @NonNull String originalName,
                             @NonNull LocalDate firstAir,
                             @NonNull Long id,
-                            @NonNull BigDecimal averageScore,
-                            @NonNull String title, @NonNull String plot, @NonNull String posterPath, List<Vote> votes,
+                            @NonNull BigDecimal averageScore, @NonNull String plot, @NonNull String posterPath, List<Vote> votes,
                             Map<Integer, String> genres, List<Review> reviews) {
 }

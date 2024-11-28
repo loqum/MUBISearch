@@ -23,7 +23,7 @@ function NavigationBar() {
             const transformedContents = convertMovies(response);
             setMovies(transformedContents);
             event.target[0].value = "";
-            navigateToList(`/contents`, {state: {transformedContents}});
+            navigateToList(`/contents`, {state: {transformedContents, isMovie: true, isSeries: false}});
         } catch (e) {
             console.error("Error fetching movies:", e);
         }

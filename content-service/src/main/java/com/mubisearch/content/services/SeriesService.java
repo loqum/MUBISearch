@@ -37,12 +37,12 @@ public class SeriesService extends BaseService<SeriesDto> {
     public Series createSeries(SeriesRequest seriesRequest) {
         Series series = Series.builder()
                 .id(seriesRequest.id())
-                .title(seriesRequest.title())
                 .plot(seriesRequest.plot())
                 .posterPath(seriesRequest.posterPath())
                 .originCountry(seriesRequest.originCountry())
                 .originalName(seriesRequest.originalName())
                 .firstAir(seriesRequest.firstAir())
+                .title(seriesRequest.originalName())
                 .averageScore(BigDecimal.ZERO)
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())

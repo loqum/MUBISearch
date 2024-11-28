@@ -4,16 +4,16 @@ import {MoviesContext} from "../context/movies.context.jsx";
 import {useNavigate} from "react-router-dom";
 import {ChevronDown, ChevronUp} from "react-bootstrap-icons";
 
-function MovieCard(props) {
+function ContentCard(props) {
 
-    const {movie} = props;
+    const { content, isMovie, isSeries } = props;
     const {urlImage} = useContext(MoviesContext);
     const navigate = useNavigate();
     const [expanded, setExpanded] = useState(false);
 
     const handleClick = () => {
-        console.log("MovieCard handleClick movie id:", movie.id);
-        navigate(`/details/${movie.id}`, {state: {movie}});
+        console.log("ContentCard handleClick movie id:", content.id);
+        navigate(`/details/${content.id}`, { state: { content, isMovie, isSeries } });
     }
 
     const toggleExpand = () => {
@@ -22,9 +22,9 @@ function MovieCard(props) {
 
     return (
         <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" src={`${urlImage}${movie.posterPath}`} className="img-fluid"/>
+            <Card.Img variant="top" src={`${urlImage}${content.posterPath}`} className="img-fluid"/>
             <Card.Body>
-                <Card.Title>{movie.title}</Card.Title>
+                <Card.Title>{content.title}</Card.Title>
                 <Card.Text
                     style={{
                         textAlign: 'justify',
@@ -35,11 +35,11 @@ function MovieCard(props) {
                         textOverflow: 'ellipsis'
                     }}
                 >
-                    {movie.plot}
+                    {content.plot}
                 </Card.Text>
                 <div className="d-flex justify-content-between">
                     <Button variant="primary" onClick={handleClick}>Ver detalles</Button>
-                    {movie.plot?.length > 150 && (
+                    {content.plot?.length > 150 && (
                         <Button variant="link" onClick={toggleExpand} className="p-0"
                                 style={{ fontSize: '1.5rem' }}
                                 aria-label={expanded ? "Ver más contenido" : "Ver menos contenido"}
@@ -55,4 +55,4 @@ function MovieCard(props) {
     );
 }
 
-export default MovieCard;
+export default ContentCard;

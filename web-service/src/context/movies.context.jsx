@@ -151,6 +151,26 @@ function MoviesProviderWrapper(props) {
         }
     };
 
+    const createSeries = async (series) => {
+        try {
+            if (series) {
+                const response = await axios({
+                    method: 'POST',
+                    url: 'http://localhost:8080/api/v1/series/create',
+                    data: series,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("createSeries response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error creating series:", error);
+            throw error;
+        }
+    };
+
     const getFavoriteByIdUserAndIdContent = async (user, movie) => {
         try {
             const response = await axios({
@@ -188,6 +208,26 @@ function MoviesProviderWrapper(props) {
             throw error;
         }
     };
+
+    const fetchSeriesById = async (id) => {
+        try {
+            if (id) {
+                console.log("fetchSeriesById id:", id);
+                const response = await axios({
+                    method: 'GET',
+                    url: `http://localhost:8080/api/v1/series/id/${id}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log("fetchSeriesById response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error fetching series:", error);
+            throw error;
+        }
+    }
 
     const createVote = async (vote) => {
         try {
@@ -309,6 +349,19 @@ function MoviesProviderWrapper(props) {
         }));
     };
 
+    const convertSeries = (seriesList) => {
+        console.log("convertSeries series:", seriesList);
+        return seriesList.map((series) => ({
+            ...series,
+            posterPath: series.poster_path,
+            releaseDate: series.release_date,
+            plot: series.overview,
+            firstAir: series.first_air_date,
+            originCountry: series.origin_country,
+            originalName: series.original_name,
+        }));
+    };
+
     const updateFavoriteAlert = async (idFavorite, notificationState) => {
         try {
             if (idFavorite) {
@@ -343,12 +396,15 @@ function MoviesProviderWrapper(props) {
             createFavorite,
             deleteFavorite,
             createMovie,
+            createSeries,
             fetchMovieById,
+            fetchSeriesById,
             getFavoriteByIdUserAndIdContent,
             formatDateISO8601,
             convertDateToDayMonthYear,
             convertDateToDayMonthYearTime,
             convertMovies,
+            convertSeries,
             getVoteByUserAndContent,
             createVote,
             createReview,
