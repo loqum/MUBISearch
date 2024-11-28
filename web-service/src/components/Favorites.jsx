@@ -6,8 +6,8 @@ import {UserContext} from "../context/user.context.jsx";
 
 export const Favorites = () => {
 
-    const {fetchMovieById, getReviewsByUser, deleteReview} = useContext(MoviesContext);
-    const {user, setUser, formatDate} = useContext(UserContext);
+    const {fetchMovieById} = useContext(MoviesContext);
+    const {user} = useContext(UserContext);
     const [favoriteMovies, setFavoriteMovies] = useState([]);
 
     useEffect(() => {

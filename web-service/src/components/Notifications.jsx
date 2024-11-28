@@ -7,9 +7,7 @@ import {UserContext} from "../context/user.context.jsx";
 
 export const Notifications = () => {
 
-    const [notifications, setNotifications] = useState([]);
     const [notificationsWithTitles, setNotificationsWithTitles] = useState([]);
-    const [error, setError] = useState(null);
     const pollingInterval = 30000;
     const {fetchMovieById} = useContext(MoviesContext);
     const {user} = useContext(UserContext);
@@ -40,9 +38,8 @@ export const Notifications = () => {
                     })
                 );
                 setNotificationsWithTitles(notificationsWithMovieTitles);
-                setNotifications(notifications);
             } catch (e) {
-                setError("Failed to fetch notifications");
+                console.error("Failed to fetch notifications");
             }
         };
 
@@ -66,7 +63,7 @@ export const Notifications = () => {
                 prevNotifications.filter((n) => n.id !== notification.id)
             );
         } catch (e) {
-            setError("Failed to delete notification");
+            console.error("Failed to delete notification");
         }
     }
 
