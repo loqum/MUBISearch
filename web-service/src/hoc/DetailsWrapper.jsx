@@ -1,4 +1,4 @@
-import {useContext, useState} from "react";
+import {useContext} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 
 function DetailsWrapper(DetailsComponent) {

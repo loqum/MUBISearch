@@ -3,6 +3,7 @@ package com.mubisearch.notification.services;
 import com.mubisearch.notification.controllers.dto.NotificationRequest;
 import com.mubisearch.notification.entities.Notification;
 import com.mubisearch.notification.repositories.NotificationRepository;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +70,12 @@ public class NotificationService {
         }
     }
 
+    public List<Notification> findByIdUser(Long idUser) {
+        return notificationRepository.findByIdUser(idUser);
+    }
 
+
+    public void deleteNotification(@NotNull Long id) {
+        notificationRepository.deleteById(id);
+    }
 }

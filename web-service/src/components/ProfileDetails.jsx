@@ -4,6 +4,7 @@ import {UserContext} from "../context/user.context.jsx";
 import MovieCard from "./MovieCard.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {Link} from "react-router-dom";
+import {Notifications} from "./Notifications.jsx";
 
 function ProfileDetails() {
 
@@ -174,6 +175,12 @@ function ProfileDetails() {
                                 </Button>
                             </Modal.Footer>
                         </Modal>
+                    </Col>
+                </Row>
+
+                <Row>
+                    <Col>
+                        <Notifications idUser={user.id}/>
                     </Col>
                 </Row>
 
