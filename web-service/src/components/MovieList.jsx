@@ -6,7 +6,7 @@ import {useEffect} from "react";
 
 function MovieList(props) {
 
-    const movies = useLocation()?.state?.transformedMovies || [];
+    const movies = useLocation()?.state?.transformedContents || [];
 
 
     useEffect(() => {

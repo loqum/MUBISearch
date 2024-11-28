@@ -10,7 +10,7 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import {Auth0Provider} from "@auth0/auth0-react";
 import React, {Suspense} from "react";
 import {Spinner} from "react-bootstrap";
-import MoviesPage from "./pages/MoviesPage.jsx";
+import ContentPage from "./pages/ContentPage.jsx";
 import DetailMoviePage from "./pages/DetailMoviePage.jsx";
 
 const domain = "uoc-mubisearch.us.auth0.com";
@@ -46,7 +46,7 @@ function App() {
                 <MainLayout>
                     <Routes>
                         <Route path="/" element={<HomePage/>}/>
-                        <Route path="/movies" element={<MoviesPage/>}/>
+                        <Route path="/contents" element={<ContentPage/>}/>
                         <Route path="/register" element={<RegisterPage/>}/>
                         <Route path="/login" element={<LoginPage/>}/>
                         <Route path="/search" element={<SearchPage/>}/>

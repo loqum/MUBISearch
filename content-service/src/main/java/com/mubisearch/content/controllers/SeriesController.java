@@ -3,6 +3,7 @@ package com.mubisearch.content.controllers;
 import com.mubisearch.content.controllers.dto.BaseDto;
 import com.mubisearch.content.controllers.dto.SeriesDto;
 import com.mubisearch.content.services.SeriesService;
+import com.mubisearch.content.services.TMDBService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,25 +20,17 @@ public class SeriesController {
     @Autowired
     private SeriesService seriesService;
 
+    @Autowired
+    private TMDBService tmdbService;
+
     @GetMapping("/title/{title}")
     @ResponseStatus(HttpStatus.OK)
     public BaseDto<SeriesDto> getSeriesByTitle(@PathVariable @NotNull String title) {
         log.info("Init getSeriesByTitle");
-        if (seriesService.getSeries(title).isEmpty()) {
+        if (tmdbService.getSeries(title).isEmpty()) {
             return new BaseDto<>(false, List.of());
         } else {
-            return new BaseDto<>(true, seriesService.getSeries(title));
-        }
-    }
-
-    @GetMapping("/discover")
-    @ResponseStatus(HttpStatus.OK)
-    public BaseDto<SeriesDto> getSeriesDiscover() {
-        log.info("Init getSeriesDiscover");
-        if (seriesService.getSeriesDiscover().isEmpty()) {
-            return new BaseDto<>(false, List.of());
-        } else {
-            return new BaseDto<>(true, seriesService.getSeriesDiscover());
+            return new BaseDto<>(true, tmdbService.getSeries(title));
         }
     }
 

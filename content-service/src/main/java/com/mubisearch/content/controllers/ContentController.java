@@ -5,6 +5,7 @@ import com.mubisearch.content.controllers.dto.ContentResponse;
 import com.mubisearch.content.controllers.dto.MovieDto;
 import com.mubisearch.content.controllers.dto.ReviewResponse;
 import com.mubisearch.content.entities.Content;
+import com.mubisearch.content.entities.Genre;
 import com.mubisearch.content.services.ContentService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
@@ -50,4 +51,5 @@ public class ContentController {
                 .toUri();
         return ResponseEntity.created(uri).body(idContent);
     }
+
 }

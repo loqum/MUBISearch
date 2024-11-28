@@ -1,9 +1,9 @@
 import MovieList from "../components/MovieList.jsx";
 
-function MoviesPage() {
+function ContentPage() {
     return (
         <MovieList />
     )
 }
 
-export default MoviesPage;
+export default ContentPage;

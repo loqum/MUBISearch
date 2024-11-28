@@ -1,7 +1,6 @@
-import {Button, Col, Container, Form, Nav, Navbar, Row} from "react-bootstrap";
+import {Button, Col, Container, Form, Navbar, Row} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
-import FetchMovies from "../services/FetchMovies.jsx";
+import {useContext, useState} from "react";
 import {UserContext} from "../context/user.context.jsx";
 import {MoviesContext} from "../context/movies.context.jsx";
 
@@ -10,21 +9,21 @@ function NavigationBar() {
     const [movies, setMovies] = useState([]);
     const navigateToList = useNavigate();
 
-    const {user, setUser, logoutUser} = useContext(UserContext);
-    const {convertMovies} = useContext(MoviesContext);
+    const {user, logoutUser} = useContext(UserContext);
+    const {fetchMovies, convertMovies} = useContext(MoviesContext);
 
     const handleSearchSubmit = async (event) => {
         event.preventDefault();
         const query = event.target[0].value;
 
         try {
-            let response = await FetchMovies(query);
+            let response = await fetchMovies(query);
             response = response.filter((movie) => movie.poster_path !== null);
             console.log("Response:", response);
-            const transformedMovies = convertMovies(response);
-            setMovies(transformedMovies);
+            const transformedContents = convertMovies(response);
+            setMovies(transformedContents);
             event.target[0].value = "";
-            navigateToList(`/movies`, {state: {transformedMovies}});
+            navigateToList(`/contents`, {state: {transformedContents}});
         } catch (e) {
             console.error("Error fetching movies:", e);
         }
@@ -34,6 +33,7 @@ function NavigationBar() {
         }
 
     }
+
     return (
         <Navbar bg="light" expand="lg" className="px-4">
             <Container fluid>

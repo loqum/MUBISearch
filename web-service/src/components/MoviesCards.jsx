@@ -2,16 +2,15 @@ import MovieCard from "./MovieCard.jsx";
 import React, {useContext, useEffect} from "react";
 import '../assets/css/MovieList.css';
 import {MoviesContext} from "../context/movies.context.jsx";
-import FetchDiscoverMovies from "../services/FetchDiscoverMovies.jsx";
 
 function MoviesCards() {
 
-    const {movies, setMovies, convertMovies} = useContext(MoviesContext);
+    const {movies, setMovies, convertMovies, fetchDiscoverMovies} = useContext(MoviesContext);
 
     useEffect(() => {
         const fetchMovies = async () => {
             try {
-                const response = await FetchDiscoverMovies();
+                const response = await fetchDiscoverMovies();
                 const transformedMovies = convertMovies(response);
                 setMovies(transformedMovies);
                 console.log("Movies:", transformedMovies);

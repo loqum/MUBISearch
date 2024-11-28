@@ -23,7 +23,7 @@ function MoviesProviderWrapper(props) {
         try {
             const date = new Date(dateString);
             const day = String(date.getDate()).padStart(2, "0");
-            const month = String(date.getMonth() + 1).padStart(2, "0"); // Los meses empiezan en 0
+            const month = String(date.getMonth() + 1).padStart(2, "0");
             const year = date.getFullYear();
             const hours = String(date.getHours()).padStart(2, "0");
             const minutes = String(date.getMinutes()).padStart(2, "0");
@@ -33,6 +33,61 @@ function MoviesProviderWrapper(props) {
         } catch (error) {
             console.error("Error al convertir la fecha:", error);
             return "Formato de fecha inválido";
+        }
+    };
+
+    const fetchDiscoverMovies = async () => {
+        try {
+            const response = await axios({
+                method: 'GET',
+                url: `http://localhost:8080/api/v1/movies/discover`,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            console.log("FetchDiscoverMovies response:", response);
+            return response.data.data;
+        } catch (error) {
+            console.error("Error fetching movies:", error);
+            throw error;
+        }
+    };
+
+    const fetchMovies = async (title) => {
+        try {
+            if (title) {
+                const response = await axios({
+                    method: 'GET',
+                    url: `http://localhost:8080/api/v1/movies/title/${title}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("FetchDiscoverMovies response:", response);
+                return response.data.data;
+            }
+        } catch (error) {
+            console.error("Error fetching movies:", error);
+            throw error;
+        }
+    };
+
+    const fetchSeries = async (title) => {
+        try {
+            if (title) {
+                const response = await axios({
+                    method: 'GET',
+                    url: `http://localhost:8080/api/v1/series/title/${title}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("FetchSeries response:", response);
+                return response.data.data;
+            }
+        } catch (error) {
+            console.error("Error fetching series:", error);
+            throw error;
         }
     };
 
@@ -282,6 +337,9 @@ function MoviesProviderWrapper(props) {
             movies,
             setMovies,
             urlImage,
+            fetchDiscoverMovies,
+            fetchMovies,
+            fetchSeries,
             createFavorite,
             deleteFavorite,
             createMovie,
