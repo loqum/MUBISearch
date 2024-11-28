@@ -26,6 +26,9 @@ public class RoutingConfig {
     @Value("${app.gateway.controller.url.favorites}")
     private String favoriteControllerUrl;
 
+    @Value("${app.gateway.controller.url.contents}")
+    private String contentControllerUrl;
+
     @Value("${app.gateway.controller.url.series}")
     private String seriesControllerUrl;
 
@@ -70,6 +73,12 @@ public class RoutingConfig {
                 .route(path(seriesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
                 .route(path(seriesControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
                 .route(path(seriesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
+
+                .route(path(contentControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
+                .route(path(contentControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
+                .route(path(contentControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
+                .route(path(contentControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
+                .route(path(contentControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
 
                 .route(path(moviesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
                 .route(path(moviesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))

@@ -19,6 +19,7 @@ function MovieDetails(props) {
         createSeries,
         fetchMovieById,
         fetchSeriesById,
+        fetchContentById,
         getFavoriteByIdUserAndIdContent,
         formatDateISO8601,
         convertDateToDayMonthYear,
@@ -29,7 +30,7 @@ function MovieDetails(props) {
         getReviewsByContent,
         updateFavoriteAlert
     } = useContext(MoviesContext);
-    const {user, setUser, triggerUserSync, fetchUpdatedUser, fetchUser} = useContext(UserContext);
+    const {user, fetchUpdatedUser, fetchUser} = useContext(UserContext);
     const {idContent} = useParams(); //Recuperar el id de la película de la URL
     const contentFromNavigate = location?.state?.content; // Recuperar película desde la pantalla anterior mediante navegación
     const isMovie = location?.state?.isMovie || false;
@@ -153,19 +154,12 @@ function MovieDetails(props) {
     const getContent = async () => {
         console.log("Movie id:", idContent);
         try {
-            let movieFromBBDD;
-
-            if (isMovie) {
-                movieFromBBDD = await fetchMovieById(idContent);
-            }
-
-            if (isSeries) {
-                movieFromBBDD = await fetchSeriesById(idContent);
-            }
-
-            console.log("movieFromBBDD:", movieFromBBDD);
-            if (movieFromBBDD) {
-                setContent(movieFromBBDD);
+            let contentFromBBDD = await fetchContentById(idContent);
+            console.log("movieFromBBDD:", contentFromBBDD);
+            console.log("isMovie:", isMovie);
+            console.log("isSeries:", isSeries);
+            if (contentFromBBDD) {
+                setContent(contentFromBBDD);
             } else {
                 if (contentFromNavigate && isMovie) {
                     console.log("Entra en el if");

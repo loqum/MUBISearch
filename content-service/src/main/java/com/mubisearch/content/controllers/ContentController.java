@@ -2,10 +2,9 @@ package com.mubisearch.content.controllers;
 
 import com.mubisearch.content.controllers.dto.ContentRequest;
 import com.mubisearch.content.controllers.dto.ContentResponse;
-import com.mubisearch.content.controllers.dto.MovieDto;
-import com.mubisearch.content.controllers.dto.ReviewResponse;
 import com.mubisearch.content.entities.Content;
-import com.mubisearch.content.entities.Genre;
+import com.mubisearch.content.entities.Movie;
+import com.mubisearch.content.entities.Series;
 import com.mubisearch.content.services.ContentService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
@@ -15,9 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -38,7 +38,9 @@ public class ContentController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ContentResponse> getContentById(@PathVariable @NotNull Long idContent) {
         log.info("Init getContentById");
-        return contentService.findById(idContent).map(u -> ResponseEntity.ok().body(ContentResponse.from(u))).orElse(ResponseEntity.notFound().build());
+        return contentService.findById(idContent)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.noContent().build());
     }
 
     @PostMapping
@@ -51,7 +53,6 @@ public class ContentController {
                 .toUri();
         return ResponseEntity.created(uri).body(idContent);
     }
-
 
 
 }

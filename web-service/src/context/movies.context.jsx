@@ -173,15 +173,17 @@ function MoviesProviderWrapper(props) {
 
     const getFavoriteByIdUserAndIdContent = async (user, movie) => {
         try {
-            const response = await axios({
-                method: "GET",
-                url: `http://localhost:8080/api/v1/favorites/user/${user.id}/content/${movie.id}`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            console.log("getFavoriteByIdUserAndIdContent response:", response);
-            return response.data;
+            if (!user || !movie) {
+                const response = await axios({
+                    method: "GET",
+                    url: `http://localhost:8080/api/v1/favorites/user/${user.id}/content/${movie.id}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("getFavoriteByIdUserAndIdContent response:", response);
+                return response.data;
+            }
         } catch (error) {
             console.error("Error fetching favorite by user and content:", error);
             throw error;
@@ -229,6 +231,25 @@ function MoviesProviderWrapper(props) {
         }
     }
 
+    const fetchContentById = async (id) => {
+        try {
+            if (id) {
+                console.log("fetchContentById id:", id);
+                const response = await axios({
+                    method: 'GET',
+                    url: `http://localhost:8080/api/v1/contents/id/${id}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                console.log("fetchContentById response:", response);
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error fetching content:", error);
+        }
+    }
+
     const createVote = async (vote) => {
         try {
             if (vote) {
@@ -273,15 +294,17 @@ function MoviesProviderWrapper(props) {
 
     const getVoteByUserAndContent = async (user, movie) => {
         try {
-            const response = await axios({
-                method: "GET",
-                url: `http://localhost:8080/api/v1/votes/user/${user.id}/content/${movie.id}`,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            })
-            console.log("getVoteByUserAndContent response:", response);
-            return response.data;
+            if (!user || !movie) {
+                const response = await axios({
+                    method: "GET",
+                    url: `http://localhost:8080/api/v1/votes/user/${user.id}/content/${movie.id}`,
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                console.log("getVoteByUserAndContent response:", response);
+                return response.data;
+            }
         } catch (error) {
             console.error("Error fetching vote by user and content:", error);
             throw error;
@@ -399,6 +422,7 @@ function MoviesProviderWrapper(props) {
             createSeries,
             fetchMovieById,
             fetchSeriesById,
+            fetchContentById,
             getFavoriteByIdUserAndIdContent,
             formatDateISO8601,
             convertDateToDayMonthYear,

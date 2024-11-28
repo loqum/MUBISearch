@@ -26,7 +26,7 @@ function HomePage() {
     }, [setMovies]);
 
     const movieCards = movies.map((movie) => {
-        return <ContentCard key={movie.id} content={movie} imageSize="original" />
+        return <ContentCard key={movie.id} content={movie} isMovie={true} isSeries={false} imageSize="original" />
     });
 
     return (
