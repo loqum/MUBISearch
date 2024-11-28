@@ -16,12 +16,10 @@ public class RabbitMQConfig {
 
     //Colas
     public static final String CONTENT_UPDATE_QUEUE = "content_update_queue";
-    public static final String NOTIFICATION_ALERT_QUEUE = "notification_alert_queue";
     public static final String EMAIL_QUEUE = "email_queue";
 
     //routing keys
     public static final String CONTENT_UPDATE_ROUTING_KEY = "content.update.#";
-    public static final String NOTIFICATION_ALERT_ROUTING_KEY = "alert.update";
 
     @Bean
     public TopicExchange exchange() {
@@ -34,11 +32,6 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Queue notificationAlertQueue() {
-        return new Queue(NOTIFICATION_ALERT_QUEUE, true);
-    }
-
-    @Bean
     public Queue emailQueue() {
         return new Queue(EMAIL_QUEUE, true);
     }
@@ -46,11 +39,6 @@ public class RabbitMQConfig {
     @Bean
     public Binding contentUpdateBinding(Queue contentUpdateQueue, TopicExchange exchange) {
         return BindingBuilder.bind(contentUpdateQueue).to(exchange).with(CONTENT_UPDATE_ROUTING_KEY);
-    }
-
-    @Bean
-    public Binding notificationAlertBinding(Queue notificationAlertQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(notificationAlertQueue).to(exchange).with(NOTIFICATION_ALERT_ROUTING_KEY);
     }
 
     @Bean

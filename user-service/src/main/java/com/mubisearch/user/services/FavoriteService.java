@@ -5,7 +5,9 @@ import com.mubisearch.user.entities.User;
 import com.mubisearch.user.repositories.FavoriteRepository;
 import com.mubisearch.user.repositories.UserRepository;
 import com.mubisearch.user.rest.dto.FavoriteRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,6 +16,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@Slf4j
 public class FavoriteService {
 
     @Autowired
@@ -23,7 +26,8 @@ public class FavoriteService {
     private UserRepository userRepository;
 
     @Autowired
-    private NotificationAlertPublisher notificationAlertPublisher;
+    private StringRedisTemplate redisTemplate;
+
 
     public List<Favorite> findAll() {
         return favoriteRepository.findAll();
@@ -59,8 +63,22 @@ public class FavoriteService {
     public Favorite setNotification(Long id, boolean notification) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Favorite with id: " + id + " not found"));
         favorite.setNotificationAlert(notification);
-        notificationAlertPublisher.publishAlertUpdate(Objects.requireNonNull(favorite.getUser().getId()), favorite.getIdContent(), notification);
-        return favoriteRepository.save(favorite);
+        favoriteRepository.save(favorite);
+
+        Long idUser = Objects.requireNonNull(favorite.getUser().getId());
+        Long idContent = favorite.getIdContent();
+
+        String redisKey = "notifications:content:" + idContent;
+
+        if (notification) {
+            redisTemplate.opsForHash().put(redisKey, String.valueOf(idUser), "true");
+            log.info("User {} has been alerted for content {}", idUser, idContent);
+        } else {
+            redisTemplate.opsForHash().delete(redisKey, String.valueOf(idUser));
+            log.info("User {} has been unalerted for content {}", idUser, idContent);
+        }
+
+        return favorite;
     }
 
     public boolean existsUserAndContent(Long userId, Long idContent) {

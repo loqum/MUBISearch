@@ -7,17 +7,16 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class NotificationContentListener {
-
-    @Autowired
-    private NotificationAlertListener notificationAlertListener;
 
     @Autowired
     private NotificationService notificationService;
@@ -25,6 +24,8 @@ public class NotificationContentListener {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @RabbitListener(queues = RabbitMQConfig.CONTENT_UPDATE_QUEUE)
     public void handleContentUpdate(Map<String, Object> message) {
@@ -34,12 +35,10 @@ public class NotificationContentListener {
         Long idContent = ((Number) message.get("idContent")).longValue();
         NotificationType notificationType = NotificationType.valueOf((String) message.get("notificationType"));
 
-        log.info("Notificando al usuario " + idUser + " sobre el contenido " + idContent + " con notificación " + notificationType);
-
-
         // Excluimos al propio usuario para que no reciba una notificación de sí mismo
-        Map<Long, Boolean> userAlerts = notificationAlertListener.getUserAlerts(idContent, idUser);
+        Map<Long, Boolean> userAlerts = getUserAlerts(idContent, idUser);
         log.info("Usuarios interesados en el contenido " + idContent + ": " + userAlerts);
+        log.info("Notificando al usuario " + idUser + " sobre el contenido " + idContent + " con notificación " + notificationType);
 
         userAlerts.forEach((id, isAlerted) -> {
             if (isAlerted) {
@@ -57,6 +56,18 @@ public class NotificationContentListener {
         });
 
     }
+
+    private Map<Long, Boolean> getUserAlerts(Long idContent, Long idUser) {
+        String redisKey = "notifications:content:" + idContent;
+        Map<Object, Object> redisResult = redisTemplate.opsForHash().entries(redisKey);
+        return redisResult.entrySet().stream()
+                .filter(entry -> !entry.getKey().equals(String.valueOf(idUser)))
+                .collect(Collectors.toMap(
+                        entry -> Long.valueOf((String) entry.getKey()),
+                        entry -> Boolean.valueOf((String) entry.getValue())
+                ));
+    }
+
 
     private void publishEmailToQueue(Long idUser, String text) {
         rabbitTemplate.convertAndSend(
