@@ -8,6 +8,7 @@ import {UserContext} from "../context/user.context.jsx";
 import VotesButton from "./VotesButton.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 import {Review} from "./Review.jsx";
+import Alerts from "./Alerts.jsx";
 
 function ContentDetails() {
 
@@ -32,11 +33,10 @@ function ContentDetails() {
     const [isMovie, setIsMovie] = useState(location?.state?.isMovie);
     const [isSeries, setIsSeries] = useState(location?.state?.isSeries);
     const [content, setContent] = useState(null);
-    const [showSuccessAlert, setShowSuccessAlert] = useState(false);
-    const [showWarningAlert, setShowWarningAlert] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [favorite, setFavorite] = useState(null);
     const [isNotified, setIsNotified] = useState(false);
+    const [alerts, setAlerts] = useState([]);
 
     useEffect(() => {
         if (!content) {
@@ -51,6 +51,15 @@ function ContentDetails() {
 
     }, [user, content]);
 
+    const addAlert = (message, variant) => {
+        setAlerts((prevAlerts) => [...prevAlerts, { message, variant }]);
+        setTimeout(() => setAlerts([]), 3000);
+    };
+
+    const dismissAlert = (index) => {
+        setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
+        setTimeout(() => setAlerts([]), 3000);
+    };
 
     const checkFavorite = async () => {
         if (user && content) {
@@ -132,19 +141,13 @@ function ContentDetails() {
 
         try {
             if (favoriteState) {
-                setShowSuccessAlert(true);
-                setShowWarningAlert(false);
-                setTimeout(() => setShowSuccessAlert(false), 3000);
-
+                addAlert("Contenido añadido a favoritos", "success");
                 await createFavorite({
                     idUser: user.id,
                     idContent: content.id,
                 });
             } else {
-                setShowWarningAlert(true);
-                setShowSuccessAlert(false);
-                setTimeout(() => setShowWarningAlert(false), 3000);
-
+                addAlert("Contenido eliminado de favoritos", "warning");
                 await deleteFavorite(favorite.id);
 
             }
@@ -169,6 +172,13 @@ function ContentDetails() {
         } catch (e) {
             console.error("Error creating notification: ", e);
         }
+
+        if (notificationState) {
+            addAlert("¡Te has suscrito a las notificaciones para este contenido!", "success");
+        } else {
+            addAlert("¡Has desactivado las notificaciones para este contenido!", "warning");
+        }
+
         window.scrollTo({
             top: 0,
             behavior: "smooth",
@@ -186,17 +196,7 @@ function ContentDetails() {
 
     return (
         <>
-            {showSuccessAlert && (
-                <Alert variant="success" onClose={() => setShowSuccessAlert(false)} dismissible>
-                    Contenido añadido a favoritos
-                </Alert>
-            )}
-
-            {showWarningAlert && (
-                <Alert variant="warning" onClose={() => setShowWarningAlert(false)} dismissible>
-                    Contenido eliminado de favoritos
-                </Alert>
-            )}
+            <Alerts alerts={alerts} dismissAlert={dismissAlert} />
 
             <Card>
                 <Card.Img variant="top" src={`${urlImage}${content.posterPath}`} className="img-fluid"
