@@ -9,7 +9,7 @@ export const Notifications = () => {
 
     const [notificationsWithTitles, setNotificationsWithTitles] = useState([]);
     const pollingInterval = 30000;
-    const {fetchMovieById} = useContext(MoviesContext);
+    const {fetchContentById} = useContext(MoviesContext);
     const {user} = useContext(UserContext);
 
     useEffect(() => {
@@ -30,7 +30,7 @@ export const Notifications = () => {
 
                 const notificationsWithMovieTitles = await Promise.all(
                     notifications.map(async (notification) => {
-                        const movie = await fetchMovieById(notification.idContent);
+                        const movie = await fetchContentById(notification.idContent);
                         return {
                             ...notification,
                             title: movie.title,
@@ -48,7 +48,7 @@ export const Notifications = () => {
         return () => {
             clearInterval(interval);
         };
-    }, [user, pollingInterval, fetchMovieById]);
+    }, [user, pollingInterval, fetchContentById]);
 
     const handleDeleteClick = async (notification) => {
         try {

@@ -27,6 +27,8 @@ public class FavoriteService {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+    
+    private static final String REDIS_KEY = "notifications:content:";
 
 
     public List<Favorite> findAll() {
@@ -61,14 +63,21 @@ public class FavoriteService {
     }
 
     public Favorite setNotification(Long id, boolean notification) {
+        Favorite favorite = updateRedisFavoriteKey(id, notification);
+        return favoriteRepository.save(favorite);
+    }
+
+    public void deleteFavorite(Long id) {
+        updateRedisFavoriteKey(id, false);
+        favoriteRepository.deleteById(id);
+    }
+
+    private Favorite updateRedisFavoriteKey(Long id, boolean notification) {
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Favorite with id: " + id + " not found"));
         favorite.setNotificationAlert(notification);
-        favoriteRepository.save(favorite);
-
         Long idUser = Objects.requireNonNull(favorite.getUser().getId());
         Long idContent = favorite.getIdContent();
-
-        String redisKey = "notifications:content:" + idContent;
+        String redisKey = REDIS_KEY.concat(idContent.toString());
 
         if (notification) {
             redisTemplate.opsForHash().put(redisKey, String.valueOf(idUser), "true");
@@ -77,16 +86,7 @@ public class FavoriteService {
             redisTemplate.opsForHash().delete(redisKey, String.valueOf(idUser));
             log.info("User {} has been unalerted for content {}", idUser, idContent);
         }
-
         return favorite;
-    }
-
-    public boolean existsUserAndContent(Long userId, Long idContent) {
-        return favoriteRepository.existsByUser_IdAndIdContent(userId, idContent);
-    }
-
-    public void deleteFavorite(Long id) {
-        favoriteRepository.deleteById(id);
     }
 
 }

@@ -25,9 +25,6 @@ public class FavoriteController {
     @Autowired
     private FavoriteService favoriteService;
 
-//    @Autowired
-//    private NotificationAlertPublisher notificationAlertPublisher;
-
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public List<Favorite> getAllFavorites() {

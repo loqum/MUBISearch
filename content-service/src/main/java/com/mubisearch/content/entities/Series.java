@@ -17,9 +17,6 @@ import java.time.LocalDate;
 @Entity
 public class Series extends Content {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
     @Column(name = "first_air")
     private LocalDate firstAir;
     @Column(name = "origin_country")

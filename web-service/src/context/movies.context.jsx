@@ -171,12 +171,12 @@ function MoviesProviderWrapper(props) {
         }
     };
 
-    const getFavoriteByIdUserAndIdContent = async (user, movie) => {
+    const getFavoriteByIdUserAndIdContent = async (user, content) => {
         try {
-            if (!user || !movie) {
+            if (user && content) {
                 const response = await axios({
                     method: "GET",
-                    url: `http://localhost:8080/api/v1/favorites/user/${user.id}/content/${movie.id}`,
+                    url: `http://localhost:8080/api/v1/favorites/user/${user.id}/content/${content.id}`,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -186,7 +186,6 @@ function MoviesProviderWrapper(props) {
             }
         } catch (error) {
             console.error("Error fetching favorite by user and content:", error);
-            throw error;
         }
 
     }
@@ -294,7 +293,7 @@ function MoviesProviderWrapper(props) {
 
     const getVoteByUserAndContent = async (user, movie) => {
         try {
-            if (!user || !movie) {
+            if (user && movie) {
                 const response = await axios({
                     method: "GET",
                     url: `http://localhost:8080/api/v1/votes/user/${user.id}/content/${movie.id}`,

@@ -5,6 +5,7 @@ import jakarta.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -23,18 +24,16 @@ public class ContentResponse {
     private String title;
     private String plot;
     private String posterPath;
+    private BigDecimal averageScore;
     private Map<Long, String> genres;
-    private String type; // "Movie" o "Series"
+    private String type;
     private List<Review> reviews = new ArrayList<>();
     private List<Vote> votes = new ArrayList<>();
-
     private String originalTitle;
     private LocalDate releaseDate;
-
     private String originalName;
     private LocalDate firstAirDate;
     private String originCountry;
-
 
     public static ContentResponse from(Content content) {
         return ContentResponse.builder()
@@ -57,6 +56,7 @@ public class ContentResponse {
                         )))
                 .reviews(content.getReviews())
                 .votes(content.getVotes())
+                .averageScore(content.getAverageScore())
                 .build();
     }
 

@@ -6,7 +6,7 @@ import {UserContext} from "../context/user.context.jsx";
 
 export const Favorites = () => {
 
-    const {fetchMovieById} = useContext(MoviesContext);
+    const {fetchContentById} = useContext(MoviesContext);
     const {user} = useContext(UserContext);
     const [favoriteMovies, setFavoriteMovies] = useState([]);
 
@@ -18,7 +18,7 @@ export const Favorites = () => {
                 try {
                     const moviesList = await Promise.all(
                         user.favorites.map(async (favorite) => {
-                            return await fetchMovieById(favorite.idContent);
+                            return await fetchContentById(favorite.idContent);
                         })
                     );
 
@@ -42,17 +42,17 @@ export const Favorites = () => {
 
     return (
         <>
-            <h4 className={"mt-4 mb-4"}>Películas favoritas</h4>
+            <h4 className={"mt-4 mb-4"}>Favoritos</h4>
             {favoriteMovies && favoriteMovies.length > 0 ? (
                 <Row xs={1} md={3} className="g-4">
                     {favoriteMovies.map((favorite, id) => (
                         <Col key={id}>
-                            <ContentCard movie={favorite}/>
+                            <ContentCard content={favorite}/>
                         </Col>
                     ))}
                 </Row>
             ) : (
-                <p>*No hay favoritos*</p>
+                <p>No tienes favoritos. ¡Añade alguna película o serie!</p>
             )}
         </>
     )

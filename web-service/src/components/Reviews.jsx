@@ -10,7 +10,7 @@ export const Reviews = () => {
     const [selectedReview, setSelectedReview] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const {user, setUser, formatDate} = useContext(UserContext);
-    const {fetchMovieById, getReviewsByUser, deleteReview} = useContext(MoviesContext);
+    const {fetchContentById, getReviewsByUser, deleteReview} = useContext(MoviesContext);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -20,7 +20,7 @@ export const Reviews = () => {
 
                 const reviewsWithContent = await Promise.all(
                     userReviews.map(async (review) => {
-                        const movie = await fetchMovieById(review.idContent);
+                        const movie = await fetchContentById(review.idContent);
                         console.log("Movie:", movie);
                         return {...review, movieTitle: movie.title};
                     })
@@ -81,7 +81,7 @@ export const Reviews = () => {
                     ))}
                 </ListGroup>
             ) : (
-                <p>*No has realizado ninguna reseña*</p>
+                <p>No has realizado ninguna reseña hasta el momento. ¡Anímate y da tu opinión!</p>
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>

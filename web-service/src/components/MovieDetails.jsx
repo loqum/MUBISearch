@@ -205,7 +205,6 @@ function MovieDetails(props) {
     const handleFavoriteToggle = async (favoriteState) => {
         console.log(`El usuario marcó como favorito: ${favoriteState}`);
 
-        // Actualiza el estado local inmediatamente
         setIsFavorite(favoriteState);
 
         try {
@@ -275,7 +274,7 @@ function MovieDetails(props) {
                 score: vote
             });
             // Actualiza la película con la nueva valoración emitida por el usuario
-            const updatedMovie = await fetchMovieById(content.id);
+            const updatedMovie = await fetchContentById(content.id);
             console.log("Updated movie:", updatedMovie);
             setContent(updatedMovie);
         } catch (e) {

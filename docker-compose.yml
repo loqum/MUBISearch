@@ -68,6 +68,11 @@ services:
     ports:
       - "6379:6379"
 
+  redis-insight:
+    image: redis/redisinsight:latest
+    ports:
+      - 5540:5540
+
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq

@@ -19,9 +19,6 @@ import java.util.Date;
 @Entity
 public class Movie extends Content {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
     @Column(name = "original_title")
     private String originalTitle;
     @Column(name = "release_date")
