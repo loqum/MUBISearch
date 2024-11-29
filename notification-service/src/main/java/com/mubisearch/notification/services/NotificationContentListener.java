@@ -3,12 +3,18 @@ package com.mubisearch.notification.services;
 import com.mubisearch.notification.configuration.RabbitMQConfig;
 import com.mubisearch.notification.entities.Notification;
 import com.mubisearch.notification.entities.NotificationType;
+import com.mubisearch.notification.entities.dto.ContentResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -16,6 +22,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationContentListener {
 
     @Autowired
@@ -26,6 +33,12 @@ public class NotificationContentListener {
 
     @Autowired
     private StringRedisTemplate redisTemplate;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
+    @Value("${contentService.getContentById.url}")
+    private String getContentById;
 
     @RabbitListener(queues = RabbitMQConfig.CONTENT_UPDATE_QUEUE)
     public void handleContentUpdate(Map<String, Object> message) {
@@ -51,7 +64,7 @@ public class NotificationContentListener {
                         .createdAt(LocalDateTime.now())
                         .build();
                 notificationService.save(notification);
-                publishEmailToQueue(id, getDescription(notificationType));
+                publishEmailToQueue(id, idContent, getText(idContent, notificationType));
             }
         });
 
@@ -69,11 +82,12 @@ public class NotificationContentListener {
     }
 
 
-    private void publishEmailToQueue(Long idUser, String text) {
+    private void publishEmailToQueue(Long idUser, Long idContent, String text) {
         rabbitTemplate.convertAndSend(
                 RabbitMQConfig.EMAIL_QUEUE,
                 Map.of(
                         "idUser", idUser,
+                        "idContent", idContent,
                         "subject", "Tienes nuevas notificaciones",
                         "text", text
                 )
@@ -84,8 +98,27 @@ public class NotificationContentListener {
 
     private String getDescription(NotificationType notificationType) {
         return switch (notificationType) {
-            case NEW_REVIEW -> "Hay nuevas reseñas";
-            case NEW_VOTE -> "Hay nuevos votos";
+            case NEW_REVIEW -> "Hay nuevas reseñas para ";
+            case NEW_VOTE -> "Hay nuevos votos para ";
         };
     }
+
+    private String getText(Long idContent, NotificationType notificationType) {
+        try {
+            ResponseEntity<ContentResponse> response = restTemplate.getForEntity(getContentById, ContentResponse.class, idContent);
+            if (!response.getStatusCode().is2xxSuccessful()) {
+                throw new RuntimeException("No se ha podido obtener el contenido con id " + idContent);
+            }
+            ContentResponse contentResponse = response.getBody();
+
+            return getDescription(notificationType) + contentResponse.getTitle() + " en MUBISearch. ¡No te lo pierdas!";
+
+        } catch (HttpClientErrorException e) {
+            if (e.getStatusCode().is4xxClientError()) {
+                throw new RuntimeException("No se ha podido obtener el contenido con id " + idContent);
+            }
+            throw new RuntimeException("Error al obtener el contenido con id " + idContent);
+        }
+    }
+
 }

@@ -2,8 +2,9 @@ import {useContext} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 
 function DetailsWrapper(DetailsComponent) {
-    function NewComponent(props) {
+    function NewComponent() {
         const {urlImage} = useContext(MoviesContext);
+
         const formatDate = (date) => {
             return new Intl.DateTimeFormat('es-ES').format(new Date(date));
         }

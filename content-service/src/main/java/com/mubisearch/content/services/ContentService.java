@@ -32,12 +32,12 @@ public class ContentService {
                 .map(ContentResponse::from);
     }
 
-    public Content createContent(ContentRequest contentRequest) {
-        Content content = Content.builder()
-                .id(contentRequest.id())
-                .title(contentRequest.title())
-                .plot(contentRequest.plot())
-                .posterPath(contentRequest.posterPath()).build();
-        return contentRepository.save(content);
-    }
+//    public Content createContent(ContentRequest contentRequest) {
+//        Content content = Content.builder()
+//                .id(contentRequest.id())
+//                .title(contentRequest.title())
+//                .plot(contentRequest.plot())
+//                .posterPath(contentRequest.posterPath()).build();
+//        return contentRepository.save(content);
+//    }
 }

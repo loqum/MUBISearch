@@ -43,16 +43,16 @@ public class ContentController {
                 .orElse(ResponseEntity.noContent().build());
     }
 
-    @PostMapping
-    public ResponseEntity<String> createContent(@RequestBody ContentRequest contentRequest) {
-        log.info("Init createContent");
-        String idContent = contentService.createContent(contentRequest).getId().toString();
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{idContent}")
-                .buildAndExpand(idContent)
-                .toUri();
-        return ResponseEntity.created(uri).body(idContent);
-    }
+//    @PostMapping
+//    public ResponseEntity<String> createContent(@RequestBody ContentRequest contentRequest) {
+//        log.info("Init createContent");
+//        String idContent = contentService.createContent(contentRequest).getId().toString();
+//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+//                .path("/{idContent}")
+//                .buildAndExpand(idContent)
+//                .toUri();
+//        return ResponseEntity.created(uri).body(idContent);
+//    }
 
 
 }

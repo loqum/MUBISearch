@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Map;
 
@@ -19,11 +20,11 @@ public class EmailListener {
     public void handleEmailQueue(Map<String, Object> message) {
         try {
             long idUser = ((Number) message.get("idUser")).longValue();
+            long idContent = ((Number) message.get("idContent")).longValue();
             String subject = (String) message.get("subject");
             String text = (String) message.get("text");
-
             log.info("Enviando correo a usuario {} con asunto: {}", idUser , subject);
-            emailService.sendEmail(subject, text);
+            emailService.sendEmail(subject, text, idContent);
             log.info("Correo enviado a usuario {} con asunto: {}", idUser , subject);
         } catch (Exception e) {
             log.error("Error procesando el mensaje de correo: {}", message, e);
