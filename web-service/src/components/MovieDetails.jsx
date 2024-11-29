@@ -33,8 +33,8 @@ function MovieDetails(props) {
     const {user, fetchUpdatedUser, fetchUser} = useContext(UserContext);
     const {idContent} = useParams(); //Recuperar el id de la película de la URL
     const contentFromNavigate = location?.state?.content; // Recuperar película desde la pantalla anterior mediante navegación
-    const isMovie = location?.state?.isMovie || false;
-    const isSeries = location?.state?.isSeries || false;
+    const [isMovie, setIsMovie] = useState(location?.state?.isMovie);
+    const [isSeries, setIsSeries] = useState(location?.state?.isSeries);
     const [content, setContent] = useState(null);
     const [showSuccessAlert, setShowSuccessAlert] = useState(false);
     const [showWarningAlert, setShowWarningAlert] = useState(false);
@@ -156,10 +156,20 @@ function MovieDetails(props) {
         try {
             let contentFromBBDD = await fetchContentById(idContent);
             console.log("movieFromBBDD:", contentFromBBDD);
+
             console.log("isMovie:", isMovie);
             console.log("isSeries:", isSeries);
             if (contentFromBBDD) {
                 setContent(contentFromBBDD);
+
+                if (isMovie === undefined) {
+                    setIsMovie(contentFromBBDD.type === "Movie");
+                }
+
+                if (isSeries === undefined) {
+                    setIsSeries(contentFromBBDD.type === "Series");
+                }
+
             } else {
                 if (contentFromNavigate && isMovie) {
                     console.log("Entra en el if");
@@ -319,13 +329,13 @@ function MovieDetails(props) {
         <>
             {showSuccessAlert && (
                 <Alert variant="success" onClose={() => setShowSuccessAlert(false)} dismissible>
-                    Película añadida a favoritos
+                    Contenido añadido a favoritos
                 </Alert>
             )}
 
             {showWarningAlert && (
                 <Alert variant="warning" onClose={() => setShowWarningAlert(false)} dismissible>
-                    Película eliminada de favoritos
+                    Contenido eliminado de favoritos
                 </Alert>
             )}
 
@@ -333,7 +343,7 @@ function MovieDetails(props) {
                 <Card.Img variant="top" src={`${urlImage}${content.posterPath}`} className="img-fluid"
                           style={{maxHeight: '600px', objectFit: 'cover'}}/>
                 <Card.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-                    <span>Película</span>
+                    {isMovie ? <span>Película</span> : <span>Serie</span>}
                     <div style={{display: "inline-flex", gap: "5px", alignItems: "center"}}>
                         {user.isLoggedIn && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
@@ -360,8 +370,23 @@ function MovieDetails(props) {
                     <Card.Text>
                         <strong>Géneros: </strong>{Object.values(content.genres).join(', ')}
                     </Card.Text>
-                    <Card.Text><strong>Fecha de
-                        estreno: </strong>{content.releaseDate && (convertDateToDayMonthYear(content.releaseDate))}
+                    {isSeries && (
+                        <Card.Text>
+                            <strong>País de origen: </strong>{content.originCountry}
+                        </Card.Text>
+                    )}
+                    <Card.Text>
+                        {isMovie ? (
+                            <>
+                                <strong>Fecha de estreno: </strong>
+                                {content.releaseDate && convertDateToDayMonthYear(content.releaseDate)}
+                            </>
+                        ) : (
+                            <>
+                                <strong>Fecha de primera emisión: </strong>
+                                {content.firstAirDate && convertDateToDayMonthYear(content.firstAirDate)}
+                            </>
+                        )}
                     </Card.Text>
                     <Card.Text><strong>Valoración: </strong> {content.averageScore === 0 ? "Todavía no se ha valorado" : content.averageScore}
                     </Card.Text>
