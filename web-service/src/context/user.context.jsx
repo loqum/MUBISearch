@@ -28,15 +28,12 @@ function UserProviderWrapper(props) {
     });
 
     useEffect(() => {
-        console.log("Sync user:", syncUser);
         fetchUpdatedUser();
     }, [syncUser, user.id]);
 
     const fetchUpdatedUser = async () => {
         try {
-            console.log("NOT Fetching updated user because syncuser {} and user.id {}...", user, user.id);
             if (user.syncUser && user.id) {
-                console.log("Fetching updated user...");
                 const response = await axios.get(`http://localhost:8080/api/v1/users/id/${user.id}`, {
                     headers: {
                         "Content-Type": "application/json",
@@ -44,7 +41,6 @@ function UserProviderWrapper(props) {
                 });
 
                 const updatedUser = {...response.data, isLoggedIn: true, syncUser: true};
-                console.log("Updated user:", updatedUser);
 
                 if (JSON.stringify(user) !== JSON.stringify(updatedUser)) {
                     setUser(updatedUser);
@@ -70,7 +66,6 @@ function UserProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("createUser response:", response);
                 return response.data;
             }
         } catch (error) {

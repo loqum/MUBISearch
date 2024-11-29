@@ -181,7 +181,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("getFavoriteByIdUserAndIdContent response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -193,7 +192,6 @@ function MoviesProviderWrapper(props) {
     const fetchMovieById = async (id) => {
         try {
             if (id) {
-                console.log("fetchMovieById id:", id);
                 const response = await axios({
                     method: 'GET',
                     url: `http://localhost:8080/api/v1/movies/id/${id}`,
@@ -201,7 +199,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log("fetchMovieById response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -213,7 +210,6 @@ function MoviesProviderWrapper(props) {
     const fetchSeriesById = async (id) => {
         try {
             if (id) {
-                console.log("fetchSeriesById id:", id);
                 const response = await axios({
                     method: 'GET',
                     url: `http://localhost:8080/api/v1/series/id/${id}`,
@@ -221,7 +217,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log("fetchSeriesById response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -233,7 +228,6 @@ function MoviesProviderWrapper(props) {
     const fetchContentById = async (id) => {
         try {
             if (id) {
-                console.log("fetchContentById id:", id);
                 const response = await axios({
                     method: 'GET',
                     url: `http://localhost:8080/api/v1/contents/id/${id}`,
@@ -241,7 +235,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 });
-                console.log("fetchContentById response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -252,7 +245,6 @@ function MoviesProviderWrapper(props) {
     const createVote = async (vote) => {
         try {
             if (vote) {
-                console.log("createVote vote:", vote);
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/votes/create',
@@ -261,7 +253,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("createVote response:", response);
                 return response;
             }
         } catch (error) {
@@ -273,7 +264,6 @@ function MoviesProviderWrapper(props) {
     const createReview = async (review) => {
         try {
             if (review) {
-                console.log("createReview review:", review);
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/reviews/create',
@@ -282,7 +272,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("createReview response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -301,7 +290,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("getVoteByUserAndContent response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -319,7 +307,6 @@ function MoviesProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             })
-            console.log("getReviewsByContent response:", response);
             return response.data;
         } catch (error) {
             console.error("Error fetching reviews by content:", error);
@@ -336,7 +323,6 @@ function MoviesProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             })
-            console.log("getReviewsByUser response:", response);
             return response.data;
         } catch (error) {
             console.error("Error fetching reviews by user:", error);
@@ -353,7 +339,6 @@ function MoviesProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             })
-            console.log("deleteReview response:", response);
             return response.data;
         } catch (error) {
             console.error("Error deleting review:", error);
@@ -362,7 +347,6 @@ function MoviesProviderWrapper(props) {
     }
 
     const convertMovies = (movies) => {
-        console.log("convertMovies movies:", movies);
         return movies.map((movie) => ({
             ...movie,
             posterPath: movie.poster_path,
@@ -372,7 +356,6 @@ function MoviesProviderWrapper(props) {
     };
 
     const convertSeries = (seriesList) => {
-        console.log("convertSeries series:", seriesList);
         return seriesList.map((series) => ({
             ...series,
             posterPath: series.poster_path,
@@ -387,8 +370,6 @@ function MoviesProviderWrapper(props) {
     const updateFavoriteAlert = async (idFavorite, notificationState) => {
         try {
             if (idFavorite) {
-                console.log("updateFavoriteAlert idFavorite:", idFavorite);
-                console.log("updateFavoriteAlert notificationState:", notificationState);
                 const response = await axios({
                     method: 'PATCH',
                     url: `http://localhost:8080/api/v1/favorites/update/${idFavorite}`,
@@ -397,7 +378,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("updateFavoriteAlert response:", response);
                 return response.data;
             }
         } catch (error) {

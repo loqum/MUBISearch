@@ -16,16 +16,12 @@ export const Reviews = () => {
         const fetchReviews = async () => {
             try {
                 const userReviews = await getReviewsByUser(user.id);
-                console.log("User reviews:", userReviews);
-
                 const reviewsWithContent = await Promise.all(
                     userReviews.map(async (review) => {
                         const movie = await fetchContentById(review.idContent);
-                        console.log("Movie:", movie);
                         return {...review, movieTitle: movie.title};
                     })
                 );
-                console.log("Reviews with content:", reviewsWithContent);
                 setReviews(reviewsWithContent);
             } catch (error) {
                 console.error("Error fetching reviews:", error);

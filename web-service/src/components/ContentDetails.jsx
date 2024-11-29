@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Form, InputGroup, OverlayTrigger, Spinner, Tooltip} from "react-bootstrap";
+import {Alert, Card, OverlayTrigger, Spinner, Tooltip} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import React, {useContext, useEffect, useState} from "react";
@@ -7,8 +7,9 @@ import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
 import VotesButton from "./VotesButton.jsx";
 import NotificationBell from "./NotificationBell.jsx";
+import {Review} from "./Review.jsx";
 
-function MovieDetails(props) {
+function ContentDetails() {
 
     const location = useLocation();
     const {
@@ -23,14 +24,9 @@ function MovieDetails(props) {
         getFavoriteByIdUserAndIdContent,
         formatDateISO8601,
         convertDateToDayMonthYear,
-        convertDateToDayMonthYearTime,
-        getVoteByUserAndContent,
-        createVote,
-        createReview,
-        getReviewsByContent,
         updateFavoriteAlert
     } = useContext(MoviesContext);
-    const {user, fetchUpdatedUser, fetchUser} = useContext(UserContext);
+    const {user, fetchUpdatedUser} = useContext(UserContext);
     const {idContent} = useParams(); //Recuperar el id de la película de la URL
     const contentFromNavigate = location?.state?.content; // Recuperar película desde la pantalla anterior mediante navegación
     const [isMovie, setIsMovie] = useState(location?.state?.isMovie);
@@ -40,12 +36,6 @@ function MovieDetails(props) {
     const [showWarningAlert, setShowWarningAlert] = useState(false);
     const [isFavorite, setIsFavorite] = useState(false);
     const [favorite, setFavorite] = useState(null);
-    const [selectedVote, setSelectedVote] = useState(0);
-    const [vote, setVote] = useState(null);
-    const [showVoteMessage, setShowVoteMessage] = useState(false);
-    const [newReview, setNewReview] = useState(null);
-    const [reviews, setReviews] = useState([]);
-    const [hasReviewed, setHasReviewed] = useState(false);
     const [isNotified, setIsNotified] = useState(false);
 
     useEffect(() => {
@@ -61,21 +51,8 @@ function MovieDetails(props) {
 
     }, [user, content]);
 
-    useEffect(() => {
-        if (user && content) {
-            checkVote();
-        }
-
-    }, [user, content]);
-
-    useEffect(() => {
-        if (content) {
-            checkReviews();
-        }
-    }, [content]);
 
     const checkFavorite = async () => {
-        console.log("User: ", user);
         if (user && content) {
             try {
                 const favoriteData = await getFavoriteByIdUserAndIdContent(user, content);
@@ -83,14 +60,12 @@ function MovieDetails(props) {
                     setIsFavorite(true);
                     setIsNotified(favoriteData.notificationAlert);
                     setFavorite(favoriteData);
-                    console.log("Favorite data:", favoriteData);
                 } else {
                     setIsFavorite(false);
                     setIsNotified(false);
                     setFavorite(null);
                 }
             } catch (e) {
-                console.error("Error checking favorite:", e);
                 setIsFavorite(false);
                 setFavorite(null);
             }
@@ -98,67 +73,9 @@ function MovieDetails(props) {
         }
     }
 
-    const checkVote = async () => {
-        console.log("User: ", user);
-        if (user && content) {
-            try {
-                const voteData = await getVoteByUserAndContent(user, content);
-                if (voteData) {
-                    setSelectedVote(voteData.score);
-                    setVote(voteData);
-                    console.log("Vote data:", voteData);
-                } else {
-                    setSelectedVote(0);
-                    setVote(null);
-                }
-            } catch (e) {
-                console.error("Error checking vote:", e);
-                setSelectedVote(0);
-                setVote(null);
-            }
-
-        }
-    }
-
-    const checkReviews = async () => {
-        console.log("Movie: ", content);
-        if (content) {
-            try {
-                const reviewData = await getReviewsByContent(content.id);
-                if (reviewData) {
-                    const reviewsWithUserData = await Promise.all(
-                        reviewData.map(async (review) => {
-                            const user = await fetchUser(review.idUser);
-                            return {...review, userName: user.name || `Usuario ${review.idUser}`};
-                        })
-                    );
-
-                    if (user) {
-                        const userReview = reviewsWithUserData.find((review) => review.idUser === user.id);
-                        setHasReviewed(!!userReview);
-                    }
-
-                    setReviews(reviewsWithUserData);
-                } else {
-                    setReviews([]);
-                    setHasReviewed(false);
-                }
-            } catch (e) {
-                console.error("Error checking review:", e);
-                setReviews([]);
-            }
-
-        }
-    }
-
     const getContent = async () => {
-        console.log("Movie id:", idContent);
         try {
             let contentFromBBDD = await fetchContentById(idContent);
-            console.log("movieFromBBDD:", contentFromBBDD);
-
-            console.log("isMovie:", isMovie);
-            console.log("isSeries:", isSeries);
             if (contentFromBBDD) {
                 setContent(contentFromBBDD);
 
@@ -172,7 +89,6 @@ function MovieDetails(props) {
 
             } else {
                 if (contentFromNavigate && isMovie) {
-                    console.log("Entra en el if");
                     const id = await createMovie({
                         originalTitle: contentFromNavigate.original_title,
                         releaseDate: formatDateISO8601(contentFromNavigate.release_date),
@@ -183,7 +99,6 @@ function MovieDetails(props) {
                         genres: contentFromNavigate.genres,
                         averageScore: 0
                     });
-                    console.log("Movie created with id:", id);
 
                     const savedContent = await fetchMovieById(id);
                     setContent(savedContent);
@@ -200,7 +115,6 @@ function MovieDetails(props) {
                         originCountry: contentFromNavigate.origin_country[0] || "Desconocido",
                         originalName: contentFromNavigate.original_name,
                     });
-                    console.log("Series created with id:", id);
 
                     const savedContent = await fetchSeriesById(id);
                     setContent(savedContent);
@@ -213,7 +127,6 @@ function MovieDetails(props) {
     };
 
     const handleFavoriteToggle = async (favoriteState) => {
-        console.log(`El usuario marcó como favorito: ${favoriteState}`);
 
         setIsFavorite(favoriteState);
 
@@ -223,9 +136,6 @@ function MovieDetails(props) {
                 setShowWarningAlert(false);
                 setTimeout(() => setShowSuccessAlert(false), 3000);
 
-                console.log("User:", user);
-                console.log("idContent:", content.id);
-
                 await createFavorite({
                     idUser: user.id,
                     idContent: content.id,
@@ -234,8 +144,6 @@ function MovieDetails(props) {
                 setShowWarningAlert(true);
                 setShowSuccessAlert(false);
                 setTimeout(() => setShowWarningAlert(false), 3000);
-
-                console.log("Favorite ID:", favorite.id);
 
                 await deleteFavorite(favorite.id);
 
@@ -255,65 +163,16 @@ function MovieDetails(props) {
     };
 
     const handleNotificationToggle = async (notificationState) => {
-        console.log(`El usuario marcó como notificado: ${notificationState}`);
-
         setIsNotified(notificationState);
-
         try {
-            console.log("Favorite:", favorite);
-            const updatedFavorite = await updateFavoriteAlert(favorite.id, notificationState);
-            console.log("Updated Favorite:", updatedFavorite);
+            await updateFavoriteAlert(favorite.id, notificationState);
         } catch (e) {
             console.error("Error creating notification: ", e);
         }
-
         window.scrollTo({
             top: 0,
             behavior: "smooth",
         });
-    }
-
-    const handleVote = async (vote) => {
-        try {
-            console.log("User.id:", user.id);
-            console.log("Movie.id:", content.id);
-            console.log("Vote:", vote);
-            await createVote({
-                idContent: content.id,
-                idUser: user.id,
-                score: vote
-            });
-            // Actualiza la película con la nueva valoración emitida por el usuario
-            const updatedMovie = await fetchContentById(content.id);
-            console.log("Updated movie:", updatedMovie);
-            setContent(updatedMovie);
-        } catch (e) {
-            console.error("Error creating vote:", e);
-        }
-        setSelectedVote(vote);
-        setShowVoteMessage(true);
-
-        console.log(`Voted: ${vote}`);
-        setTimeout(() => setShowVoteMessage(false), 3000);
-    };
-
-    const handleSubmitReview = async (e) => {
-        e.preventDefault();
-
-        if (newReview && newReview.trim() !== "") {
-            try {
-                await createReview({
-                    idContent: content.id,
-                    idUser: user.id,
-                    text: newReview.trim(),
-                });
-
-                setNewReview("");
-                checkReviews();
-            } catch (e) {
-                console.error("Error creating review:", e);
-            }
-        }
     }
 
     if (!content) {
@@ -395,55 +254,15 @@ function MovieDetails(props) {
 
             {user.isLoggedIn && (
                 <>
-                    <VotesButton selectedVote={selectedVote} handleVote={handleVote} showVoteMessage={showVoteMessage}
-                                 setShowVoteMessage={setShowVoteMessage}/>
+                    <VotesButton content={content} setContent={setContent}/>
                 </>
             )}
 
-            <h3 className="mt-4">Reseñas</h3>
-
-            {reviews.length > 0 ? (
-                reviews.map((review, index) => (
-                    <Card key={index} className="mb-3">
-                        <Card.Body>
-                            <Card.Title>{review.userName}</Card.Title>
-                            <Card.Text>{review.text}</Card.Text>
-                            <Card.Footer className="text-muted">
-                                Publicado el {convertDateToDayMonthYearTime(review.createdAt)}
-                            </Card.Footer>
-                        </Card.Body>
-                    </Card>
-                ))
-            ) : (
-                <p>Todavía no hay ninguna reseña para esta película. {user.isLoggedIn && (<>¡Sé el primero en
-                    comentarla!</>)}</p>
-            )}
-            {user.isLoggedIn && !hasReviewed &&
-                (<Form onSubmit={handleSubmitReview}>
-                        <InputGroup>
-                            <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
-                            <Form.Control
-                                as="textarea"
-                                value={newReview || ""}
-                                onChange={(e) => setNewReview(e.target.value)}
-                                placeholder="Comparte tu opinión sobre esta película o serie"
-                                aria-label="Campo para escribir una nueva reseña"
-                            />
-                        </InputGroup>
-                        <Button type="submit" variant="primary" className="mt-2">
-                            Enviar reseña
-                        </Button>
-                    </Form>
-                )}
-            {hasReviewed && (
-                <Alert variant="info">
-                    ¡Gracias por dar tu opinión!
-                </Alert>
-            )}
+            <Review content={content}/>
 
         </>
 
     );
 }
 
-export default DetailsWrapper(MovieDetails);
+export default DetailsWrapper(ContentDetails);

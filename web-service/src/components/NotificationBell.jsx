@@ -1,6 +1,7 @@
 import {Bell, BellFill} from "react-bootstrap-icons";
 
 function NotificationBell({onToggle, isNotified}) {
+
     const handleClick = () => {
         const newNotificationState = !isNotified;
         if (onToggle) {

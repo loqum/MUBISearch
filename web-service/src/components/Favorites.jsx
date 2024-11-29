@@ -13,8 +13,6 @@ export const Favorites = () => {
     useEffect(() => {
         const fetchFavoriteMovies = async () => {
             if (user && user.favorites) {
-                console.log("User:", user);
-                console.log("User favorites:", user.favorites);
                 try {
                     const moviesList = await Promise.all(
                         user.favorites.map(async (favorite) => {
@@ -22,7 +20,6 @@ export const Favorites = () => {
                         })
                     );
 
-                    console.log("Movies list:", moviesList);
                     setFavoriteMovies(moviesList);
                 } catch (error) {
                     console.error("Error fetching movies:", error);

@@ -1,4 +1,4 @@
-import MovieDetails from "../components/MovieDetails.jsx";
+import MovieDetails from "../components/ContentDetails.jsx";
 import {Container} from "react-bootstrap";
 
 function DetailMoviePage() {
