@@ -42,6 +42,13 @@ public class UserController {
         return userService.findById(idUser).map(u -> ResponseEntity.ok().body(UserResponse.from(u))).orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/sub/{sub}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<UserResponse> getUserBySub(@PathVariable @NotNull String sub) {
+        log.info("Init getUserById");
+        return userService.findBySub(sub).map(u -> ResponseEntity.ok().body(UserResponse.from(u))).orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/name/{name}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<UserResponse> getUserByName(@PathVariable @NotNull String name) {
@@ -49,38 +56,23 @@ public class UserController {
         return userService.findByName(name).map(u -> ResponseEntity.ok().body(UserResponse.from(u))).orElse(ResponseEntity.notFound().build());
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<User> getOwnUser(@AuthenticationPrincipal User user) {
-        log.info("Init getOwnUser");
-        return ResponseEntity.ok().body(user);
+    @GetMapping("/exists/{sub}")
+    public ResponseEntity<Boolean> userExists(@PathVariable String sub) {
+        boolean exists = userService.userExists(sub);
+        return ResponseEntity.ok(exists);
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Long> register(@RequestBody UserRegisterRequest userRequest) {
-        log.info("Init registerUser: {}", userRequest);
+
+    @PostMapping("/create")
+    public ResponseEntity<Long> create(@RequestBody UserRegisterRequest userRequest) {
+        log.info("Init createUser: {}", userRequest);
         try {
             Long idUser = userService.createUser(userRequest).getId();
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(idUser).toUri();
             return ResponseEntity.created(uri).body(idUser);
         } catch (DataIntegrityViolationException e) {
-            log.error("Error creating user. User name is duplicated: {}", e.getMessage());
+            log.error("Error creating user. User email is duplicated: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.CONFLICT).build();
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<UserResponse> login(@RequestBody UserLoginRequest userRequest) {
-        log.info("Init loginUser: {}", userRequest);
-        try {
-            UserResponse userResponse = userService.validateUser(userRequest);
-            return ResponseEntity.ok(userResponse);
-        } catch (UsernameNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (BadCredentialsException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        } catch (Exception e) {
-            log.error("Error validating user: {}", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

@@ -10,4 +10,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"favorites"})
     Optional<User> findUserByName(String username);
+
+    @EntityGraph(attributePaths = {"favorites"})
+    Optional<User> findBySub(String sub);
 }

@@ -1,53 +1,44 @@
 import {createContext, useEffect, useState} from "react";
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {useAuth0} from "@auth0/auth0-react";
 
 const UserContext = createContext();
 
 function UserProviderWrapper(props) {
 
-    const navigate = useNavigate();
+    const {user: auth0User, isAuthenticated} = useAuth0();
+    const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const [syncUser, setSyncUser] = useState(false);
 
-
-    const initialUser = JSON.parse(sessionStorage.getItem("user")) || {
-        name: "",
-        fullName: "",
-        password: "",
-        userRole: "",
-        favorites: [],
-        createdAt: "",
-        isLoggedIn: false,
-        syncUser: false
-    };
-
-    const [user, setUser] = useState(() => {
-        const storedUser = sessionStorage.getItem("user");
-        return storedUser ? JSON.parse(storedUser) : initialUser;
-    });
-
     useEffect(() => {
-        fetchUpdatedUser();
-    }, [syncUser, user.id]);
+        if (isAuthenticated && auth0User) {
+            fetchUserBySub();
+        } else {
+            setUser(null);
+        }
+    }, [isAuthenticated, auth0User, syncUser]);
 
-    const fetchUpdatedUser = async () => {
+
+    const fetchUserBySub = async () => {
         try {
-            if (user.syncUser && user.id) {
-                const response = await axios.get(`http://localhost:8080/api/v1/users/id/${user.id}`, {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
+            const response = await axios.get(`http://localhost:8080/api/v1/users/sub/${auth0User.sub}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log("Updated user:", response.data);
 
-                const updatedUser = {...response.data, isLoggedIn: true, syncUser: true};
+            const updatedUser = {
+                ...auth0User, favorites: response.data.favorites || [], id: response.data.id, createdAt: response.data.createdAt,
+            };
+            console.log("Updated user2:", response.data);
 
-                if (JSON.stringify(user) !== JSON.stringify(updatedUser)) {
-                    setUser(updatedUser);
-                }
-            }
+            setUser(updatedUser);
+
         } catch (error) {
             console.error("Error fetching updated user:", error);
+            setError(error);
         }
     };
 
@@ -55,68 +46,7 @@ function UserProviderWrapper(props) {
         return new Intl.DateTimeFormat('es-ES').format(new Date(date));
     }
 
-    const createUser = async (user) => {
-        try {
-            if (user) {
-                const response = await axios({
-                    method: 'POST',
-                    url: 'http://localhost:8080/api/v1/users/register',
-                    data: user,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                })
-                return response.data;
-            }
-        } catch (error) {
-            if (error.response && error.response.status === 409) {
-                console.error("User name already exists:", error);
-                throw error;
-            } else {
-                console.error("Error creating user:", error);
-                throw error;
-            }
-        }
-    };
-
-    const login = async (u) => {
-        try {
-            if (u) {
-                const response = await axios({
-                    method: 'POST',
-                    url: 'http://localhost:8080/api/v1/users/login',
-                    data: u,
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                });
-                const loggedInUser = {...response.data, isLoggedIn: true, syncUser: true};
-                setUser(loggedInUser);
-                setSyncUser(true);
-                return loggedInUser;
-            }
-        } catch (error) {
-            console.error("Error login user:", error);
-            throw error;
-        }
-    };
-
-    const logoutUser = () => {
-        setUser({
-            id: null,
-            name: "",
-            fullName: "",
-            password: "",
-            userRole: "",
-            favorites: [],
-            isLoggedIn: false,
-        });
-        sessionStorage.removeItem("user");
-        setSyncUser(false);
-        navigate("/");
-    }
-
-    const fetchUser = async (id) => {
+    const fetchUserById = async (id) => {
         try {
             if (id) {
                 const response = await axios.get(`http://localhost:8080/api/v1/users/id/${id}`, {
@@ -136,20 +66,15 @@ function UserProviderWrapper(props) {
         setSyncUser(true);
     };
 
-
     return (
         <UserContext.Provider value={{
             user,
-            setUser,
-            login,
-            createUser,
-            logoutUser,
             error,
             setError,
             formatDate,
             triggerUserSync,
-            fetchUpdatedUser,
-            fetchUser
+            fetchUserBySub,
+            fetchUserById
         }}>
             {props.children}
         </UserContext.Provider>

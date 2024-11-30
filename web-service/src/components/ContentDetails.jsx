@@ -9,6 +9,7 @@ import VotesButton from "./VotesButton.jsx";
 import NotificationBell from "./NotificationBell.jsx";
 import {Review} from "./Review.jsx";
 import Alerts from "./Alerts.jsx";
+import {useAuth0} from "@auth0/auth0-react";
 
 function ContentDetails() {
 
@@ -27,7 +28,8 @@ function ContentDetails() {
         convertDateToDayMonthYear,
         updateFavoriteAlert
     } = useContext(MoviesContext);
-    const {user, fetchUpdatedUser} = useContext(UserContext);
+    const {user, fetchUserBySub} = useContext(UserContext);
+    const { isAuthenticated, isLoading, auth0User } = useAuth0();
     const {idContent} = useParams(); //Recuperar el id de la película de la URL
     const contentFromNavigate = location?.state?.content; // Recuperar película desde la pantalla anterior mediante navegación
     const [isMovie, setIsMovie] = useState(location?.state?.isMovie);
@@ -157,7 +159,7 @@ function ContentDetails() {
             setIsFavorite(!favoriteState);
         }
 
-        await fetchUpdatedUser();
+        await fetchUserBySub();
 
         window.scrollTo({
             top: 0,
@@ -204,7 +206,7 @@ function ContentDetails() {
                 <Card.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                     {isMovie ? <span>Película</span> : <span>Serie</span>}
                     <div style={{display: "inline-flex", gap: "5px", alignItems: "center"}}>
-                        {user.isLoggedIn && (
+                        {isAuthenticated && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
                                 <div>
@@ -212,7 +214,7 @@ function ContentDetails() {
                                 </div>
                             </OverlayTrigger>
                         )}
-                        {user.isLoggedIn && isFavorite && (
+                        {isAuthenticated && isFavorite && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-notification"> {isNotified ? "Desactivar notificaciones" : "Activar notificaciones"} </Tooltip>}>
                                 <div>
@@ -252,7 +254,7 @@ function ContentDetails() {
                 </Card.Body>
             </Card>
 
-            {user.isLoggedIn && (
+            {isAuthenticated && (
                 <>
                     <VotesButton content={content} setContent={setContent}/>
                 </>
