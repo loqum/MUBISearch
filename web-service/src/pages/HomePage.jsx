@@ -1,42 +1,69 @@
-import {Container, Image} from "react-bootstrap";
+import {Container, Image, Pagination} from "react-bootstrap";
 import logo from "../assets/images/logo.png";
-import React, {useContext, useEffect} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import ContentCard from "../components/ContentCard.jsx";
 
 function HomePage() {
 
     const {movies, setMovies, convertMovies, fetchDiscoverMovies} = useContext(MoviesContext);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages] = useState(10);
+
+    const fetchMovies = async (page) => {
+        try {
+            const response = await fetchDiscoverMovies(page);
+            const transformedMovies = convertMovies(response);
+            setMovies(transformedMovies);
+            console.log(`Movies from page ${page}: `, transformedMovies);
+        } catch (e) {
+            console.error("Error fetching movies:", e);
+        }
+    };
 
     useEffect(() => {
-        const fetchMovies = async () => {
-            try {
-                const response = await fetchDiscoverMovies();
-                const transformedMovies = convertMovies(response);
-                setMovies(transformedMovies);
-                console.log("Movies:", transformedMovies);
-                console.log("Response Movies:", response);
-            } catch (e) {
-                console.error("Error fetching movies:", e);
-            }
-        };
+        fetchMovies(currentPage);
+    }, [currentPage]);
 
-        fetchMovies();
+    const paginationItems = [];
+    for (let page = 1; page <= totalPages; page++) {
+        paginationItems.push(
+            <Pagination.Item
+                key={page}
+                active={page === currentPage}
+                onClick={() => setCurrentPage(page)}
+            >
+                {page}
+            </Pagination.Item>
+        );
+    }
 
-    }, [setMovies]);
+    const handleFirstPage = () => setCurrentPage(1);
+    const handlePrevPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+    const handleLastPage = () => setCurrentPage(totalPages);
+
 
     const movieCards = movies.map((movie) => {
-        return <ContentCard key={movie.id} content={movie} isMovie={true} isSeries={false} imageSize="original" />
+        return <ContentCard key={movie.id} content={movie} isMovie={true} isSeries={false} imageSize="original"/>
     });
 
     return (
         <>
             <Container>
                 <Image src={logo} alt="Logo MUBISearch" fluid rounded className="mb-4 mt-4"/>
-                <h1 className={"m-4"}>Últimas películas</h1>
-                <ul className="content-list">
-                    {movieCards}
-                </ul>
+                <ul className="content-list">{movieCards}</ul>
+                <Pagination className="justify-content-center mt-4 mb-5">
+                    <Pagination.First onClick={handleFirstPage} disabled={currentPage === 1}/>
+                    <Pagination.Prev onClick={handlePrevPage} disabled={currentPage === 1}/>
+                    {paginationItems}
+                    <Pagination.Next onClick={handleNextPage} disabled={currentPage === totalPages}/>
+                    <Pagination.Last onClick={handleLastPage} disabled={currentPage === totalPages}/>
+                </Pagination>
             </Container>
         </>
     )

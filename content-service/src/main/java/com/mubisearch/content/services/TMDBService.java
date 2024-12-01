@@ -6,6 +6,7 @@ import com.mubisearch.content.controllers.dto.SearchResponse;
 import com.mubisearch.content.controllers.dto.SeriesDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,11 @@ public class TMDBService extends BaseService<MovieDto> {
     @Value("${tmdb.api.url.search.series.title}")
     private String urlSeries;
 
-    @Value("${tmdb.api.url.search.movie.discover}")
-    private String discoverMoviesUrl;
+//    @Value("${tmdb.api.url.search.movie.discover}")
+//    private String discoverMoviesUrl;
+
+    @Autowired
+    private TmdbApiConfig tmdbApiConfig;
 
     public List<MovieDto> getMovies(String title) {
         Map<String, String> params = Map.of("title", title);
@@ -48,10 +52,11 @@ public class TMDBService extends BaseService<MovieDto> {
     }
 
     @Cacheable("moviesDiscover")
-    public List<MovieDto> getMoviesDiscover() {
+    public List<MovieDto> getMoviesDiscover(int page) {
         log.info("Fetching movies from TMDB API");
+        log.info("Discover URL: {}", tmdbApiConfig.getDiscoverMoviesUrl(page));
         TypeReference<SearchResponse<MovieDto>> movieType = new TypeReference<>() {};
-        SearchResponse<MovieDto> response = fetchData(discoverMoviesUrl, null, movieType);
+        SearchResponse<MovieDto> response = fetchData(tmdbApiConfig.getDiscoverMoviesUrl(page), null, movieType);
         if (response != null) {
             log.info("Response from TMDB: {}", response);
             return response.getResults();

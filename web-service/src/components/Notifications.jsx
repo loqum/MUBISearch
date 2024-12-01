@@ -101,7 +101,7 @@ export const Notifications = () => {
                                     onClick={() => handleDeleteClick(n)}
 
                                 ></i>
-                                {n.description} para la película{" "}
+                                {n.description} la película{" "}
                                 <Link to={`/details/${n.idContent}`} className="text-decoration-none">
                                     {n.title}
                                 </Link>

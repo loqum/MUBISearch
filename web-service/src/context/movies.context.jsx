@@ -6,7 +6,7 @@ const MoviesContext = createContext();
 function MoviesProviderWrapper(props) {
 
     const [movies, setMovies] = useState([]);
-    const [urlImage, setUrlImage] = useState('https://image.tmdb.org/t/p/original');
+    const [urlImage] = useState('https://image.tmdb.org/t/p/original');
 
     const formatDateISO8601 = (date) => {
         return new Date(date).toISOString().split("T")[0];
@@ -36,11 +36,11 @@ function MoviesProviderWrapper(props) {
         }
     };
 
-    const fetchDiscoverMovies = async () => {
+    const fetchDiscoverMovies = async (page) => {
         try {
             const response = await axios({
                 method: 'GET',
-                url: `http://localhost:8080/api/v1/movies/discover`,
+                url: `http://localhost:8080/api/v1/movies/discover/${page}`,
                 headers: {
                     "Content-Type": "application/json",
                 },
@@ -245,15 +245,14 @@ function MoviesProviderWrapper(props) {
     const createVote = async (vote) => {
         try {
             if (vote) {
-                const response = await axios({
+                return await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/votes/create',
                     data: vote,
                     headers: {
                         "Content-Type": "application/json",
                     },
-                })
-                return response;
+                });
             }
         } catch (error) {
             console.error("Error creating vote:", error);

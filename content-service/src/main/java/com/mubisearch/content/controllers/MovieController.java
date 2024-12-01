@@ -41,14 +41,14 @@ public class MovieController {
         }
     }
 
-    @GetMapping("/discover")
+    @GetMapping("/discover/{page}")
     @ResponseStatus(HttpStatus.OK)
-    public BaseDto<MovieDto> getMoviesDiscover() {
+    public BaseDto<MovieDto> getMoviesDiscover(@PathVariable @NotNull Integer page) {
         log.info("Init getMoviesDiscover");
-        if (tmdbService.getMoviesDiscover().isEmpty()) {
+        if (tmdbService.getMoviesDiscover(page).isEmpty()) {
             return new BaseDto<>(false, List.of());
         } else {
-            return new BaseDto<>(true, tmdbService.getMoviesDiscover());
+            return new BaseDto<>(true, tmdbService.getMoviesDiscover(page));
         }
     }
 
