@@ -10,7 +10,6 @@ import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.servlet.function.ServerResponse;
 
-import static org.springframework.cloud.gateway.server.mvc.filter.BeforeFilterFunctions.stripPrefix;
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
 import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.method;
@@ -54,8 +53,14 @@ public class RoutingConfig {
     private String notificationServiceUrl;
 
     @Bean
-    public RouterFunction<ServerResponse> getHelloWorld() {
+    public RouterFunction<ServerResponse> getRoutes() {
         return route("basic_route")
+                .filter((request, next) -> {
+                    ServerRequest modifiedRequest = ServerRequest.from(request)
+                            .headers(headers -> headers.add("X-Role-Token", "ROLE_API_GATEWAY"))
+                            .build();
+                    return next.handle(modifiedRequest);
+                })
                 .route(path(userControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
                 .route(path(userControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
                 .route(path(userControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
@@ -107,6 +112,19 @@ public class RoutingConfig {
                 .onError(Exception.class, this::handleException)
                 .build();
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> debugRoute() {
+        return route("debug_route")
+                .route(path("/debug").and(method(HttpMethod.GET)), request -> {
+                    request.headers().asHttpHeaders().forEach((key, value) -> {
+                        System.out.println("Header: " + key + " = " + value);
+                    });
+
+                    return ServerResponse.ok().body(request.headers().asHttpHeaders());
+                }).build();
+    }
+
 
     private ServerResponse handleException(Throwable throwable, ServerRequest request) {
         log.error("#handleException - failed to run request {}", request.uri(), throwable);

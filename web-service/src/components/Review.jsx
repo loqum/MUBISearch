@@ -2,6 +2,7 @@ import {Alert, Button, Card, Form, InputGroup} from "react-bootstrap";
 import React, {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
+import {useAuth0} from "@auth0/auth0-react";
 
 export const Review = ({content}) => {
 
@@ -9,7 +10,8 @@ export const Review = ({content}) => {
     const [hasReviewed, setHasReviewed] = useState(false);
     const [newReview, setNewReview] = useState(null);
     const {createReview, getReviewsByContent, convertDateToDayMonthYearTime} = useContext(MoviesContext);
-    const {user, fetchUser} = useContext(UserContext);
+    const {user, fetchUserById} = useContext(UserContext);
+    const { isAuthenticated } = useAuth0();
 
     const handleSubmitReview = async (e) => {
         e.preventDefault();
@@ -32,16 +34,18 @@ export const Review = ({content}) => {
 
     const checkReviews = async () => {
         if (content) {
+            console.log("Checking reviews for content:", content);
             try {
                 const reviewData = await getReviewsByContent(content.id);
+
                 if (reviewData) {
                     const reviewsWithUserData = await Promise.all(
                         reviewData.map(async (review) => {
-                            const user = await fetchUser(review.idUser);
+                            const user = await fetchUserById(review.idUser);
                             return {...review, userName: user.name || `Usuario ${review.idUser}`};
                         })
                     );
-
+                    console.log("User review:", user);
                     if (user) {
                         const userReview = reviewsWithUserData.find((review) => review.idUser === user.id);
                         setHasReviewed(!!userReview);
@@ -63,8 +67,9 @@ export const Review = ({content}) => {
     useEffect(() => {
         if (content) {
             checkReviews();
+            console.log("Has reviewed:", hasReviewed);
         }
-    }, [content]);
+    }, [content, user]);
 
     return (
         <>
@@ -83,10 +88,10 @@ export const Review = ({content}) => {
                     </Card>
                 ))
             ) : (
-                <p>Todavía no hay ninguna reseña para esta película. {user.isLoggedIn && (<>¡Sé el primero en
+                <p>Todavía no hay ninguna reseña para esta película. {isAuthenticated && (<>¡Sé el primero en
                     comentarla!</>)}</p>
             )}
-            {user.isLoggedIn && !hasReviewed &&
+            {isAuthenticated && !hasReviewed &&
                 (<Form onSubmit={handleSubmitReview}>
                         <InputGroup>
                             <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
