@@ -73,7 +73,7 @@ export const Review = ({content}) => {
 
     return (
         <>
-            <h3 className="mt-4">Reseñas</h3>
+            <h3 className="mt-4">Críticas</h3>
 
             {reviews.length > 0 ? (
                 reviews.map((review, index) => (

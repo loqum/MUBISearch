@@ -48,7 +48,7 @@ export const Reviews = () => {
     };
 
     return (
-        <><h4 className={"mb-4 mt-4"}>Reseñas realizadas</h4>
+        <><h4 className={"text mb-4 mt-4"}>Críticas realizadas</h4>
             {reviews && reviews.length > 0 ? (
                 <ListGroup>
                     {reviews.map((review, index) => (
@@ -77,7 +77,7 @@ export const Reviews = () => {
                     ))}
                 </ListGroup>
             ) : (
-                <p>No has realizado ninguna reseña hasta el momento. ¡Anímate y da tu opinión!</p>
+                <p>No has realizado ninguna crítica hasta el momento. ¡Anímate y da tu opinión!</p>
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
@@ -85,7 +85,7 @@ export const Reviews = () => {
                     <Modal.Title>Confirmar eliminación</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    ¿Estás seguro de que quieres eliminar esta reseña de{" "}
+                    ¿Estás seguro de que quieres eliminar esta crítica de{" "}
                     <strong>
                         <Link to={`/details/${selectedReview?.idContent}`}>
                             {selectedReview?.movieTitle}

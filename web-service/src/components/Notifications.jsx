@@ -20,7 +20,7 @@ export const Notifications = () => {
                 }
                 const response = await axios({
                     method: 'GET',
-                    url: `http://localhost:8080/api/v1/notifications/idUser/${user.id}`,
+                    url: `http://localhost:8080/api/v1/notifications/user/${user.id}`,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -82,9 +82,9 @@ export const Notifications = () => {
 
     return (
         <>
-            <h4 className={"mb-4 mt-4"}>Notificaciones</h4>
+            <h4 className={"text mb-4 mt-4"}>Notificaciones</h4>
             {notificationsWithTitles.length === 0 ? (
-                <p>No tienes notificaciones en este momento. ¡Todo está en orden!</p>
+                <p className={"text"}>No tienes notificaciones en este momento. ¡Todo está en orden!</p>
             ) : (
                 <ListGroup className="mb-5">
                     {notificationsWithTitles.map((n) => (

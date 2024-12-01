@@ -8,7 +8,7 @@ function HomePage() {
 
     const {movies, setMovies, convertMovies, fetchDiscoverMovies} = useContext(MoviesContext);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages] = useState(10);
+    const totalPages = 10;
 
     const fetchMovies = async (page) => {
         try {

@@ -56,7 +56,7 @@ function VotesButton({content, setContent}) {
 
     return (
         <>
-            <h3 className="mt-4">Vota la película:</h3>
+            <h3 className="mt-4">Tu voto:</h3>
             <ButtonGroup>
                 {[...Array(10)].map((_, index) => (
                     <Button

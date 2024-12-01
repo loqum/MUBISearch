@@ -39,7 +39,7 @@ export const Favorites = () => {
 
     return (
         <>
-            <h4 className={"mt-4 mb-4"}>Favoritos</h4>
+            <h4 className={"text mt-4 mb-4"}>Favoritos</h4>
             {favoriteMovies && favoriteMovies.length > 0 ? (
                 <Row xs={1} md={3} className="g-4">
                     {favoriteMovies.map((favorite, id) => (

@@ -32,7 +32,7 @@ public class NotificationController {
         return notificationService.findAll();
     }
 
-    @GetMapping("/idUser/{idUser}")
+    @GetMapping("/user/{idUser}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<List<NotificationResponse>> getNotificationsByIdUser(@PathVariable Long idUser) {
         log.info("Init getNotificationsByIdUser");

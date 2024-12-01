@@ -1,4 +1,5 @@
-import {Bell, BellFill} from "react-bootstrap-icons";
+import NotificationsIcon from '@mui/icons-material/Notifications';
+import {Fab} from "@mui/material";
 
 function NotificationBell({onToggle, isNotified}) {
 
@@ -17,9 +18,13 @@ function NotificationBell({onToggle, isNotified}) {
             aria-label={isNotified ? "Eliminar de notificaciones" : "Añadir a notificaciones"}
         >
             {isNotified ? (
-                <BellFill size={24} color="#99d5ff" style={{ stroke: "black", strokeWidth: "0.25" }} />
+                <Fab aria-label="subscribe">
+                    <NotificationsIcon color="primary"/>
+                </Fab>
             ) : (
-                <Bell size={24} color="gray"/>
+                <Fab aria-label="unsubscribe">
+                    <NotificationsIcon />
+                </Fab>
             )}
         </span>
 

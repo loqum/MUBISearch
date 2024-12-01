@@ -1,4 +1,4 @@
-import {Alert, Card, OverlayTrigger, Spinner, Tooltip} from "react-bootstrap";
+import {Card, OverlayTrigger, Spinner, Tooltip} from "react-bootstrap";
 import DetailsWrapper from "../hoc/DetailsWrapper.jsx";
 import {useLocation, useParams} from "react-router-dom";
 import React, {useContext, useEffect, useState} from "react";
@@ -251,16 +251,22 @@ function ContentDetails() {
                     </Card.Text>
                     <Card.Text><strong>Valoración: </strong> {content.averageScore === 0 ? "Todavía no se ha valorado" : content.averageScore}
                     </Card.Text>
+
+                    {isAuthenticated && (
+                        <>
+                            <VotesButton content={content} setContent={setContent}/>
+                        </>
+                    )}
+
+                    <Review content={content}/>
                 </Card.Body>
+
+
             </Card>
 
-            {isAuthenticated && (
-                <>
-                    <VotesButton content={content} setContent={setContent}/>
-                </>
-            )}
 
-            <Review content={content}/>
+
+
 
         </>
 

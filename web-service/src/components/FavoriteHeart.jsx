@@ -1,4 +1,5 @@
-import {Heart, HeartFill} from "react-bootstrap-icons";
+import {Fab} from "@mui/material";
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 function FavoriteHeart({onToggle, isFavorite}) {
     const handleClick = () => {
@@ -16,9 +17,15 @@ function FavoriteHeart({onToggle, isFavorite}) {
             aria-label={isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"}
         >
             {isFavorite ? (
-                <HeartFill size={24} color="red" style={{ stroke: "black", strokeWidth: "0.25" }}/>
-            ) : (
-                <Heart size={24} color="gray"/>
+                <>
+                <Fab aria-label="like">
+                    <FavoriteIcon style={{color: 'red'}}/>
+                </Fab>
+                </>
+                ) : (
+                <Fab aria-label="dislike">
+                    <FavoriteIcon />
+                </Fab>
             )}
         </span>
 

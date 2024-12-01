@@ -1,4 +1,4 @@
-import React, {useContext, useEffect} from "react";
+import React, {useContext} from "react";
 import {Card, Col, Container, Row, Spinner} from "react-bootstrap";
 import {UserContext} from "../context/user.context.jsx";
 import {Notifications} from "./Notifications.jsx";
@@ -24,7 +24,7 @@ function ProfileDetails() {
                     <Col>
                         <Card>
                             <Card.Body>
-                                <Card.Title>Perfil de usuario</Card.Title>
+                                <Card.Title>Área personal</Card.Title>
                                 <Card.Text><strong>Nombre de usuario:</strong> {user.nickname}</Card.Text>
                                 <Card.Text><strong>Correo electrónico:</strong> {user.email}</Card.Text>
                                 <Card.Text><strong>Fecha de creación:</strong> {formatDate(user.createdAt)}</Card.Text>

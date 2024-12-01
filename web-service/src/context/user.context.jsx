@@ -10,6 +10,7 @@ function UserProviderWrapper(props) {
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
     const [syncUser, setSyncUser] = useState(false);
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
         if (isAuthenticated && auth0User) {
@@ -19,6 +20,11 @@ function UserProviderWrapper(props) {
         }
     }, [isAuthenticated, auth0User, syncUser]);
 
+    useEffect(() => {
+        if (user) {
+            fetchNotifications(user);
+        }
+    }, [user]);
 
     const fetchUserBySub = async () => {
         try {
@@ -62,6 +68,21 @@ function UserProviderWrapper(props) {
         }
     }
 
+    const fetchNotifications = async (user) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/v1/notifications/user/${user.id}`, {
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+            console.log("Notifications:", response.data);
+            setNotifications(response.data);
+        } catch (error) {
+            console.error("Error fetching notifications:", error);
+            setError(error);
+        }
+    }
+
     const triggerUserSync = () => {
         setSyncUser(true);
     };
@@ -71,6 +92,7 @@ function UserProviderWrapper(props) {
             user,
             error,
             setError,
+            notifications,
             formatDate,
             triggerUserSync,
             fetchUserBySub,

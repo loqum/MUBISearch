@@ -1,15 +1,18 @@
-import {Button, Col, Container, Form, Image, Navbar, Row, Spinner} from "react-bootstrap";
+import {Button, Col, Container, Form, Navbar, Row, Spinner} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
 import React, {useContext} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {LoginButton} from "./LoginButton.jsx";
 import {useAuth0} from "@auth0/auth0-react";
 import {LogoutButton} from "./LogoutButton.jsx";
+import {Avatar, Badge, Fab} from "@mui/material";
+import {UserContext} from "../context/user.context.jsx";
 
 function NavigationBar() {
 
     const navigateToList = useNavigate();
     const {fetchMovies, convertMovies} = useContext(MoviesContext);
+    const {notifications} = useContext(UserContext);
     const {isAuthenticated, isLoading, user} = useAuth0();
 
     const handleSearchSubmit = async (event) => {
@@ -66,13 +69,11 @@ function NavigationBar() {
                     isAuthenticated ? (
                         <Navbar.Text className="ms-auto">
                             <Link to="/profile" className="me-3">
-                                <Image
-                                    src={user.picture}
-                                    alt="Foto de perfil"
-                                    roundedCircle
-                                    width="40"
-                                    height="40"
-                                />
+                                <Fab aria-label="profile">
+                                    <Badge badgeContent={notifications.length} color="primary">
+                                        <Avatar src={user.picture} alt="Foto de perfil"/>
+                                    </Badge>
+                                </Fab>
                             </Link>
                             <LogoutButton/>
                         </Navbar.Text>
