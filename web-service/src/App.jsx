@@ -1,8 +1,6 @@
 import './App.css'
 import {Route, Routes} from "react-router-dom";
 import HomePage from "./pages/HomePage.jsx";
-import RegisterPage from "./pages/RegisterPage.jsx";
-import LoginPage from "./pages/LoginPage.jsx";
 import SearchPage from "./pages/SearchPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
@@ -19,8 +17,6 @@ function App() {
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/contents" element={<ContentPage/>}/>
-                <Route path="/register" element={<RegisterPage/>}/>
-                <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/details/:idContent" element={<DetailMoviePage/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>

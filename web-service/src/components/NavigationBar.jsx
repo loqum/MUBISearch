@@ -1,7 +1,6 @@
 import {Button, Col, Container, Form, Image, Navbar, Row, Spinner} from "react-bootstrap";
 import {Link, useNavigate} from "react-router-dom";
-import React, {useContext, useState} from "react";
-import {UserContext} from "../context/user.context.jsx";
+import React, {useContext} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {LoginButton} from "./LoginButton.jsx";
 import {useAuth0} from "@auth0/auth0-react";
@@ -9,23 +8,18 @@ import {LogoutButton} from "./LogoutButton.jsx";
 
 function NavigationBar() {
 
-    const [movies, setMovies] = useState([]);
     const navigateToList = useNavigate();
-
-    // const {user, logoutUser} = useContext(UserContext);
     const {fetchMovies, convertMovies} = useContext(MoviesContext);
     const {isAuthenticated, isLoading, user} = useAuth0();
 
     const handleSearchSubmit = async (event) => {
         event.preventDefault();
         const query = event.target[0].value;
-
         try {
             let response = await fetchMovies(query);
             response = response.filter((movie) => movie.poster_path !== null);
             console.log("Response:", response);
             const transformedContents = convertMovies(response);
-            setMovies(transformedContents);
             event.target[0].value = "";
             navigateToList(`/contents`, {state: {transformedContents, isMovie: true, isSeries: false}});
         } catch (e) {

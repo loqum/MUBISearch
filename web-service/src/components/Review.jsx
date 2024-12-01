@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Form, InputGroup, Spinner} from "react-bootstrap";
+import {Alert, Button, Card, Form, InputGroup} from "react-bootstrap";
 import React, {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
@@ -67,6 +67,7 @@ export const Review = ({content}) => {
     useEffect(() => {
         if (content) {
             checkReviews();
+            console.log("Has reviewed:", hasReviewed);
         }
     }, [content, user]);
 

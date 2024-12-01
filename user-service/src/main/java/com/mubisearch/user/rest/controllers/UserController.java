@@ -1,7 +1,6 @@
 package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.User;
-import com.mubisearch.user.rest.dto.UserLoginRequest;
 import com.mubisearch.user.rest.dto.UserRegisterRequest;
 import com.mubisearch.user.rest.dto.UserResponse;
 import com.mubisearch.user.services.UserService;
@@ -11,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -61,7 +57,6 @@ public class UserController {
         boolean exists = userService.userExists(sub);
         return ResponseEntity.ok(exists);
     }
-
 
     @PostMapping("/create")
     public ResponseEntity<Long> create(@RequestBody UserRegisterRequest userRequest) {
