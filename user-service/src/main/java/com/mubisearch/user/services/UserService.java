@@ -1,9 +1,9 @@
 package com.mubisearch.user.services;
 
 import com.mubisearch.user.entities.User;
-import com.mubisearch.user.entities.UserRole;
 import com.mubisearch.user.repositories.UserRepository;
 import com.mubisearch.user.rest.dto.UserRegisterRequest;
+import com.mubisearch.user.rest.dto.UserUpdateRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,8 +34,20 @@ public class UserService {
     }
 
     public User createUser(UserRegisterRequest user) {
-        User newUser = User.builder().sub(user.sub()).name(user.name()).email(user.email()).createdAt(LocalDateTime.now()).role(UserRole.REGISTERED_USER).build();
+        User newUser = User.builder().sub(user.sub()).name(user.name()).email(user.email()).createdAt(LocalDateTime.now()).build();
         return userRepository.save(newUser);
+    }
+
+    public User updateUser(Long idUser, UserUpdateRequest user) {
+        User userToUpdate = userRepository.findById(idUser).orElseThrow(() -> new IllegalArgumentException("User with id: " + idUser + " not found"));
+        userToUpdate.setUpdatedAt(LocalDateTime.now());
+        if (user.fullname() != null) {
+            userToUpdate.setFullname(user.fullname());
+        }
+        if (user.birthdate() != null) {
+            userToUpdate.setBirthdate(user.birthdate());
+        }
+        return userRepository.save(userToUpdate);
     }
 
     public boolean userExists(String sub) {

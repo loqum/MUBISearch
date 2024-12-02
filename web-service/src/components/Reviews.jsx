@@ -1,4 +1,4 @@
-import {Button, Card, Col, Container, ListGroup, Modal, Row} from "react-bootstrap";
+import {Button, ListGroup, Modal} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import React, {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
@@ -70,15 +70,12 @@ export const Reviews = () => {
                                     {review.movieTitle}
                                 </Link>
                             </h5>
-                            <p>
-                                {review.text.split("\n").map((line, index) => (
-                                    <React.Fragment key={index}>
-                                        {line}
-                                        <br />
-                                    </React.Fragment>
-                                ))}
-
-                            </p>
+                            {review.text.split("\n").map((line, index) => (
+                                <React.Fragment key={index}>
+                                    {line.trim()}
+                                    <br />
+                                </React.Fragment>
+                            ))}
                             <small className="text-muted">
                                 Publicado el {formatDate(review.createdAt)}
                             </small>
@@ -86,13 +83,8 @@ export const Reviews = () => {
                     ))}
                 </ListGroup>
             ) : (
-
-                <strong>
-                    <p>No has realizado ninguna crítica hasta el momento. ¡Anímate y
-                        da tu opinión!
-                    </p>
-                </strong>
-
+                <p style={{fontWeight: "bold"}}>No has realizado ninguna crítica hasta el momento. ¡Anímate y da tu
+                    opinión!</p>
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>

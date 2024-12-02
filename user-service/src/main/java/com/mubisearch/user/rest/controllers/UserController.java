@@ -2,6 +2,7 @@ package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.User;
 import com.mubisearch.user.rest.dto.UserRegisterRequest;
+import com.mubisearch.user.rest.dto.UserUpdateRequest;
 import com.mubisearch.user.rest.dto.UserResponse;
 import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
@@ -56,6 +57,19 @@ public class UserController {
     public ResponseEntity<Boolean> userExists(@PathVariable String sub) {
         boolean exists = userService.userExists(sub);
         return ResponseEntity.ok(exists);
+    }
+
+    @PutMapping("/update/{idUser}")
+    public ResponseEntity<User> updateUser(@PathVariable @NotNull Long idUser, @RequestBody UserUpdateRequest userUpdateRequest) {
+        log.info("Init updateUser: {}", userUpdateRequest);
+        try {
+            User user = userService.updateUser(idUser, userUpdateRequest);
+            URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idUser}").buildAndExpand(idUser).toUri();
+            return ResponseEntity.created(uri).body(user);
+        } catch (DataIntegrityViolationException e) {
+            log.error("Error updating user: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
+        }
     }
 
     @PostMapping("/create")

@@ -83,11 +83,7 @@ export const Notifications = () => {
     return (
         <>
             {notificationsWithTitles.length === 0 ? (
-                <p>
-                    <strong>
-                        No tienes notificaciones en este momento. ¡Todo está en orden!
-                    </strong>
-                </p>
+                <p style={{fontWeight: "bold"}}>No tienes notificaciones en este momento. ¡Todo está en orden!</p>
             ) : (
                 <ListGroup className="mb-5">
                     {notificationsWithTitles.map((n) => (

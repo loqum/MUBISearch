@@ -36,7 +36,13 @@ function UserProviderWrapper(props) {
             console.log("Updated user:", response.data);
 
             const updatedUser = {
-                ...auth0User, favorites: response.data.favorites || [], id: response.data.id, createdAt: response.data.createdAt,
+                ...auth0User,
+                favorites: response.data.favorites || [],
+                id: response.data.id,
+                createdAt: response.data.createdAt,
+                updatedAt: response.data.updatedAt,
+                birthdate: response.data.birthdate,
+                fullname: response.data.fullname
             };
             console.log("Updated user2:", response.data);
 
@@ -68,6 +74,22 @@ function UserProviderWrapper(props) {
         }
     }
 
+    const updateUser = async (user) => {
+        try {
+            if (user) {
+                const response = await axios.put(`http://localhost:8080/api/v1/users/${user.id}`, user, {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                });
+                return response.data;
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+            setError(error);
+        }
+    }
+
     const fetchNotifications = async (user) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/v1/notifications/user/${user.id}`, {
@@ -94,6 +116,7 @@ function UserProviderWrapper(props) {
             setError,
             notifications,
             formatDate,
+            updateUser,
             triggerUserSync,
             fetchUserBySub,
             fetchUserById

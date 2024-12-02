@@ -50,7 +50,7 @@ export const Favorites = () => {
                 </Row>
             ) : (
                 <Container>
-                    <p>No tienes favoritos. ¡Añade alguna película o serie!</p>
+                    <p className={"text"}>No tienes favoritos. ¡Añade alguna película o serie!</p>
                 </Container>
             )}
         </>
