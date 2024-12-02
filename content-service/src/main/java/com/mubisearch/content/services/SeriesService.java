@@ -39,6 +39,7 @@ public class SeriesService extends BaseService<SeriesDto> {
                 .id(seriesRequest.id())
                 .plot(seriesRequest.plot())
                 .posterPath(seriesRequest.posterPath())
+                .backdropPath(seriesRequest.backdropPath())
                 .originCountry(seriesRequest.originCountry())
                 .originalName(seriesRequest.originalName())
                 .firstAir(seriesRequest.firstAir())

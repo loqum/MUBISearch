@@ -1,4 +1,4 @@
-import {Col, Row, Spinner} from "react-bootstrap";
+import {Col, Container, Row, Spinner} from "react-bootstrap";
 import ContentCard from "./ContentCard.jsx";
 import {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
@@ -49,7 +49,9 @@ export const Favorites = () => {
                     ))}
                 </Row>
             ) : (
-                <p>No tienes favoritos. ¡Añade alguna película o serie!</p>
+                <Container>
+                    <p>No tienes favoritos. ¡Añade alguna película o serie!</p>
+                </Container>
             )}
         </>
     )

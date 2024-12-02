@@ -29,6 +29,8 @@ public class Content extends ExternalEntity {
     private String plot;
     @Column(name = "poster_path")
     private String posterPath;
+    @Column(name = "backdrop_path")
+    private String backdropPath;
     @Column(name = "average_score", precision = 3, scale = 1, nullable = false)
     private BigDecimal averageScore;
     @OneToMany(mappedBy = "content")

@@ -9,5 +9,5 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public record ContentRequest(@NonNull Long id, @NonNull String title, @NonNull String plot,
-                             @NonNull String posterPath, List<Vote> votes, List<Genre> genres, List<Review> reviews) {
+                             @NonNull String posterPath, @NonNull String backdropPath, List<Vote> votes, List<Genre> genres, List<Review> reviews) {
 }

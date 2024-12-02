@@ -23,6 +23,7 @@ public class SeriesResponse {
     private String title;
     private String plot;
     private String posterPath;
+    private String backdropPath;
     private String originalName;
     private String originCountry;
     private LocalDate firstAir;
@@ -44,6 +45,7 @@ public class SeriesResponse {
                 .title(series.getOriginalName())
                 .plot(series.getPlot())
                 .posterPath(series.getPosterPath())
+                 .backdropPath(series.getBackdropPath())
                 .genres(series.getGenres().stream().map(x -> x.getGenre().getName()).toList())
                 .reviews(series.getReviews())
                 .votes(series.getVotes())

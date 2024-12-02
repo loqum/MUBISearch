@@ -25,27 +25,35 @@ function HomePage() {
         fetchMovies(currentPage);
     }, [currentPage]);
 
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth",
+        });
+    }
+
     const paginationItems = [];
     for (let page = 1; page <= totalPages; page++) {
         paginationItems.push(
             <Pagination.Item
                 key={page}
                 active={page === currentPage}
-                onClick={() => setCurrentPage(page)}
+                onClick={() => handlePageChange(page)}
             >
                 {page}
             </Pagination.Item>
         );
     }
 
-    const handleFirstPage = () => setCurrentPage(1);
+    const handleFirstPage = () => handlePageChange(1);
     const handlePrevPage = () => {
-        if (currentPage > 1) setCurrentPage(currentPage - 1);
+        if (currentPage > 1) handlePageChange(currentPage - 1);
     };
     const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+        if (currentPage < totalPages) handlePageChange(currentPage + 1);
     };
-    const handleLastPage = () => setCurrentPage(totalPages);
+    const handleLastPage = () => handlePageChange(totalPages);
 
 
     const movieCards = movies.map((movie) => {

@@ -4,6 +4,7 @@ body {
     background: -webkit-linear-gradient(180deg, rgba(155,201,210,0.5830707282913166) 6%, rgba(79,132,156,1) 49%, rgba(3,2,27,1) 93%);
     background: linear-gradient(180deg, rgba(155,201,210,0.5830707282913166) 6%, rgba(79,132,156,1) 49%, rgba(3,2,27,1) 93%);
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#9bc9d2",endColorstr="#03021b",GradientType=1);
+    background-attachment: fixed;
 }
 
 .text {

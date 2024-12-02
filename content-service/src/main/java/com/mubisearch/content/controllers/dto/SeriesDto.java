@@ -24,6 +24,8 @@ public class SeriesDto {
     private String plot;
     @JsonProperty("poster_path")
     private String posterPath;
+    @JsonProperty("backdrop_path")
+    private String backdropPath;
     @JsonProperty("first_air_date")
     private Date firstAir;
     @JsonProperty("origin_country")

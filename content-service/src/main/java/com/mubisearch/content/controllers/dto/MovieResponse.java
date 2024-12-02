@@ -22,6 +22,7 @@ public class MovieResponse  {
     private String title;
     private String plot;
     private String posterPath;
+    private String backdropPath;
     private BigDecimal averageScore;
     private List<String> genres = new ArrayList<>();
     private List<Review> reviews = new ArrayList<>();
@@ -40,6 +41,7 @@ public class MovieResponse  {
                 .title(movie.getTitle())
                 .plot(movie.getPlot())
                 .posterPath(movie.getPosterPath())
+                 .backdropPath(movie.getBackdropPath())
                 .genres(movie.getGenres().stream().map(x -> x.getGenre().getName()).toList())
                 .reviews(movie.getReviews())
                 .votes(movie.getVotes())

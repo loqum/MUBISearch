@@ -24,6 +24,7 @@ public class ContentResponse {
     private String title;
     private String plot;
     private String posterPath;
+    private String backdropPath;
     private BigDecimal averageScore;
     private Map<Long, String> genres;
     private String type;
@@ -43,6 +44,7 @@ public class ContentResponse {
                 .title(content.getTitle())
                 .plot(content.getPlot())
                 .posterPath(content.getPosterPath())
+                .backdropPath(content.getBackdropPath())
                 .type(content instanceof Movie ? "Movie" : "Series")
                 .originalTitle(content instanceof Movie ? ((Movie) content).getOriginalTitle() : null)
                 .releaseDate(content instanceof Movie ? ((Movie) content).getReleaseDate() : null)
@@ -61,4 +63,5 @@ public class ContentResponse {
     }
 
 }
+
 

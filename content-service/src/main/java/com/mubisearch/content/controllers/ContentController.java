@@ -1,10 +1,7 @@
 package com.mubisearch.content.controllers;
 
-import com.mubisearch.content.controllers.dto.ContentRequest;
 import com.mubisearch.content.controllers.dto.ContentResponse;
 import com.mubisearch.content.entities.Content;
-import com.mubisearch.content.entities.Movie;
-import com.mubisearch.content.entities.Series;
 import com.mubisearch.content.services.ContentService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
@@ -12,12 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Log4j2
 @RestController
@@ -42,17 +35,5 @@ public class ContentController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.noContent().build());
     }
-
-//    @PostMapping
-//    public ResponseEntity<String> createContent(@RequestBody ContentRequest contentRequest) {
-//        log.info("Init createContent");
-//        String idContent = contentService.createContent(contentRequest).getId().toString();
-//        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-//                .path("/{idContent}")
-//                .buildAndExpand(idContent)
-//                .toUri();
-//        return ResponseEntity.created(uri).body(idContent);
-//    }
-
 
 }

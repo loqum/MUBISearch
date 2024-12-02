@@ -16,6 +16,7 @@ function ContentDetails() {
     const location = useLocation();
     const {
         urlImage,
+        resolutionImageDetail,
         createFavorite,
         deleteFavorite,
         createMovie,
@@ -100,6 +101,7 @@ function ContentDetails() {
 
             } else {
                 if (contentFromNavigate && isMovie) {
+                    console.log("contentFromNavigate", contentFromNavigate);
                     const id = await createMovie({
                         originalTitle: contentFromNavigate.original_title,
                         releaseDate: formatDateISO8601(contentFromNavigate.release_date),
@@ -107,6 +109,7 @@ function ContentDetails() {
                         title: contentFromNavigate.title,
                         plot: contentFromNavigate.overview,
                         posterPath: contentFromNavigate.poster_path,
+                        backdropPath: contentFromNavigate.backdrop_path,
                         genres: contentFromNavigate.genres,
                         averageScore: 0
                     });
@@ -121,6 +124,7 @@ function ContentDetails() {
                         id: contentFromNavigate.id,
                         plot: contentFromNavigate.overview,
                         posterPath: contentFromNavigate.poster_path,
+                        backdropPath: contentFromNavigate.backdrop_path,
                         genres: contentFromNavigate.genres,
                         averageScore: 0,
                         originCountry: contentFromNavigate.origin_country[0] || "Desconocido",
@@ -201,8 +205,8 @@ function ContentDetails() {
             <Alerts alerts={alerts} dismissAlert={dismissAlert} />
 
             <Card>
-                <Card.Img variant="top" src={`${urlImage}${content.posterPath}`} className="img-fluid"
-                          style={{maxHeight: '600px', objectFit: 'cover'}}/>
+                <Card.Img variant="top" src={`${urlImage}${resolutionImageDetail}${content.backdropPath}`} className="img-fluid"
+                          style={{maxHeight: '600px', objectFit: 'cover'}} loading="lazy"/>
                 <Card.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                     {isMovie ? <span>Película</span> : <span>Serie</span>}
                     <div style={{display: "inline-flex", gap: "5px", alignItems: "center"}}>

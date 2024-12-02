@@ -82,9 +82,12 @@ export const Notifications = () => {
 
     return (
         <>
-            <h4 className={"text mb-4 mt-4"}>Notificaciones</h4>
             {notificationsWithTitles.length === 0 ? (
-                <p className={"text"}>No tienes notificaciones en este momento. ¡Todo está en orden!</p>
+                <p>
+                    <strong>
+                        No tienes notificaciones en este momento. ¡Todo está en orden!
+                    </strong>
+                </p>
             ) : (
                 <ListGroup className="mb-5">
                     {notificationsWithTitles.map((n) => (

@@ -1,6 +1,6 @@
-import {Button, ListGroup, Modal} from "react-bootstrap";
+import {Button, Card, Col, Container, ListGroup, Modal, Row} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
 
@@ -48,7 +48,8 @@ export const Reviews = () => {
     };
 
     return (
-        <><h4 className={"text mb-4 mt-4"}>Críticas realizadas</h4>
+        <>
+
             {reviews && reviews.length > 0 ? (
                 <ListGroup>
                     {reviews.map((review, index) => (
@@ -77,7 +78,13 @@ export const Reviews = () => {
                     ))}
                 </ListGroup>
             ) : (
-                <p>No has realizado ninguna crítica hasta el momento. ¡Anímate y da tu opinión!</p>
+
+                <strong>
+                    <p>No has realizado ninguna crítica hasta el momento. ¡Anímate y
+                        da tu opinión!
+                    </p>
+                </strong>
+
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>

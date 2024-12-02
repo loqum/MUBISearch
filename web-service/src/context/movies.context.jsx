@@ -6,7 +6,9 @@ const MoviesContext = createContext();
 function MoviesProviderWrapper(props) {
 
     const [movies, setMovies] = useState([]);
-    const [urlImage] = useState('https://image.tmdb.org/t/p/original');
+    const [urlImage] = useState('https://image.tmdb.org/t/p/');
+    const resolutionImageCard = "w300";
+    const resolutionImageDetail = "original";
 
     const formatDateISO8601 = (date) => {
         return new Date(date).toISOString().split("T")[0];
@@ -45,7 +47,8 @@ function MoviesProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             })
-            console.log("FetchDiscoverMovies response:", response);
+            console.log("FetchDiscoverMovies response:", response.data.data);
+
             return response.data.data;
         } catch (error) {
             console.error("Error fetching movies:", error);
@@ -349,6 +352,7 @@ function MoviesProviderWrapper(props) {
         return movies.map((movie) => ({
             ...movie,
             posterPath: movie.poster_path,
+            backdropPath: movie.backdrop_path,
             releaseDate: movie.release_date,
             plot: movie.overview,
         }));
@@ -358,6 +362,7 @@ function MoviesProviderWrapper(props) {
         return seriesList.map((series) => ({
             ...series,
             posterPath: series.poster_path,
+            backdropPath: series.backdrop_path,
             releaseDate: series.release_date,
             plot: series.overview,
             firstAir: series.first_air_date,
@@ -391,6 +396,8 @@ function MoviesProviderWrapper(props) {
             movies,
             setMovies,
             urlImage,
+            resolutionImageCard,
+            resolutionImageDetail,
             fetchDiscoverMovies,
             fetchMovies,
             fetchSeries,

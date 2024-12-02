@@ -6,6 +6,7 @@ CREATE TABLE IF NOT EXISTS content
     title       VARCHAR(255) NOT NULL,
     plot        VARCHAR(1000),
     poster_path VARCHAR(255),
+    backdrop_path VARCHAR(255),
     average_score DECIMAL(3, 1) DEFAULT 0.0 NOT NULL,
     created_at  DATETIME NOT NULL,
     updated_at  DATETIME NOT NULL
@@ -53,7 +54,7 @@ CREATE TABLE IF NOT EXISTS review
     id         BIGINT PRIMARY KEY AUTO_INCREMENT,
     id_user    BIGINT        NOT NULL,
     id_content BIGINT        NOT NULL,
-    text       VARCHAR(1000) NOT NULL,
+    text       VARCHAR(10000) NOT NULL,
     created_at  DATETIME     NOT NULL,
     updated_at  DATETIME     NOT NULL,
     FOREIGN KEY (id_content) REFERENCES content (id) ON DELETE CASCADE,

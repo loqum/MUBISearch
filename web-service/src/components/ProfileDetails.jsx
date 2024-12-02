@@ -20,11 +20,11 @@ function ProfileDetails() {
     return (
         <>
             <Container className="mt-5">
-                <Row className="mb-4">
+                <Row className="mb-lg-5">
                     <Col>
+                        <h4 className={"text mb-lg-3"}>Área personal</h4>
                         <Card>
                             <Card.Body>
-                                <Card.Title>Área personal</Card.Title>
                                 <Card.Text><strong>Nombre de usuario:</strong> {user.nickname}</Card.Text>
                                 <Card.Text><strong>Correo electrónico:</strong> {user.email}</Card.Text>
                                 <Card.Text><strong>Fecha de creación:</strong> {formatDate(user.createdAt)}</Card.Text>
@@ -33,21 +33,35 @@ function ProfileDetails() {
                     </Col>
                 </Row>
 
-                <Row>
+                <Row className="mb-lg-5">
                     <Col>
                         <Favorites/>
                     </Col>
                 </Row>
 
-                <Row>
+                <Row className="mb-lg-5">
                     <Col>
-                        <Reviews/>
+                        <h4 className={"text mb-lg-3"}>Críticas realizadas</h4>
+                        <Card>
+                            <Card.Body>
+                                <Card.Text>
+                                    <Reviews/>
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
 
-                <Row>
+                <Row className="mb-lg-5">
                     <Col>
-                        <Notifications/>
+                        <h4 className={"text mb-4 mt-4"}>Notificaciones</h4>
+                        <Card>
+                            <Card.Body>
+                                <Card.Text>
+                                    <Notifications/>
+                                </Card.Text>
+                            </Card.Body>
+                        </Card>
                     </Col>
                 </Row>
 

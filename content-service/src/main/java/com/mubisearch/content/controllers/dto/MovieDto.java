@@ -30,6 +30,8 @@ public class MovieDto implements Serializable{
     private String plot;
     @JsonProperty("poster_path")
     private String posterPath;
+    @JsonProperty("backdrop_path")
+    private String backdropPath;
     @JsonProperty("original_title")
     private String originalTitle;
     @JsonProperty("release_date")

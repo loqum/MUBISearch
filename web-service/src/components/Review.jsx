@@ -1,5 +1,5 @@
 import {Alert, Button, Card, Form, InputGroup} from "react-bootstrap";
-import React, {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
 import {useAuth0} from "@auth0/auth0-react";
@@ -12,6 +12,7 @@ export const Review = ({content}) => {
     const {createReview, getReviewsByContent, convertDateToDayMonthYearTime} = useContext(MoviesContext);
     const {user, fetchUserById} = useContext(UserContext);
     const { isAuthenticated } = useAuth0();
+    const textAreaRef = useRef(null);
 
     const handleSubmitReview = async (e) => {
         e.preventDefault();
@@ -64,6 +65,13 @@ export const Review = ({content}) => {
         }
     }
 
+    const handleTextAreaResize = (e) => {
+        const element = textAreaRef.current;
+        element.style.height = "auto";
+        element.style.height = `${element.scrollHeight}px`;
+        setNewReview(e.target.value);
+    };
+
     useEffect(() => {
         if (content) {
             checkReviews();
@@ -97,8 +105,9 @@ export const Review = ({content}) => {
                             <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
                             <Form.Control
                                 as="textarea"
+                                ref={textAreaRef}
                                 value={newReview || ""}
-                                onChange={(e) => setNewReview(e.target.value)}
+                                onChange={handleTextAreaResize}
                                 placeholder="Comparte tu opinión sobre esta película o serie"
                                 aria-label="Campo para escribir una nueva reseña"
                             />

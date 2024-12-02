@@ -20,7 +20,6 @@ function ContentList(props) {
         return <ContentCard key={content.id}
                             content={content}
                             selectContent={props.selectContent}
-                            imageSize="original"
                             isMovie={isMovie}
                             isSeries={isSeries}/>
     });

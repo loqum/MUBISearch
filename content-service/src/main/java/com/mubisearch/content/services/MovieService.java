@@ -35,6 +35,7 @@ public class MovieService {
                 .title(movieRequest.title())
                 .plot(movieRequest.plot())
                 .posterPath(movieRequest.posterPath())
+                .backdropPath(movieRequest.backdropPath())
                 .releaseDate(movieRequest.releaseDate())
                 .originalTitle(movieRequest.originalTitle())
                 .averageScore(BigDecimal.ZERO)

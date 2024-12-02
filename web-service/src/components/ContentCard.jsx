@@ -7,7 +7,7 @@ import {ChevronDown, ChevronUp} from "react-bootstrap-icons";
 function ContentCard(props) {
 
     const { content, isMovie, isSeries } = props;
-    const {urlImage} = useContext(MoviesContext);
+    const {urlImage, resolutionImageCard} = useContext(MoviesContext);
     const navigate = useNavigate();
     const [expanded, setExpanded] = useState(false);
 
@@ -22,7 +22,7 @@ function ContentCard(props) {
 
     return (
         <Card style={{ width: '18rem' }}>
-            <Card.Img variant="top" src={`${urlImage}${content.posterPath}`} className="img-fluid"/>
+            <Card.Img variant="top" src={`${urlImage}${resolutionImageCard}${content.posterPath}`} className="img-fluid" loading="lazy"/>
             <Card.Body>
                 <Card.Title>{content.title}</Card.Title>
                 <Card.Text

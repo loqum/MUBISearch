@@ -15,6 +15,6 @@ public record MovieRequest(@NonNull String originalTitle,
                            @NonNull LocalDate releaseDate,
                            @NonNull Long id,
                            @NonNull BigDecimal averageScore,
-                           @NonNull String title, @NonNull String plot, @NonNull String posterPath, List<Vote> votes,
+                           @NonNull String title, @NonNull String plot, @NonNull String posterPath, @NonNull String backdropPath, List<Vote> votes,
                            Map<Integer, String> genres, List<Review> reviews) {
 }
