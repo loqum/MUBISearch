@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS content
     title       VARCHAR(255) NOT NULL,
     plot        VARCHAR(1000),
     poster_path VARCHAR(255),
-    average_score DECIMAL(3, 1) DEFAULT NOT NULL 0.0,
+    average_score DECIMAL(3, 1) DEFAULT 0.0 NOT NULL,
     created_at  DATETIME NOT NULL,
     updated_at  DATETIME NOT NULL
 );

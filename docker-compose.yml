@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: ruben93
     restart: always
     ports:
-      - 54350:3306
+      - 54508:3306
     volumes:
       - ./db-init/schema-content.sql:/docker-entrypoint-initdb.d/init.sql
       - content_data:/var/lib/mysql
@@ -22,7 +22,7 @@ services:
       MYSQL_PASSWORD: ruben93
     restart: always
     ports:
-      - 54351:3306
+      - 54509:3306
     volumes:
       - ./db-init/schema-user.sql:/docker-entrypoint-initdb.d/init.sql
       - user_data:/var/lib/mysql
@@ -36,7 +36,7 @@ services:
       MYSQL_PASSWORD: ruben93
     restart: always
     ports:
-      - 54352:3306
+      - 54510:3306
     volumes:
       - ./db-init/schema-notification.sql:/docker-entrypoint-initdb.d/init.sql
       - notification_data:/var/lib/mysql
