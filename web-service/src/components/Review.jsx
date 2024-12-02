@@ -88,7 +88,14 @@ export const Review = ({content}) => {
                     <Card key={index} className="mb-3">
                         <Card.Body>
                             <Card.Title>{review.userName}</Card.Title>
-                            <Card.Text>{review.text}</Card.Text>
+                            <Card.Text>
+                                {review.text.split("\n").map((line, index) => (
+                                    <React.Fragment key={index}>
+                                        {line}
+                                        <br />
+                                    </React.Fragment>
+                                ))}
+                            </Card.Text>
                             <Card.Footer className="text-muted">
                                 Publicado el {convertDateToDayMonthYearTime(review.createdAt)}
                             </Card.Footer>

@@ -70,7 +70,15 @@ export const Reviews = () => {
                                     {review.movieTitle}
                                 </Link>
                             </h5>
-                            <p>{review.text}</p>
+                            <p>
+                                {review.text.split("\n").map((line, index) => (
+                                    <React.Fragment key={index}>
+                                        {line}
+                                        <br />
+                                    </React.Fragment>
+                                ))}
+
+                            </p>
                             <small className="text-muted">
                                 Publicado el {formatDate(review.createdAt)}
                             </small>
