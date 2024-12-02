@@ -69,11 +69,9 @@ function NavigationBar() {
                     isAuthenticated ? (
                         <Navbar.Text className="ms-auto">
                             <Link to="/profile" className="me-3">
-                                <Fab aria-label="profile">
-                                    <Badge badgeContent={notifications.length} color="primary">
-                                        <Avatar src={user.picture} alt="Foto de perfil"/>
-                                    </Badge>
-                                </Fab>
+                                <Badge badgeContent={notifications.length} color="primary">
+                                    <Avatar src={user.picture} alt="Foto de perfil"/>
+                                </Badge>
                             </Link>
                             <LogoutButton/>
                         </Navbar.Text>
