@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS movie
     id             BIGINT PRIMARY KEY,
     original_title VARCHAR(255),
     release_date   DATE,
-    FOREIGN KEY (id) REFERENCES content (id)
+    FOREIGN KEY (id) REFERENCES content (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS series
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS series
     origin_country VARCHAR(255),
     original_name  VARCHAR(255),
     first_air      DATE,
-    FOREIGN KEY (id) REFERENCES content (id)
+    FOREIGN KEY (id) REFERENCES content (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS content_genre (
