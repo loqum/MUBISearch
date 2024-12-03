@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {Button, Card, Col, Container, Form, Row, Spinner} from "react-bootstrap";
+import {Card, Col, Container, Form, Row, Spinner} from "react-bootstrap";
 import {UserContext} from "../context/user.context.jsx";
 import {Notifications} from "./Notifications.jsx";
 import {Reviews} from "./Reviews.jsx";
@@ -9,7 +9,7 @@ import {Edit, SaveRounded} from "@mui/icons-material";
 
 function ProfileDetails() {
 
-    const {user, setUser, formatDate, updateUser, fetchUserById, triggerUserSync} = useContext(UserContext);
+    const {user, setUser, formatDate, updateUser} = useContext(UserContext);
     const [editing, setEditing] = useState(false);
     const [fullname, setFullname] = useState(user?.fullname || "");
 
@@ -61,8 +61,7 @@ function ProfileDetails() {
                                                            className="form-control mb-4"
                                                            fullWidth
                                                            variant="standard"
-                                                           value={fullname}
-
+                                                           value={fullname ? fullname : user.fullname}
                                                            onChange={(e) => setFullname(e.target.value)}/>
                                             </Col>
                                         </Form.Group>
