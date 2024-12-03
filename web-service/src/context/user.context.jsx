@@ -77,7 +77,7 @@ function UserProviderWrapper(props) {
     const updateUser = async (user) => {
         try {
             if (user) {
-                const response = await axios.put(`http://localhost:8080/api/v1/users/${user.id}`, user, {
+                const response = await axios.put(`http://localhost:8080/api/v1/users/update/${user.id}`, user, {
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -112,6 +112,7 @@ function UserProviderWrapper(props) {
     return (
         <UserContext.Provider value={{
             user,
+            setUser,
             error,
             setError,
             notifications,
