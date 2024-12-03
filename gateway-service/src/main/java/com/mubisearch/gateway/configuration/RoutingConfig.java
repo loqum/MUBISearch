@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.servlet.function.RouterFunction;
 import org.springframework.web.servlet.function.ServerRequest;
@@ -12,7 +11,6 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 import static org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions.route;
 import static org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions.http;
-import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.method;
 import static org.springframework.cloud.gateway.server.mvc.predicate.GatewayRequestPredicates.path;
 
 @Configuration
@@ -61,77 +59,21 @@ public class RoutingConfig {
                             .build();
                     return next.handle(modifiedRequest);
                 })
-                .route(path(userControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
-                .route(path(userControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
-                .route(path(userControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
-                .route(path(userControllerUrl).and(method(HttpMethod.PATCH)), http(userServiceUrl))
-                .route(path(userControllerUrl).and(method(HttpMethod.DELETE)), http(userServiceUrl))
-
-                .route(path(favoriteControllerUrl).and(method(HttpMethod.GET)), http(userServiceUrl))
-                .route(path(favoriteControllerUrl).and(method(HttpMethod.PUT)), http(userServiceUrl))
-                .route(path(favoriteControllerUrl).and(method(HttpMethod.POST)), http(userServiceUrl))
-                .route(path(favoriteControllerUrl).and(method(HttpMethod.PATCH)), http(userServiceUrl))
-                .route(path(favoriteControllerUrl).and(method(HttpMethod.DELETE)), http(userServiceUrl))
-
-                .route(path(seriesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
-                .route(path(seriesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
-                .route(path(seriesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
-                .route(path(seriesControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
-                .route(path(seriesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
-
-                .route(path(contentControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
-                .route(path(contentControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
-                .route(path(contentControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
-                .route(path(contentControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
-                .route(path(contentControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
-
-                .route(path(moviesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
-                .route(path(moviesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
-                .route(path(moviesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
-                .route(path(moviesControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
-                .route(path(moviesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
-
-                .route(path(votesControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
-                .route(path(votesControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
-                .route(path(votesControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
-                .route(path(votesControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
-                .route(path(votesControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
-
-                .route(path(reviewsControllerUrl).and(method(HttpMethod.GET)), http(contentServiceUrl))
-                .route(path(reviewsControllerUrl).and(method(HttpMethod.PUT)), http(contentServiceUrl))
-                .route(path(reviewsControllerUrl).and(method(HttpMethod.POST)), http(contentServiceUrl))
-                .route(path(reviewsControllerUrl).and(method(HttpMethod.PATCH)), http(contentServiceUrl))
-                .route(path(reviewsControllerUrl).and(method(HttpMethod.DELETE)), http(contentServiceUrl))
-
-                .route(path(notificationsControllerUrl).and(method(HttpMethod.GET)), http(notificationServiceUrl))
-                .route(path(notificationsControllerUrl).and(method(HttpMethod.PUT)), http(notificationServiceUrl))
-                .route(path(notificationsControllerUrl).and(method(HttpMethod.POST)), http(notificationServiceUrl))
-                .route(path(notificationsControllerUrl).and(method(HttpMethod.PATCH)), http(notificationServiceUrl))
-                .route(path(notificationsControllerUrl).and(method(HttpMethod.DELETE)), http(notificationServiceUrl))
-
+                .route(path(userControllerUrl), http(userServiceUrl))
+                .route(path(favoriteControllerUrl), http(userServiceUrl))
+                .route(path(seriesControllerUrl), http(contentServiceUrl))
+                .route(path(contentControllerUrl), http(contentServiceUrl))
+                .route(path(moviesControllerUrl), http(contentServiceUrl))
+                .route(path(votesControllerUrl), http(contentServiceUrl))
+                .route(path(reviewsControllerUrl), http(contentServiceUrl))
+                .route(path(notificationsControllerUrl), http(notificationServiceUrl))
                 .onError(Exception.class, this::handleException)
                 .build();
     }
 
-    @Bean
-    public RouterFunction<ServerResponse> debugRoute() {
-        return route("debug_route")
-                .route(path("/debug").and(method(HttpMethod.GET)), request -> {
-                    request.headers().asHttpHeaders().forEach((key, value) -> {
-                        System.out.println("Header: " + key + " = " + value);
-                    });
-
-                    return ServerResponse.ok().body(request.headers().asHttpHeaders());
-                }).build();
-    }
-
-
     private ServerResponse handleException(Throwable throwable, ServerRequest request) {
         log.error("#handleException - failed to run request {}", request.uri(), throwable);
-
-        return ServerResponse
-                .status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-
+        return ServerResponse.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
     }
 
 
