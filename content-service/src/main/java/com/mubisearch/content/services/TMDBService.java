@@ -25,9 +25,6 @@ public class TMDBService extends BaseService<MovieDto> {
     @Value("${tmdb.api.url.search.series.title}")
     private String urlSeries;
 
-//    @Value("${tmdb.api.url.search.movie.discover}")
-//    private String discoverMoviesUrl;
-
     @Autowired
     private TmdbApiConfig tmdbApiConfig;
 

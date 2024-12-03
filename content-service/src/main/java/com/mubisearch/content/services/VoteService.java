@@ -40,7 +40,7 @@ public class VoteService {
     @Transactional
     public Vote upsertVote(VoteRequest voteRequest) {
         voteRepository.deleteByIdUserAndContentId(voteRequest.idUser(), voteRequest.idContent());
-        // Aseguramos que el registro se ha borrado antes de insertar el nuevo voto
+        // Nos aseguramos de que el registro se haya borrado antes de insertar el nuevo voto
         voteRepository.flush();
         Content content = contentRepository.findById(voteRequest.idContent()).orElseThrow(() -> new RuntimeException("Content not found"));
         Vote vote = Vote.builder()
