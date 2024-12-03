@@ -6,9 +6,7 @@ import {useNavigate} from "react-router-dom";
 export const AdvancedSearch = () => {
 
     const [text, setText] = useState(null);
-    const [movies, setMovies] = useState([]);
     const [isMovie, setIsMovie] = useState(false);
-    const [series, setSeries] = useState([]);
     const [isSeries, setIsSeries] = useState(false);
     const {fetchMovies, fetchSeries, convertMovies} = useContext(MoviesContext);
     const navigateToList = useNavigate();
