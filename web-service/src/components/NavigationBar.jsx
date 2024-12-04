@@ -39,7 +39,9 @@ function NavigationBar() {
         <Navbar bg="light" expand="lg" className="px-4">
             <Container fluid>
                 <Navbar.Brand href="/" className="me-auto">
-                    MUBISearch
+                    <Fab variant="extended" color="primary">
+                        MUBISearch
+                    </Fab>
                 </Navbar.Brand>
                 <div className="d-flex justify-content-center align-items-center flex-grow-1">
 

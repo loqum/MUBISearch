@@ -5,7 +5,6 @@ import SearchPage from "./pages/SearchPage.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
 import ErrorPage from "./pages/ErrorPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
-import React from "react";
 import ContentPage from "./pages/ContentPage.jsx";
 import DetailMoviePage from "./pages/DetailMoviePage.jsx";
 import {PersistUser} from "./components/PersistUser.jsx";

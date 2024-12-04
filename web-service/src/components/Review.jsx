@@ -103,7 +103,7 @@ export const Review = ({content}) => {
                     </Card>
                 ))
             ) : (
-                <p>Todavía no hay ninguna reseña para esta película. {isAuthenticated && (<>¡Sé el primero en
+                <p>Todavía no hay ninguna crítica para esta película. {isAuthenticated && (<>¡Sé el primero en
                     comentarla!</>)}</p>
             )}
             {isAuthenticated && !hasReviewed &&

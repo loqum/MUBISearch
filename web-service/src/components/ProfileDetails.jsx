@@ -27,16 +27,14 @@ function ProfileDetails() {
 
     const handleSave = async () => {
         try {
-            if (fullname.trim()) {
-                const updatedUser = {...user, fullname};
-                updateUser(updatedUser);
-                setUser(updatedUser);
-            }
+            const updatedUser = {
+                ...user,
+                ...(fullname && { fullname }),
+                ...(birthdate && { birthdate: dayjs(birthdate).startOf('day').format('YYYY-MM-DD') }),
+            };
 
-            if (birthdate) {
-                const dateOnly = dayjs(birthdate).startOf('day').format('YYYY-MM-DD');
-                const updatedUser = {...user, birthdate: dateOnly || null};
-                updateUser(updatedUser);
+            if (fullname || birthdate) {
+                await updateUser(updatedUser);
                 setUser(updatedUser);
             }
 
@@ -52,14 +50,6 @@ function ProfileDetails() {
             setBirthdate(newValue);
         } else {
             setBirthdate(null);
-        }
-    };
-
-    const handleFullnameChange = (e) => {
-        if (e.target.value) {
-            setFullname(e.target.value);
-        } else {
-            setFullname("");
         }
     };
 
@@ -93,7 +83,7 @@ function ProfileDetails() {
                                                            fullWidth
                                                            variant="standard"
                                                            value={fullname ? fullname : user.fullname}
-                                                           onChange={handleFullnameChange}/>
+                                                           onChange={(e) => setFullname(e.target.value)}/>
                                             </Col>
                                         </Form.Group>
                                     </Form>
@@ -125,7 +115,10 @@ function ProfileDetails() {
                                 ) : (
                                     <Card.Text className="mb-3">
                                         <strong>Fecha de
-                                            nacimiento:</strong> {dayjs(user.birthdate).format("DD/MM/YYYY")}
+                                            nacimiento: </strong>
+                                        {user.birthdate &&
+                                            dayjs(user.birthdate).format("DD/MM/YYYY")}
+
                                     </Card.Text>
                                 )}
 

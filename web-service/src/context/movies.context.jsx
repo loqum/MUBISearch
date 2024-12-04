@@ -183,11 +183,17 @@ function MoviesProviderWrapper(props) {
                     headers: {
                         "Content-Type": "application/json",
                     },
-                })
+                    validateStatus: (status) => status === 200 || status === 404,
+                });
+
+                if (response.status === 404) {
+                    return null;
+                }
+
                 return response.data;
             }
         } catch (error) {
-            console.error("Error fetching favorite by user and content:", error);
+            console.error("Error fetching favorite by user and content: ", error);
         }
 
     }
