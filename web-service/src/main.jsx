@@ -6,6 +6,9 @@ import {MoviesProviderWrapper} from "./context/movies.context.jsx";
 import {BrowserRouter} from "react-router-dom";
 import {UserProviderWrapper} from "./context/user.context.jsx";
 import {Auth0Provider} from "@auth0/auth0-react";
+import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
+import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+
 
 createRoot(document.getElementById('root')).render(
     <Auth0Provider
@@ -23,7 +26,9 @@ createRoot(document.getElementById('root')).render(
         }}>
             <UserProviderWrapper>
                 <MoviesProviderWrapper>
-                    <App/>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <App/>
+                    </LocalizationProvider>
                 </MoviesProviderWrapper>
             </UserProviderWrapper>
         </BrowserRouter>

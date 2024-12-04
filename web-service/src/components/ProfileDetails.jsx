@@ -6,12 +6,16 @@ import {Reviews} from "./Reviews.jsx";
 import {Favorites} from "./Favorites.jsx";
 import {Fab, IconButton, TextField} from "@mui/material";
 import {Edit, SaveRounded} from "@mui/icons-material";
+import {DatePicker} from '@mui/x-date-pickers/DatePicker';
+import dayjs from "dayjs";
+
 
 function ProfileDetails() {
 
     const {user, setUser, formatDate, updateUser} = useContext(UserContext);
     const [editing, setEditing] = useState(false);
     const [fullname, setFullname] = useState(user?.fullname || "");
+    const [birthdate, setBirthdate] = useState(user?.birthdate ? dayjs(user.birthdate).format("DD/MM/YYYY") : null);
 
     if (!user) {
         return (
@@ -21,16 +25,43 @@ function ProfileDetails() {
         );
     }
 
-    const handleSaveFullname = async () => {
+    const handleSave = async () => {
         try {
-            const updatedUser = {...user, fullname};
+            if (fullname.trim()) {
+                const updatedUser = {...user, fullname};
+                updateUser(updatedUser);
+                setUser(updatedUser);
+            }
+
+            if (birthdate) {
+                const dateOnly = dayjs(birthdate).startOf('day').format('YYYY-MM-DD');
+                const updatedUser = {...user, birthdate: dateOnly || null};
+                updateUser(updatedUser);
+                setUser(updatedUser);
+            }
+
             setEditing(false);
-            updateUser(updatedUser);
-            setUser(updatedUser);
+
         } catch (error) {
             console.error("Error updating user: ", error);
         }
     }
+
+    const handleDateChange = (newValue) => {
+        if (newValue && newValue.isValid()) {
+            setBirthdate(newValue);
+        } else {
+            setBirthdate(null);
+        }
+    };
+
+    const handleFullnameChange = (e) => {
+        if (e.target.value) {
+            setFullname(e.target.value);
+        } else {
+            setFullname("");
+        }
+    };
 
     return (
         <>
@@ -62,7 +93,7 @@ function ProfileDetails() {
                                                            fullWidth
                                                            variant="standard"
                                                            value={fullname ? fullname : user.fullname}
-                                                           onChange={(e) => setFullname(e.target.value)}/>
+                                                           onChange={handleFullnameChange}/>
                                             </Col>
                                         </Form.Group>
                                     </Form>
@@ -74,15 +105,39 @@ function ProfileDetails() {
                                 )}
                                 <Card.Text className="mb-3"><strong>Correo electrónico:</strong> {user.email}
                                 </Card.Text>
+                                {editing ? (
+                                    <Form>
+                                        <Form.Group as={Row} controlId="birthdate" className="align-items-center">
+                                            <Form.Label column sm="2" className="text-right">
+                                                <strong>Fecha de nacimiento:</strong>
+                                            </Form.Label>
+                                            <Col sm="3">
+                                                <DatePicker
+                                                    format="DD/MM/YYYY"
+                                                    label="Fecha de nacimiento"
+                                                    value={birthdate}
+                                                    onChange={handleDateChange}
+                                                />
+                                            </Col>
+                                        </Form.Group>
+                                    </Form>
+
+                                ) : (
+                                    <Card.Text className="mb-3">
+                                        <strong>Fecha de
+                                            nacimiento:</strong> {dayjs(user.birthdate).format("DD/MM/YYYY")}
+                                    </Card.Text>
+                                )}
+
                                 <Card.Text className="mb-3"><strong>Fecha de
                                     creación:</strong> {formatDate(user.createdAt)}</Card.Text>
 
-                                {editing && fullname.trim() && (
+                                {editing && (
                                     <div className="d-flex justify-content-end mt-3">
 
                                         <IconButton
                                             variant="primary"
-                                            onClick={handleSaveFullname}
+                                            onClick={handleSave}
                                         >
                                             <Fab color="primary" aria-label="save">
                                                 <SaveRounded/>
