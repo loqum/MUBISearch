@@ -25,8 +25,7 @@ function ContentList(props) {
     });
 
     return (<Container>
-        <h1>Resultados</h1>
-        <ul className="content-list">
+        <ul className="content-list mt-5">
             {contentCards}
         </ul>
     </Container>)

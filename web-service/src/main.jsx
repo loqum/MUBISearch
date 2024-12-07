@@ -8,6 +8,7 @@ import {UserProviderWrapper} from "./context/user.context.jsx";
 import {Auth0Provider} from "@auth0/auth0-react";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
+import {AuthProviderWrapper} from "./context/authProviderWrapper.jsx";
 
 
 createRoot(document.getElementById('root')).render(
@@ -24,13 +25,15 @@ createRoot(document.getElementById('root')).render(
             v7_startTransition: true,
             v7_relativeSplatPath: true
         }}>
-            <UserProviderWrapper>
-                <MoviesProviderWrapper>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <App/>
-                    </LocalizationProvider>
-                </MoviesProviderWrapper>
-            </UserProviderWrapper>
+            <AuthProviderWrapper>
+                <UserProviderWrapper>
+                    <MoviesProviderWrapper>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <App/>
+                        </LocalizationProvider>
+                    </MoviesProviderWrapper>
+                </UserProviderWrapper>
+            </AuthProviderWrapper>
         </BrowserRouter>
     </Auth0Provider>
 )

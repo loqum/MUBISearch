@@ -1,5 +1,5 @@
 import {useAuth0} from "@auth0/auth0-react";
-import {useEffect, useState} from "react";
+import {useEffect} from "react";
 import axios from "axios";
 
 export const PersistUser = () => {
@@ -9,6 +9,7 @@ export const PersistUser = () => {
         const persistUser = async () => {
             if (isAuthenticated) {
                 const token = await getAccessTokenSilently();
+                console.log("Token:", token);
                 const response = await axios.get(
                     `http://localhost:8080/api/v1/users/exists/${user.sub}`,
                     {
@@ -27,6 +28,7 @@ export const PersistUser = () => {
                             Authorization: `Bearer ${token}`
                         },
                         data: {
+                            role: user.mubisearch_roles,
                             sub: user.sub,
                             name: user.nickname,
                             email: user.email,
@@ -39,7 +41,7 @@ export const PersistUser = () => {
         }
         persistUser();
 
-    }, [isAuthenticated]);
+    }, [isAuthenticated, user]);
 
     return null;
 }

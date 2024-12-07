@@ -1,6 +1,7 @@
-import {createContext, useEffect, useState} from "react";
+import {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {useAuth0} from "@auth0/auth0-react";
+import {AuthContext} from "./authProviderWrapper.jsx";
 
 const UserContext = createContext();
 
@@ -11,9 +12,11 @@ function UserProviderWrapper(props) {
     const [error, setError] = useState(null);
     const [syncUser, setSyncUser] = useState(false);
     const [notifications, setNotifications] = useState([]);
+    const { getAccessTokenSilently } = useContext(AuthContext);
 
     useEffect(() => {
         if (isAuthenticated && auth0User) {
+            console.log("Auth0 user:", auth0User);
             fetchUserBySub();
         } else {
             setUser(null);
@@ -39,6 +42,7 @@ function UserProviderWrapper(props) {
                 ...auth0User,
                 favorites: response.data.favorites || [],
                 id: response.data.id,
+                role: response.data.role,
                 createdAt: response.data.createdAt,
                 updatedAt: response.data.updatedAt,
                 birthdate: response.data.birthdate,
@@ -77,9 +81,11 @@ function UserProviderWrapper(props) {
     const updateUser = async (user) => {
         try {
             if (user) {
+                const token = await getAccessTokenSilently();
                 const response = await axios.put(`http://localhost:8080/api/v1/users/update/${user.id}`, user, {
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                 });
                 return response.data;

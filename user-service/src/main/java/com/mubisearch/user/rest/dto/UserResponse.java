@@ -1,6 +1,7 @@
 package com.mubisearch.user.rest.dto;
 
 import com.mubisearch.user.entities.Favorite;
+import com.mubisearch.user.entities.Roles;
 import com.mubisearch.user.entities.User;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class UserResponse {
     private String email;
     private String sub;
     private String fullname;
+    private Roles role;
     private LocalDate birthdate;
     private List<Favorite> favorites;
     private LocalDateTime createdAt;
@@ -30,6 +32,7 @@ public class UserResponse {
                 .fullname(user.getFullname())
                 .email(user.getEmail())
                 .sub(user.getSub())
+                .role(user.getRole())
                 .birthdate(user.getBirthdate())
                 .favorites(user.getFavorites())
                 .createdAt(user.getCreatedAt())

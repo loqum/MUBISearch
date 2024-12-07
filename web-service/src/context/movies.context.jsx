@@ -1,5 +1,6 @@
-import {createContext, useState} from 'react';
+import {createContext, useContext, useState} from 'react';
 import axios from "axios";
+import {AuthContext} from "./authProviderWrapper.jsx";
 
 const MoviesContext = createContext();
 
@@ -9,6 +10,8 @@ function MoviesProviderWrapper(props) {
     const [urlImage] = useState('https://image.tmdb.org/t/p/');
     const resolutionImageCard = "w300";
     const resolutionImageDetail = "original";
+    const { getAccessTokenSilently} = useContext(AuthContext);
+
 
     const formatDateISO8601 = (date) => {
         return new Date(date).toISOString().split("T")[0];
@@ -98,12 +101,14 @@ function MoviesProviderWrapper(props) {
         try {
             if (favorite) {
                 console.log("createFavorite favorite:", favorite);
+                const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/favorites/create',
                     data: favorite,
                     headers: {
                         "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
                     },
                 })
                 console.log("createFavorite response:", response);
@@ -118,10 +123,12 @@ function MoviesProviderWrapper(props) {
     const deleteFavorite = async (id) => {
         try {
             if (id) {
+                const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'DELETE',
                     url: `http://localhost:8080/api/v1/favorites/delete/${id}`,
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 })
@@ -137,11 +144,13 @@ function MoviesProviderWrapper(props) {
     const createMovie = async (movie) => {
         try {
             if (movie) {
+                const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/movies/create',
                     data: movie,
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 })
@@ -157,11 +166,13 @@ function MoviesProviderWrapper(props) {
     const createSeries = async (series) => {
         try {
             if (series) {
+                const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/series/create',
                     data: series,
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 })
@@ -254,11 +265,13 @@ function MoviesProviderWrapper(props) {
     const createVote = async (vote) => {
         try {
             if (vote) {
+                const token = await getAccessTokenSilently();
                 return await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/votes/create',
                     data: vote,
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 });
@@ -272,11 +285,13 @@ function MoviesProviderWrapper(props) {
     const createReview = async (review) => {
         try {
             if (review) {
+                const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'POST',
                     url: 'http://localhost:8080/api/v1/reviews/create',
                     data: review,
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 })
@@ -380,11 +395,13 @@ function MoviesProviderWrapper(props) {
     const updateFavoriteAlert = async (idFavorite, notificationState) => {
         try {
             if (idFavorite) {
+                const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'PATCH',
                     url: `http://localhost:8080/api/v1/favorites/update/${idFavorite}`,
                     data: notificationState,
                     headers: {
+                        Authorization: `Bearer ${token}`,
                         "Content-Type": "application/json",
                     },
                 })

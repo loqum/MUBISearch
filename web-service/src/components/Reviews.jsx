@@ -9,7 +9,7 @@ export const Reviews = () => {
     const [reviews, setReviews] = useState([]);
     const [selectedReview, setSelectedReview] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const {user, setUser, formatDate} = useContext(UserContext);
+    const {user, formatDate} = useContext(UserContext);
     const {fetchContentById, getReviewsByUser, deleteReview} = useContext(MoviesContext);
 
     useEffect(() => {
@@ -73,7 +73,7 @@ export const Reviews = () => {
                             {review.text.split("\n").map((line, index) => (
                                 <React.Fragment key={index}>
                                     {line.trim()}
-                                    <br />
+                                    <br/>
                                 </React.Fragment>
                             ))}
                             <small className="text-muted">
@@ -83,8 +83,10 @@ export const Reviews = () => {
                     ))}
                 </ListGroup>
             ) : (
-                <p style={{fontWeight: "bold"}}>No has realizado ninguna crítica hasta el momento. ¡Anímate y da tu
-                    opinión!</p>
+                <div>
+                    <p style={{fontWeight: "bold"}}>No has realizado ninguna crítica hasta el momento. ¡Anímate y da tu
+                        opinión!</p>
+                </div>
             )}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
