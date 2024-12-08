@@ -4,6 +4,7 @@ import {MoviesContext} from "../context/movies.context.jsx";
 import {Link} from "react-router-dom";
 import {ListGroup} from "react-bootstrap";
 import {UserContext} from "../context/user.context.jsx";
+import {AuthContext} from "../context/auth.context.jsx";
 
 export const Notifications = () => {
 
@@ -11,6 +12,7 @@ export const Notifications = () => {
     const pollingInterval = 30000;
     const {fetchContentById} = useContext(MoviesContext);
     const {user} = useContext(UserContext);
+    const {getAccessTokenSilently} = useContext(AuthContext);
 
     useEffect(() => {
         const fetchNotifications = async () => {
@@ -52,10 +54,12 @@ export const Notifications = () => {
 
     const handleDeleteClick = async (notification) => {
         try {
+            const token = await getAccessTokenSilently();
             await axios({
                 method: 'DELETE',
                 url: `http://localhost:8080/api/v1/notifications/delete/${notification.id}`,
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             });

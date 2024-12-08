@@ -3,12 +3,11 @@ import React, {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../context/auth.context.jsx";
 import {Delete} from "@mui/icons-material";
 import {Fab} from "@mui/material";
-import {UserContext} from "../context/user.context.jsx";
+import Alerts from "./Alerts.jsx";
 
 function AdminDetails() {
 
     const {fetchUsers, deleteUserById, updateUserEmail, updateUserPassword} = useContext(AuthContext);
-    const {updateUser} = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -16,7 +15,7 @@ function AdminDetails() {
     const [updateField, setUpdateField] = useState(null);
     const [updateValue, setUpdateValue] = useState("");
     const [currentUser, setCurrentUser] = useState(null);
-
+    const [alerts, setAlerts] = useState([]);
 
     const getUsers = async () => {
         const response = await fetchUsers();
@@ -39,6 +38,16 @@ function AdminDetails() {
 
         return new Intl.DateTimeFormat('es-ES', options).format(date);
     }
+
+    const addAlert = (message, variant) => {
+        setAlerts((prevAlerts) => [...prevAlerts, { message, variant }]);
+        setTimeout(() => setAlerts([]), 3000);
+    };
+
+    const dismissAlert = (index) => {
+        setAlerts((prevAlerts) => prevAlerts.filter((_, i) => i !== index));
+        setTimeout(() => setAlerts([]), 3000);
+    };
 
     useEffect(() => {
         getUsers();
@@ -71,10 +80,6 @@ function AdminDetails() {
         try {
             if (updateField === "email") {
                 await updateUserEmail(currentUser.user_id, updateValue);
-                const user = {
-                    "email": updateValue,
-                }
-                await updateUser(user);
                 setUsers((prevUsers) =>
                     prevUsers.map((user) =>
                         user.user_id === currentUser.user_id
@@ -86,11 +91,13 @@ function AdminDetails() {
                 await updateUserPassword(currentUser.user_id, updateValue);
             }
             setShowUpdateModal(false);
+            addAlert("Usuario actualizado con éxito.", "success");
         } catch (error) {
             console.error("Error updating user:", error);
+            addAlert("Hubo un error al actualizar el usuario.", "danger");
         }
-    };
 
+    };
 
     const confirmDelete = async () => {
         try {
@@ -99,13 +106,17 @@ function AdminDetails() {
                 prevUsers.filter((user) => user.user_id !== selectedUser.user_id)
             );
             setShowModal(false);
+            addAlert("Usuario eliminado con éxito.", "success");
         } catch (error) {
             console.error("Error deleting user:", error);
+            addAlert("Hubo un error al eliminar el usuario.", "danger");
         }
     };
 
     return (
         <>
+            <Alerts alerts={alerts} dismissAlert={dismissAlert} />
+
             {users.map((user) => (
                 <Card key={user.user_id} className="mb-4">
                     <Card.Body>
@@ -131,6 +142,7 @@ function AdminDetails() {
                                 </Fab>
                             )}
                         </div>
+
                     </Card.Body>
                 </Card>
             ))}
