@@ -1,9 +1,11 @@
 package com.mubisearch.user.rest.controllers;
 
 import com.mubisearch.user.entities.User;
+import com.mubisearch.user.rest.dto.Auth0User;
 import com.mubisearch.user.rest.dto.UserRegisterRequest;
-import com.mubisearch.user.rest.dto.UserUpdateRequest;
 import com.mubisearch.user.rest.dto.UserResponse;
+import com.mubisearch.user.rest.dto.UserUpdateRequest;
+import com.mubisearch.user.services.Auth0Service;
 import com.mubisearch.user.services.UserService;
 import jakarta.validation.constraints.NotNull;
 import lombok.extern.log4j.Log4j2;
@@ -25,11 +27,27 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private Auth0Service auth0Service;
+
     @GetMapping("/")
     @ResponseStatus(HttpStatus.OK)
     public List<User> getAllUsers() {
         log.info("Init getAllUsers");
         return userService.findAll();
+    }
+
+    @GetMapping("/auth0")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Auth0User>> getAllUsersAuth0() {
+        log.info("Init getAllUsersAuth0");
+        try {
+            String token = auth0Service.getManagementToken();
+            List<Auth0User> users = auth0Service.getUsers(token);
+            return ResponseEntity.ok(users);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
     }
 
     @GetMapping("/id/{idUser}")

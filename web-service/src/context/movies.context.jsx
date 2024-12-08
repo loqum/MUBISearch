@@ -355,10 +355,12 @@ function MoviesProviderWrapper(props) {
 
     const deleteReview = async (id) => {
         try {
+            const token = await getAccessTokenSilently();
             const response = await axios({
                 method: 'DELETE',
                 url: `http://localhost:8080/api/v1/reviews/delete/${id}`,
                 headers: {
+                    Authorization: `Bearer ${token}`,
                     "Content-Type": "application/json",
                 },
             })

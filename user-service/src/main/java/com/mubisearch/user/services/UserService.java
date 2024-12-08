@@ -34,7 +34,7 @@ public class UserService {
     }
 
     public User createUser(UserRegisterRequest user) {
-        User newUser = User.builder().sub(user.sub()).name(user.name()).email(user.email()).createdAt(LocalDateTime.now()).build();
+        User newUser = User.builder().sub(user.sub()).name(user.name()).email(user.email()).role(user.role()).createdAt(LocalDateTime.now()).build();
         return userRepository.save(newUser);
     }
 

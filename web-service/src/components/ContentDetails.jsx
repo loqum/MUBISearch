@@ -30,7 +30,7 @@ function ContentDetails() {
         updateFavoriteAlert
     } = useContext(MoviesContext);
     const {user, fetchUserBySub} = useContext(UserContext);
-    const { isAuthenticated, isLoading, auth0User } = useAuth0();
+    const { isAuthenticated } = useAuth0();
     const {idContent} = useParams(); //Recuperar el id de la película de la URL
     const contentFromNavigate = location?.state?.content; // Recuperar película desde la pantalla anterior mediante navegación
     const [isMovie, setIsMovie] = useState(location?.state?.isMovie);
@@ -210,7 +210,7 @@ function ContentDetails() {
                 <Card.Header style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                     {isMovie ? <span>Película</span> : <span>Serie</span>}
                     <div style={{display: "inline-flex", gap: "5px", alignItems: "center"}}>
-                        {isAuthenticated && (
+                        {isAuthenticated && user?.role === 'USER' && (
                             <OverlayTrigger placement="top" overlay={<Tooltip
                                 id="tooltip-favorite"> {isFavorite ? "Eliminar de favoritos" : "Añadir a favoritos"} </Tooltip>}>
                                 <div>
@@ -256,7 +256,7 @@ function ContentDetails() {
                     <Card.Text><strong>Valoración: </strong> {content.averageScore === 0 ? "Todavía no se ha valorado" : content.averageScore}
                     </Card.Text>
 
-                    {isAuthenticated && (
+                    {isAuthenticated && user?.role === 'USER' && (
                         <>
                             <VotesButton content={content} setContent={setContent}/>
                         </>

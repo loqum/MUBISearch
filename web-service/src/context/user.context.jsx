@@ -2,6 +2,7 @@ import {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {useAuth0} from "@auth0/auth0-react";
 import {AuthContext} from "./authProviderWrapper.jsx";
+import {PersistUser} from "../components/PersistUser.jsx";
 
 const UserContext = createContext();
 
@@ -10,9 +11,9 @@ function UserProviderWrapper(props) {
     const {user: auth0User, isAuthenticated} = useAuth0();
     const [user, setUser] = useState(null);
     const [error, setError] = useState(null);
-    const [syncUser, setSyncUser] = useState(false);
     const [notifications, setNotifications] = useState([]);
     const { getAccessTokenSilently } = useContext(AuthContext);
+    const [isPersisting, setIsPersisting] = useState(true);
 
     useEffect(() => {
         if (isAuthenticated && auth0User) {
@@ -21,13 +22,17 @@ function UserProviderWrapper(props) {
         } else {
             setUser(null);
         }
-    }, [isAuthenticated, auth0User, syncUser]);
+    }, [isAuthenticated, auth0User, isPersisting]);
 
     useEffect(() => {
         if (user) {
             fetchNotifications(user);
         }
     }, [user]);
+
+    const handlePersistComplete = () => {
+        setIsPersisting(false);
+    };
 
     const fetchUserBySub = async () => {
         try {
@@ -111,10 +116,6 @@ function UserProviderWrapper(props) {
         }
     }
 
-    const triggerUserSync = () => {
-        setSyncUser(true);
-    };
-
     return (
         <UserContext.Provider value={{
             user,
@@ -124,11 +125,11 @@ function UserProviderWrapper(props) {
             notifications,
             formatDate,
             updateUser,
-            triggerUserSync,
             fetchUserBySub,
             fetchUserById
         }}>
             {props.children}
+            <PersistUser onPersistComplete={handlePersistComplete} />
         </UserContext.Provider>
     );
 }

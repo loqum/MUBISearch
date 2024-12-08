@@ -7,18 +7,18 @@ import ErrorPage from "./pages/ErrorPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import ContentPage from "./pages/ContentPage.jsx";
 import DetailMoviePage from "./pages/DetailMoviePage.jsx";
-import {PersistUser} from "./components/PersistUser.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 
 function App() {
     return (
         <MainLayout>
-            <PersistUser/>
             <Routes>
                 <Route path="/" element={<HomePage/>}/>
                 <Route path="/contents" element={<ContentPage/>}/>
                 <Route path="/search" element={<SearchPage/>}/>
                 <Route path="/details/:idContent" element={<DetailMoviePage/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>
+                <Route path="/admin" element={<AdminPage/>}/>
                 <Route path="/error" element={<ErrorPage/>}/>
                 <Route path="*" element={<ErrorPage/>}/>
             </Routes>

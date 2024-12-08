@@ -8,7 +8,7 @@ services:
       MYSQL_PASSWORD: ruben93
     restart: always
     ports:
-      - 54508:3306
+      - "54508:3306"
     volumes:
       - ./db-init/schema-content.sql:/docker-entrypoint-initdb.d/init.sql
       - content_data:/var/lib/mysql
@@ -22,7 +22,7 @@ services:
       MYSQL_PASSWORD: ruben93
     restart: always
     ports:
-      - 54509:3306
+      - "54509:3306"
     volumes:
       - ./db-init/schema-user.sql:/docker-entrypoint-initdb.d/init.sql
       - user_data:/var/lib/mysql
@@ -36,7 +36,7 @@ services:
       MYSQL_PASSWORD: ruben93
     restart: always
     ports:
-      - 54510:3306
+      - "54510:3306"
     volumes:
       - ./db-init/schema-notification.sql:/docker-entrypoint-initdb.d/init.sql
       - notification_data:/var/lib/mysql
@@ -46,7 +46,7 @@ services:
     platform: linux/amd64
     restart: always
     ports:
-      - 18080:8080
+      - "18080:8080"
 
   web:
     build:
@@ -71,22 +71,22 @@ services:
   redis-insight:
     image: redis/redisinsight:latest
     ports:
-      - 5540:5540
+      - "5540:5540"
 
   rabbitmq:
     image: rabbitmq:3-management
     container_name: rabbitmq
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
 
   mailhog:
     image: mailhog/mailhog
     ports:
-      - 8025:8025
-      - 1025:1025
+      - "8025:8025"
+      - "1025:1025"
 
 volumes:
   content_data:

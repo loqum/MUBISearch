@@ -35,6 +35,17 @@ function NavigationBar() {
 
     }
 
+    const handleLinkProfile = () => {
+        console.log("User:", user);
+        if (user?.mubisearch_roles[0] === "ADMIN") {
+            return "/admin";
+        } else {
+            return "/profile";
+        }
+    }
+
+    const profileLink = handleLinkProfile();
+
     return (
         <Navbar bg="light" expand="lg" className="px-4">
             <Container fluid>
@@ -70,7 +81,7 @@ function NavigationBar() {
                 ) : (
                     isAuthenticated ? (
                         <Navbar.Text className="ms-auto">
-                            <Link to="/profile" className="me-3">
+                            <Link to={profileLink} className="me-3">
                                 <Fab aria-label="profile">
                                     <Badge badgeContent={notifications.length} color="primary">
                                         <Avatar src={user.picture} alt="Foto de perfil"/>

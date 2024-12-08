@@ -1,4 +1,4 @@
-import {Alert, Button, Card, Form, InputGroup} from "react-bootstrap";
+import {Alert, Button, Card, Form, InputGroup, Modal} from "react-bootstrap";
 import React, {useContext, useEffect, useRef, useState} from "react";
 import {MoviesContext} from "../context/movies.context.jsx";
 import {UserContext} from "../context/user.context.jsx";
@@ -9,10 +9,12 @@ export const Review = ({content}) => {
     const [reviews, setReviews] = useState([]);
     const [hasReviewed, setHasReviewed] = useState(false);
     const [newReview, setNewReview] = useState(null);
-    const {createReview, getReviewsByContent, convertDateToDayMonthYearTime} = useContext(MoviesContext);
+    const {createReview, getReviewsByContent, convertDateToDayMonthYearTime, deleteReview} = useContext(MoviesContext);
     const {user, fetchUserById} = useContext(UserContext);
     const { isAuthenticated } = useAuth0();
     const textAreaRef = useRef(null);
+    const [selectedReview, setSelectedReview] = useState(null);
+    const [showModal, setShowModal] = useState(false);
 
     const handleSubmitReview = async (e) => {
         e.preventDefault();
@@ -79,6 +81,24 @@ export const Review = ({content}) => {
         }
     }, [content, user]);
 
+    const handleDeleteClick = (review) => {
+        console.log("Review to delete:", review);
+        setSelectedReview(review);
+        setShowModal(true);
+    };
+
+    const confirmDelete = async () => {
+        try {
+            await deleteReview(selectedReview.id);
+            setReviews((prevReviews) =>
+                prevReviews.filter((review) => review.id !== selectedReview.id)
+            );
+            setShowModal(false);
+        } catch (error) {
+            console.error("Error deleting review:", error);
+        }
+    };
+
     return (
         <>
             <h3 className="mt-4">Críticas</h3>
@@ -86,13 +106,26 @@ export const Review = ({content}) => {
             {reviews.length > 0 ? (
                 reviews.map((review, index) => (
                     <Card key={index} className="mb-3">
+                        {user?.role === 'ADMIN' && (
+                            <i
+                                className="bi bi-trash-fill text-danger position-absolute"
+                                style={{
+                                    top: "10px",
+                                    right: "10px",
+                                    cursor: "pointer",
+                                }}
+                                onClick={() => handleDeleteClick(review)}
+
+                            />
+                        )}
+
                         <Card.Body>
                             <Card.Title>{review.userName}</Card.Title>
                             <Card.Text>
                                 {review.text.split("\n").map((line, index) => (
                                     <React.Fragment key={index}>
                                         {line}
-                                        <br />
+                                        <br/>
                                     </React.Fragment>
                                 ))}
                             </Card.Text>
@@ -106,7 +139,7 @@ export const Review = ({content}) => {
                 <p>Todavía no hay ninguna crítica para esta película. {isAuthenticated && (<>¡Sé el primero en
                     comentarla!</>)}</p>
             )}
-            {isAuthenticated && !hasReviewed &&
+            {isAuthenticated && !hasReviewed && user?.role === 'USER' &&
                 (<Form onSubmit={handleSubmitReview}>
                         <InputGroup>
                             <InputGroup.Text>Escribe tu reseña</InputGroup.Text>
@@ -129,6 +162,23 @@ export const Review = ({content}) => {
                     ¡Gracias por dar tu opinión!
                 </Alert>
             )}
+
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>Confirmar eliminación</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    ¿Estás seguro de que quieres eliminar esta crítica?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowModal(false)}>
+                        Cancelar
+                    </Button>
+                    <Button variant="danger" onClick={confirmDelete}>
+                        Eliminar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </>
     )
 }
