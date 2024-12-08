@@ -1,7 +1,7 @@
 import {createContext, useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {useAuth0} from "@auth0/auth0-react";
-import {AuthContext} from "./authProviderWrapper.jsx";
+import {AuthContext} from "./auth.context.jsx";
 import {PersistUser} from "../components/PersistUser.jsx";
 
 const UserContext = createContext();
@@ -41,7 +41,6 @@ function UserProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             });
-            console.log("Updated user:", response.data);
 
             const updatedUser = {
                 ...auth0User,
@@ -53,7 +52,7 @@ function UserProviderWrapper(props) {
                 birthdate: response.data.birthdate,
                 fullname: response.data.fullname
             };
-            console.log("Updated user2:", response.data);
+            console.log("Updated user:", response.data);
 
             setUser(updatedUser);
 
@@ -108,7 +107,6 @@ function UserProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             });
-            console.log("Notifications:", response.data);
             setNotifications(response.data);
         } catch (error) {
             console.error("Error fetching notifications:", error);

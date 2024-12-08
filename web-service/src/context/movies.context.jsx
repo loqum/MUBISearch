@@ -1,6 +1,6 @@
 import {createContext, useContext, useState} from 'react';
 import axios from "axios";
-import {AuthContext} from "./authProviderWrapper.jsx";
+import {AuthContext} from "./auth.context.jsx";
 
 const MoviesContext = createContext();
 

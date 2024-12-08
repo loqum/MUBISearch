@@ -8,7 +8,7 @@ import {UserProviderWrapper} from "./context/user.context.jsx";
 import {Auth0Provider} from "@auth0/auth0-react";
 import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {AuthProviderWrapper} from "./context/authProviderWrapper.jsx";
+import {AuthProviderWrapper} from "./context/auth.context.jsx";
 
 
 createRoot(document.getElementById('root')).render(
