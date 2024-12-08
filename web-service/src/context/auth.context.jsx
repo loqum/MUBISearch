@@ -18,22 +18,68 @@ function AuthProviderWrapper(props) {
     }
 
     const deleteUserById = async (id) => {
-        const token = await getAccessTokenSilently();
-        await axios.delete(`http://localhost:8080/api/v1/users/auth0/delete/${id}`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        if (id) {
+            const token = await getAccessTokenSilently();
+            await axios.delete(`http://localhost:8080/api/v1/users/auth0/delete/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
+
     }
 
     const updateUserById = async (user) => {
-        const token = await getAccessTokenSilently();
-        await axios.patch(`http://localhost:8080/api/v1/users/auth0/update/${user.id}`, user, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
+        if (!user) {
+            const token = await getAccessTokenSilently();
+            await axios.patch(`http://localhost:8080/api/v1/users/auth0/update/${user.id}`, user, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+        }
     }
+
+    const updateUserEmail = async (idUser, newEmail) => {
+        try {
+            if (idUser && newEmail) {
+                const token = await getAccessTokenSilently();
+                await axios.patch(
+                    `http://localhost:8080/api/v1/users/auth0/update/${idUser}`,
+                    {email: newEmail},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+            }
+        } catch (error) {
+            console.error("Error updating user email:", error);
+        }
+    };
+
+    const updateUserPassword = async (idUser, newPassword) => {
+        try {
+            if (idUser && newPassword) {
+                const token = await getAccessTokenSilently();
+                await axios.patch(
+                    `http://localhost:8080/api/v1/users/auth0/update/${idUser}`,
+                    {password: newPassword},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
+
+            }
+        } catch (error) {
+            console.error("Error updating user password:", error);
+        }
+    };
 
     const getUserById = async (id) => {
         const token = await getAccessTokenSilently();
@@ -56,6 +102,8 @@ function AuthProviderWrapper(props) {
                 fetchUsers,
                 getUserById,
                 updateUserById,
+                updateUserEmail,
+                updateUserPassword,
                 deleteUserById
             }}>
             {props.children}

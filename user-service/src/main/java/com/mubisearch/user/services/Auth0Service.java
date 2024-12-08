@@ -10,7 +10,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,70 +30,69 @@ public class Auth0Service {
     @Value("${auth0.domain}")
     private String auth0Domain;
 
-    private final RestTemplate restTemplate;
+    @Value("${auth0.api.users}")
+    private String usersApiUrl;
+
+    private final WebClient webClient;
 
     public String getManagementToken() {
-        String url = "https://" + auth0Domain + "/oauth/token";
-
         Map<String, String> body = new HashMap<>();
         body.put("client_id", clientId);
         body.put("client_secret", clientSecret);
         body.put("audience", "https://" + auth0Domain + "/api/v2/");
         body.put("grant_type", "client_credentials");
 
-        Map<String, Object> response = restTemplate.postForObject(url, body, Map.class);
+        Map<String, Object> response = webClient
+                .post()
+                .uri("/oauth/token")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<Map<String, Object>>() {})
+                .block();
+
+        if (response == null) {
+            log.error("Error fetching token");
+            throw new RuntimeException("Error fetching token");
+        }
 
         return (String) response.get("access_token");
     }
 
     public List<Auth0User> findAllUsers(String token) {
-        String url = "https://" + auth0Domain + "/api/v2/users";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
-        ResponseEntity<List<Auth0User>> response = restTemplate.exchange(
-                url, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
-        );
-
-        List<Auth0User> users = response.getBody();
+        List<Auth0User> users = webClient
+                .get()
+                .uri(usersApiUrl)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<List<Auth0User>>() {})
+                .block();
 
         if (users != null) {
             for (Auth0User user : users) {
-                String rolesUrl = "https://" + auth0Domain + "/api/v2/users/" + user.getUser_id() + "/roles";
-
-                ResponseEntity<List<Role>> rolesResponse = restTemplate.exchange(
-                        rolesUrl, HttpMethod.GET, entity, new ParameterizedTypeReference<>() {}
-                );
-
-                List<Role> roles = rolesResponse.getBody();
+                List<Role> roles = webClient
+                        .get()
+                        .uri(usersApiUrl + "/" + user.getUser_id() + "/roles")
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                        .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                        .retrieve()
+                        .bodyToMono(new ParameterizedTypeReference<List<Role>>() {})
+                        .block();
                 user.setRoles(roles);
             }
         }
-
         return users;
     }
 
     public ResponseEntity<Auth0User> findUserById(String token, @NotNull String idUser) {
-        String url = "https://" + auth0Domain + "/api/v2/users/{idUser}";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
         try {
-            ResponseEntity<Auth0User> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.GET,
-                    entity,
-                    Auth0User.class,
-                    idUser
-            );
-
-            return ResponseEntity.ok(response.getBody());
+            Auth0User response = webClient.get()
+                    .uri(usersApiUrl + "/{idUser}", idUser)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(Auth0User.class)
+                    .block();
+            return ResponseEntity.ok(response);
         } catch (HttpClientErrorException.NotFound e) {
             log.error("Error fetching user by ID", e);
             return ResponseEntity.notFound().build();
@@ -104,23 +103,14 @@ public class Auth0Service {
     }
 
     public ResponseEntity<Auth0User> deleteUserById(String token, @NotNull String idUser) {
-        String url = "https://" + auth0Domain + "/api/v2/users/{idUser}";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
         try {
-            ResponseEntity<Auth0User> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.DELETE,
-                    entity,
-                    Auth0User.class,
-                    idUser
-            );
-
-            return ResponseEntity.ok(response.getBody());
+            Auth0User response = webClient.delete()
+                    .uri(usersApiUrl + "/{idUser}", idUser)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .retrieve()
+                    .bodyToMono(Auth0User.class)
+                    .block();
+            return ResponseEntity.ok(response);
         } catch (HttpClientErrorException.NotFound e) {
             log.error("Error deleting user by ID", e);
             return ResponseEntity.notFound().build();
@@ -131,24 +121,17 @@ public class Auth0Service {
     }
 
 
-    public ResponseEntity<Auth0User> updateUserById(String token, @NotNull String idUser) {
-        String url = "https://" + auth0Domain + "/api/v2/users/{idUser}";
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
-
-        HttpEntity<String> entity = new HttpEntity<>(headers);
-
+    public ResponseEntity<Auth0User> updateUserById(String token, @NotNull String idUser, Map<String, String> user) {
         try {
-            ResponseEntity<Auth0User> response = restTemplate.exchange(
-                    url,
-                    HttpMethod.PATCH,
-                    entity,
-                    Auth0User.class,
-                    idUser
-            );
-
-            return ResponseEntity.ok(response.getBody());
+            Auth0User response = webClient.patch()
+                    .uri(usersApiUrl + "/{idUser}", idUser)
+                    .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .bodyValue(user)
+                    .retrieve()
+                    .bodyToMono(Auth0User.class)
+                    .block();
+            return ResponseEntity.ok(response);
         } catch (HttpClientErrorException.NotFound e) {
             log.error("Error updating user by ID", e);
             return ResponseEntity.notFound().build();

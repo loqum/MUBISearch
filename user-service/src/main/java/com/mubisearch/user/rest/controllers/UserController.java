@@ -18,6 +18,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @RestController
@@ -73,10 +74,14 @@ public class UserController {
 
     @PatchMapping("/auth0/update/{idUser}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Auth0User> updateUserAuth0ById(@PathVariable @NotNull String idUser) {
+    public ResponseEntity<Auth0User> updateUserAuth0ById(@PathVariable @NotNull String idUser, @RequestBody Map<String, String> user) {
         log.info("Init updateUserAuth0ById");
         String token = auth0Service.getManagementToken();
-        return auth0Service.updateUserById(token, idUser);
+        ResponseEntity<Auth0User> auth0UserResponseEntity = auth0Service.updateUserById(token, idUser, user);
+        if (auth0UserResponseEntity.getStatusCode().is2xxSuccessful()) {
+            userService.updateUserBySub(idUser, user);
+        }
+        return auth0UserResponseEntity;
     }
 
     @GetMapping("/id/{idUser}")
@@ -110,7 +115,7 @@ public class UserController {
     public ResponseEntity<User> updateUser(@PathVariable @NotNull Long idUser, @RequestBody UserUpdateRequest userUpdateRequest) {
         log.info("Init updateUser: {}", userUpdateRequest);
         try {
-            User user = userService.updateUser(idUser, userUpdateRequest);
+            User user = userService.updateUserById(idUser, userUpdateRequest);
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{idUser}").buildAndExpand(idUser).toUri();
             return ResponseEntity.created(uri).body(user);
         } catch (DataIntegrityViolationException e) {

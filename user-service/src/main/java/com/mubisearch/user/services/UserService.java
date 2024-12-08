@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -39,7 +40,7 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public User updateUser(Long idUser, UserUpdateRequest user) {
+    public User updateUserById(Long idUser, UserUpdateRequest user) {
         User userToUpdate = userRepository.findById(idUser).orElseThrow(() -> new IllegalArgumentException("User with id: " + idUser + " not found"));
         userToUpdate.setUpdatedAt(LocalDateTime.now());
         if (user.fullname() != null) {
@@ -49,6 +50,16 @@ public class UserService {
             userToUpdate.setBirthdate(user.birthdate());
         }
         return userRepository.save(userToUpdate);
+    }
+
+    public void updateUserBySub(String idUser, Map<String, String> user) {
+        User userToUpdate = userRepository.findBySub(idUser).orElseThrow(() -> new IllegalArgumentException("User with id: " + idUser + " not found"));
+        userToUpdate.setUpdatedAt(LocalDateTime.now());
+        String email = user.get("email");
+        if (email != null) {
+            userToUpdate.setEmail(email);
+        }
+        userRepository.save(userToUpdate);
     }
 
     @Transactional

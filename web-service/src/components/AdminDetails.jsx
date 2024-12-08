@@ -1,13 +1,22 @@
 import {Button, Card, Modal} from "react-bootstrap";
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../context/auth.context.jsx";
+import {Delete} from "@mui/icons-material";
+import {Fab} from "@mui/material";
+import {UserContext} from "../context/user.context.jsx";
 
 function AdminDetails() {
 
-    const {fetchUsers, deleteUserById} = useContext(AuthContext);
+    const {fetchUsers, deleteUserById, updateUserEmail, updateUserPassword} = useContext(AuthContext);
+    const {updateUser} = useContext(UserContext);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [updateField, setUpdateField] = useState(null);
+    const [updateValue, setUpdateValue] = useState("");
+    const [currentUser, setCurrentUser] = useState(null);
+
 
     const getUsers = async () => {
         const response = await fetchUsers();
@@ -41,14 +50,47 @@ function AdminDetails() {
         )
     }
 
-    function handleUpdateClick(user) {
+    function handleUpdateEmailClick(user) {
+        setUpdateField("email");
+        setCurrentUser(user);
+        setShowUpdateModal(true);
+    }
 
+    function handleUpdatePasswordClick(user) {
+        setUpdateField("password");
+        setCurrentUser(user);
+        setShowUpdateModal(true);
     }
 
     function handleDeleteClick(user) {
         setSelectedUser(user);
         setShowModal(true);
     }
+
+    const confirmUpdate = async () => {
+        try {
+            if (updateField === "email") {
+                await updateUserEmail(currentUser.user_id, updateValue);
+                const user = {
+                    "email": updateValue,
+                }
+                await updateUser(user);
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user.user_id === currentUser.user_id
+                            ? { ...user, email: updateValue }
+                            : user
+                    )
+                );
+            } else if (updateField === "password") {
+                await updateUserPassword(currentUser.user_id, updateValue);
+            }
+            setShowUpdateModal(false);
+        } catch (error) {
+            console.error("Error updating user:", error);
+        }
+    };
+
 
     const confirmDelete = async () => {
         try {
@@ -66,29 +108,6 @@ function AdminDetails() {
         <>
             {users.map((user) => (
                 <Card key={user.user_id} className="mb-4">
-                    <i
-                        className="bi bi-pencil-fill text-primary position-absolute"
-                        style={{
-                            top: "10px",
-                            right: "50px",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => handleUpdateClick(user)}
-                    />
-
-                    {user.roles[0].name === "USER" && (
-                        <i
-                            className="bi bi-trash-fill text-danger position-absolute"
-                            style={{
-                                top: "10px",
-                                right: "10px",
-                                cursor: "pointer",
-                            }}
-                            onClick={() => handleDeleteClick(user)}
-
-                        />
-                    )}
-
                     <Card.Body>
                         <Card.Img variant="top" src={user.picture} style={{width: '100px'}} className="mb-4"/>
                         <Card.Text><strong>Usuario:</strong> {user.username}</Card.Text>
@@ -98,13 +117,27 @@ function AdminDetails() {
                         <Card.Text><strong>Último login:</strong> {formatDate(user.last_login)}</Card.Text>
                         <Card.Text><strong>Última actualización del perfil:</strong> {formatDate(user.updated_at)}
                         </Card.Text>
+                        <div className="d-flex justify-content-end">
+                            <Fab color="primary" className="m-3" aria-label="add" variant="extended"
+                                 onClick={() => handleUpdatePasswordClick(user)}>
+                                Cambiar contraseña
+                            </Fab>
+                            <Fab color="primary" className="m-3" variant="extended"  aria-label="add" onClick={() => handleUpdateEmailClick(user)}>
+                                Cambiar email
+                            </Fab>
+                            {user.roles[0].name === "USER" && (
+                                <Fab color="error" className="m-3"  aria-label="add" onClick={() => handleDeleteClick(user)}>
+                                    <Delete/>
+                                </Fab>
+                            )}
+                        </div>
                     </Card.Body>
                 </Card>
             ))}
 
             <Modal show={showModal} onHide={() => setShowModal(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirmar eliminación</Modal.Title>
+                    <Modal.Title>¡Atención!</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     ¿Estás seguro de que quieres eliminar este usuario?
@@ -118,6 +151,32 @@ function AdminDetails() {
                     </Button>
                 </Modal.Footer>
             </Modal>
+
+            <Modal show={showUpdateModal} onHide={() => setShowUpdateModal(false)}>
+                <Modal.Header closeButton>
+                    <Modal.Title>
+                        {updateField === "email" ? "Actualizar correo electrónico" : "Actualizar contraseña"}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder={updateField === "email" ? "Nuevo correo electrónico" : "Nueva contraseña"}
+                        value={updateValue}
+                        onChange={(e) => setUpdateValue(e.target.value)}
+                    />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowUpdateModal(false)}>
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={confirmUpdate}>
+                        Actualizar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
 
         </>
     );
