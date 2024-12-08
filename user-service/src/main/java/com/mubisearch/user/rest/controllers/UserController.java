@@ -43,11 +43,40 @@ public class UserController {
         log.info("Init getAllUsersAuth0");
         try {
             String token = auth0Service.getManagementToken();
-            List<Auth0User> users = auth0Service.getUsers(token);
+            List<Auth0User> users = auth0Service.findAllUsers(token);
             return ResponseEntity.ok(users);
         } catch (Exception e) {
+            log.error("Error getting users from Auth0: {}", e.getMessage(), e);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
         }
+    }
+
+    @GetMapping("/auth0/{idUser}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Auth0User> getUserAuth0ById(@PathVariable @NotNull String idUser) {
+        log.info("Init getUsersAuth0ById");
+        String token = auth0Service.getManagementToken();
+        return auth0Service.findUserById(token, idUser);
+    }
+
+    @DeleteMapping("/auth0/delete/{idUser}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Auth0User> deleteUserAuth0ById(@PathVariable @NotNull String idUser) {
+        log.info("Init deleteUserAuth0ById");
+        String token = auth0Service.getManagementToken();
+        ResponseEntity<Auth0User> auth0UserResponseEntity = auth0Service.deleteUserById(token, idUser);
+        if (auth0UserResponseEntity.getStatusCode().is2xxSuccessful()) {
+            userService.deleteUser(idUser);
+        }
+        return auth0UserResponseEntity;
+    }
+
+    @PatchMapping("/auth0/update/{idUser}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<Auth0User> updateUserAuth0ById(@PathVariable @NotNull String idUser) {
+        log.info("Init updateUserAuth0ById");
+        String token = auth0Service.getManagementToken();
+        return auth0Service.updateUserById(token, idUser);
     }
 
     @GetMapping("/id/{idUser}")

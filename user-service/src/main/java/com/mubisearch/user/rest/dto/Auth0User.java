@@ -19,4 +19,5 @@ public class Auth0User {
     private String last_ip;
     private int logins_count;
     private List<Identity> identities;
+    private List<Role> roles;
 }

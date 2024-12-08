@@ -17,9 +17,47 @@ function AuthProviderWrapper(props) {
         return await response.data;
     }
 
+    const deleteUserById = async (id) => {
+        const token = await getAccessTokenSilently();
+        await axios.delete(`http://localhost:8080/api/v1/users/auth0/delete/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
+
+    const updateUserById = async (user) => {
+        const token = await getAccessTokenSilently();
+        await axios.patch(`http://localhost:8080/api/v1/users/auth0/update/${user.id}`, user, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+    }
+
+    const getUserById = async (id) => {
+        const token = await getAccessTokenSilently();
+        const response = await axios(`http://localhost:8080/api/v1/users/auth0/${id}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+        return await response.data;
+    }
+
     return (
         <AuthContext.Provider
-            value={{getAccessTokenSilently, loginWithRedirect, logout, user, isAuthenticated, fetchUsers}}>
+            value={{
+                getAccessTokenSilently,
+                loginWithRedirect,
+                logout,
+                user,
+                isAuthenticated,
+                fetchUsers,
+                getUserById,
+                updateUserById,
+                deleteUserById
+            }}>
             {props.children}
         </AuthContext.Provider>
     );

@@ -11,6 +11,25 @@ export const PersistUser = ({onPersistComplete}) => {
             if (isAuthenticated) {
                 setIsPersisting(true);
                 const token = await getAccessTokenSilently();
+                let rolesAvailable = false;
+                let retries = 3;
+
+                while (!rolesAvailable && retries > 0) {
+                    const roles = user['mubisearch_roles'];
+                    if (roles && roles.length > 0) {
+                        rolesAvailable = true;
+                    } else {
+                        retries--;
+                        await new Promise((resolve) => setTimeout(resolve, 1000));
+                    }
+                }
+
+                if (!rolesAvailable) {
+                    console.error("Roles not available for the user");
+                    setIsPersisting(false);
+                    return;
+                }
+
                 const response = await axios.get(
                     `http://localhost:8080/api/v1/users/exists/${user.sub}`,
                     {
@@ -19,7 +38,7 @@ export const PersistUser = ({onPersistComplete}) => {
                         },
                     }
                 );
-
+                console.log("User exists: ", response.data);
                 if (!response.data) {
                     await axios({
                         method: "post",

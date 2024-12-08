@@ -1,11 +1,10 @@
-import {Button, Card, Container, Modal} from "react-bootstrap";
+import {Button, Card, Modal} from "react-bootstrap";
 import React, {useContext, useEffect, useState} from "react";
 import {AuthContext} from "../context/auth.context.jsx";
-import {Link} from "react-router-dom";
 
 function AdminDetails() {
 
-    const {fetchUsers} = useContext(AuthContext);
+    const {fetchUsers, deleteUserById} = useContext(AuthContext);
     const [users, setUsers] = useState([]);
     const [selectedUser, setSelectedUser] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -43,7 +42,7 @@ function AdminDetails() {
     }
 
     function handleUpdateClick(user) {
-        
+
     }
 
     function handleDeleteClick(user) {
@@ -52,6 +51,15 @@ function AdminDetails() {
     }
 
     const confirmDelete = async () => {
+        try {
+            await deleteUserById(selectedUser.user_id);
+            setUsers((prevUsers) =>
+                prevUsers.filter((user) => user.user_id !== selectedUser.user_id)
+            );
+            setShowModal(false);
+        } catch (error) {
+            console.error("Error deleting user:", error);
+        }
     };
 
     return (
@@ -67,20 +75,23 @@ function AdminDetails() {
                         }}
                         onClick={() => handleUpdateClick(user)}
                     />
-                    <i
-                        className="bi bi-trash-fill text-danger position-absolute"
-                        style={{
-                            top: "10px",
-                            right: "10px",
-                            cursor: "pointer",
-                        }}
-                        onClick={() => handleDeleteClick(user)}
 
-                    />
+                    {user.roles[0].name === "USER" && (
+                        <i
+                            className="bi bi-trash-fill text-danger position-absolute"
+                            style={{
+                                top: "10px",
+                                right: "10px",
+                                cursor: "pointer",
+                            }}
+                            onClick={() => handleDeleteClick(user)}
+
+                        />
+                    )}
+
                     <Card.Body>
-                    <Card.Img variant="top" src={user.picture} style={{width: '100px'}}/>
-                        <Card.Title>{user.name}</Card.Title>
-                        <Card.Text><strong>Nick:</strong> {user.nickname}</Card.Text>
+                        <Card.Img variant="top" src={user.picture} style={{width: '100px'}} className="mb-4"/>
+                        <Card.Text><strong>Usuario:</strong> {user.username}</Card.Text>
                         <Card.Text><strong>ID:</strong> {user.user_id}</Card.Text>
                         <Card.Text><strong>Correo electrónico:</strong> {user.email}</Card.Text>
                         <Card.Text><strong>IP:</strong> {user.last_ip}</Card.Text>

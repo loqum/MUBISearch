@@ -13,4 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @EntityGraph(attributePaths = {"favorites"})
     Optional<User> findBySub(String sub);
+
+    boolean existsBySub(String sub);
+
+    void deleteBySub(String sub);
 }
