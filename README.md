@@ -31,6 +31,21 @@ Los servicios se encuentran configurados en los siguientes puertos:
 - **Redis**: localhost:6379
 - **Redis Insight**: localhost:5540
 
+### Acceso a las Bases de Datos
+
+Se puede acceder a las bases de datos utilizando la herramienta **Adminer**, disponible en la dirección: [http://localhost:18080](http://localhost:18080).
+
+Las credenciales para cada base de datos son las siguientes:
+
+| **Base de Datos**    | **Servidor**     | **Usuario** | **Contraseña** |
+|-----------------------|------------------|-------------|----------------|
+| Content Database      | `contentdb`     | `ruben`     | `ruben93`      |
+| User Database         | `userdb`        | `ruben`     | `ruben93`      |
+| Notification Database | `notificationdb`| `ruben`     | `ruben93`      |
+
+Para acceder a la base de datos en memoria **Redis**, se puede utilizar la herramienta **Redis Insight** en la dirección: [http://localhost:5540](http://localhost:5540).
+Para ello se debe seleccionar "+ Add Redis database" y cambiar el *host* por "redis".
+
 ### APIs de Microservicios
 - **Gateway**: localhost:8080
 
