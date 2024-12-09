@@ -98,4 +98,4 @@ Docker se encarga de instalar todas las dependencias necesarias para el proyecto
 - **rabbitmq**: Cola de mensajes para gestionar las notificaciones.
 - **mailhog**: Herramienta para gestionar los correos electrónicos de las notificaciones.
 
-Una vez lanzado el comando, se puede acceder a la aplicación web en la dirección `http://localhost:5173`.
+Una vez lanzado el comando, se puede acceder a la aplicación web en la dirección [http://localhost:5173](http://localhost:5173).
