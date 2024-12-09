@@ -20,7 +20,6 @@ function AdminDetails() {
     const getUsers = async () => {
         const response = await fetchUsers();
         setUsers(response);
-        console.log("Users:", response);
     }
 
     const formatDate = (dateString) => {

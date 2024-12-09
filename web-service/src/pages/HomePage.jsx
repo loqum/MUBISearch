@@ -15,7 +15,6 @@ function HomePage() {
             const response = await fetchDiscoverMovies(page);
             const transformedMovies = convertMovies(response);
             setMovies(transformedMovies);
-            console.log(`Movies from page ${page}: `, transformedMovies);
         } catch (e) {
             console.error("Error fetching movies:", e);
         }

@@ -12,7 +12,6 @@ function ContentCard(props) {
     const [expanded, setExpanded] = useState(false);
 
     const handleClick = () => {
-        console.log("ContentCard handleClick movie id:", content.id);
         navigate(`/details/${content.id}`, { state: { content, isMovie, isSeries } });
     }
 

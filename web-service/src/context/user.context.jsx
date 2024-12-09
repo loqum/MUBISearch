@@ -17,7 +17,6 @@ function UserProviderWrapper(props) {
 
     useEffect(() => {
         if (isAuthenticated && auth0User) {
-            console.log("Auth0 user:", auth0User);
             fetchUserBySub();
         } else {
             setUser(null);
@@ -52,8 +51,6 @@ function UserProviderWrapper(props) {
                 birthdate: response.data.birthdate,
                 fullname: response.data.fullname
             };
-            console.log("Updated user:", response.data);
-
             setUser(updatedUser);
 
         } catch (error) {

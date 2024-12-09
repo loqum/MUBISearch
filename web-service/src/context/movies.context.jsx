@@ -50,8 +50,6 @@ function MoviesProviderWrapper(props) {
                     "Content-Type": "application/json",
                 },
             })
-            console.log("FetchDiscoverMovies response:", response.data.data);
-
             return response.data.data;
         } catch (error) {
             console.error("Error fetching movies:", error);
@@ -69,7 +67,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("FetchDiscoverMovies response:", response);
                 return response.data.data;
             }
         } catch (error) {
@@ -88,7 +85,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("FetchSeries response:", response);
                 return response.data.data;
             }
         } catch (error) {
@@ -100,7 +96,6 @@ function MoviesProviderWrapper(props) {
     const createFavorite = async (favorite) => {
         try {
             if (favorite) {
-                console.log("createFavorite favorite:", favorite);
                 const token = await getAccessTokenSilently();
                 const response = await axios({
                     method: 'POST',
@@ -111,7 +106,6 @@ function MoviesProviderWrapper(props) {
                         Authorization: `Bearer ${token}`,
                     },
                 })
-                console.log("createFavorite response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -132,7 +126,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("deleteFavorite response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -154,7 +147,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("createMovie response:", response);
                 return response.data;
             }
         } catch (error) {
@@ -176,7 +168,6 @@ function MoviesProviderWrapper(props) {
                         "Content-Type": "application/json",
                     },
                 })
-                console.log("createSeries response:", response);
                 return response.data;
             }
         } catch (error) {

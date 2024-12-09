@@ -25,7 +25,6 @@ export const PersistUser = ({onPersistComplete}) => {
                 }
 
                 if (!rolesAvailable) {
-                    console.error("Roles not available for the user");
                     setIsPersisting(false);
                     return;
                 }
@@ -38,7 +37,6 @@ export const PersistUser = ({onPersistComplete}) => {
                         },
                     }
                 );
-                console.log("User exists: ", response.data);
                 if (!response.data) {
                     await axios({
                         method: "post",

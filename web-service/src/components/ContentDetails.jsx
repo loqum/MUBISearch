@@ -101,7 +101,6 @@ function ContentDetails() {
 
             } else {
                 if (contentFromNavigate && isMovie) {
-                    console.log("contentFromNavigate", contentFromNavigate);
                     const id = await createMovie({
                         originalTitle: contentFromNavigate.original_title,
                         releaseDate: formatDateISO8601(contentFromNavigate.release_date),

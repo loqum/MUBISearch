@@ -21,7 +21,6 @@ function NavigationBar() {
         try {
             let response = await fetchMovies(query);
             response = response.filter((movie) => movie.poster_path !== null);
-            console.log("Response:", response);
             const transformedContents = convertMovies(response);
             event.target[0].value = "";
             navigateToList(`/contents`, {state: {transformedContents, isMovie: true, isSeries: false}});
@@ -29,14 +28,9 @@ function NavigationBar() {
             console.error("Error fetching movies:", e);
         }
 
-        if (query) {
-            console.log(query);
-        }
-
     }
 
     const handleLinkProfile = () => {
-        console.log("User:", user);
         if (user?.mubisearch_roles[0] === "ADMIN") {
             return "/admin";
         } else {

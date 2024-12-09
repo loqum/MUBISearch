@@ -37,7 +37,6 @@ export const Review = ({content}) => {
 
     const checkReviews = async () => {
         if (content) {
-            console.log("Checking reviews for content:", content);
             try {
                 const reviewData = await getReviewsByContent(content.id);
 
@@ -48,7 +47,6 @@ export const Review = ({content}) => {
                             return {...review, userName: user.name || `Usuario ${review.idUser}`};
                         })
                     );
-                    console.log("User review:", user);
                     if (user) {
                         const userReview = reviewsWithUserData.find((review) => review.idUser === user.id);
                         setHasReviewed(!!userReview);
@@ -77,12 +75,10 @@ export const Review = ({content}) => {
     useEffect(() => {
         if (content) {
             checkReviews();
-            console.log("Has reviewed:", hasReviewed);
         }
     }, [content, user]);
 
     const handleDeleteClick = (review) => {
-        console.log("Review to delete:", review);
         setSelectedReview(review);
         setShowModal(true);
     };

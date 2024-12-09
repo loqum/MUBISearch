@@ -22,7 +22,6 @@ export const AdvancedSearch = () => {
             if (isMovie) {
                 let response = await fetchMovies(text);
                 response = response.filter((movie) => movie.poster_path !== null);
-                console.log("Response:", response);
                 transformedContents = convertMovies(response);
                 setText(null);
 
@@ -31,7 +30,6 @@ export const AdvancedSearch = () => {
             if (isSeries) {
                 let response = await fetchSeries(text);
                 response = response.filter((series) => series.poster_path !== null);
-                console.log("Response:", response);
                 transformedContents = convertMovies(response);
                 setText(null);
             }
