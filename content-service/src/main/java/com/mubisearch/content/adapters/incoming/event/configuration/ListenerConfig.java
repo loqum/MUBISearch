@@ -1,4 +1,4 @@
-package com.mubisearch.content.configuration;
+package com.mubisearch.content.adapters.incoming.event.configuration;
 
 import com.mubisearch.content.adapters.incoming.event.VoteListener;
 import com.mubisearch.content.domain.service.VoteService;

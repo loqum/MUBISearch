@@ -1,4 +1,4 @@
-package com.mubisearch.content.configuration;
+package com.mubisearch.content.adapters.outgoing.messaging.configuration;
 
 import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;

@@ -1,6 +1,6 @@
 package com.mubisearch.content.adapters.outgoing.messaging;
 
-import com.mubisearch.content.configuration.RabbitMQConfig;
+import com.mubisearch.content.adapters.outgoing.messaging.configuration.RabbitMQConfig;
 import com.mubisearch.content.domain.model.NotificationType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
