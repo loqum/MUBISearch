@@ -1,7 +1,7 @@
 package com.mubisearch.content.configuration;
 
-import com.mubisearch.content.adapters.incoming.event.VoteListener;
-import com.mubisearch.content.domain.service.VoteService;
+import com.mubisearch.content.services.VoteListener;
+import com.mubisearch.content.services.VoteService;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
