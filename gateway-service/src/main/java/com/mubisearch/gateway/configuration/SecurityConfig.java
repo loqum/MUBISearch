@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .addFilterBefore(new LoggingFilter(), UsernamePasswordAuthenticationFilter.class)
                 .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer.configurationSource(request -> {
                     var cors = new org.springframework.web.cors.CorsConfiguration();
-                    cors.setAllowedOrigins(java.util.List.of("http://localhost:5173"));
+                    cors.setAllowedOrigins(java.util.List.of("http://localhost:5173", "http://localhost:18084", "http://localhost:18083", "http://localhost:18082"));
                     cors.setAllowedMethods(java.util.List.of("*"));
                     cors.setAllowedHeaders(java.util.List.of("*"));
                     cors.setAllowCredentials(true);
