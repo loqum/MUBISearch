@@ -15,7 +15,7 @@ function ProfileDetails() {
     const {user, setUser, formatDate, updateUser} = useContext(UserContext);
     const [editing, setEditing] = useState(false);
     const [fullname, setFullname] = useState(user?.fullname || "");
-    const [birthdate, setBirthdate] = useState(user?.birthdate ? dayjs(user.birthdate).format("DD/MM/YYYY") : null);
+    const [birthdate, setBirthdate] = useState(user?.birthdate ? dayjs(user.birthdate) : null);
 
     if (!user) {
         return (
